@@ -5,14 +5,19 @@ Main script for Brownie Points.
 import logging
 from datetime import datetime as dt
 import argparse
+from sanic import Sanic
+from sanic import response
 
 from block import block
+import blockchain
+from controlAPI import controlAPI
 
 
 # ==================== Command Line Arguements ==================== #
 parser = argparse.ArgumentParser(description='Brownie Points - New Age, Quantum Resistant CryptoCurrency and ex-social currency.')
 
 parser.add_argument('--debug', default=False, action='store_true')
+parser.add_argument('-p', '--port', type=int, default=16000)
 
 __args__ = parser.parse_args()
 
@@ -25,6 +30,19 @@ else:
 
 brownieLogger = logging.getLogger('MainBrownie')
 
-genesisBlock = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie')
-blockchain = [genesisBlock]
+blockchain.init()
+brownieLogger.info('Created genesis brownie and initiated own blockchain.')
 
+app = Sanic('BrowniePoints')
+
+app.blueprint(controlAPI)
+
+@app.route('/favicon.ico', methods=['GET',])
+def favicon_handler(request):
+    return response.json({}, status=404)
+
+
+if __args__.debug:
+    app.run(host='0.0.0.0', port=__args__.port, debug=True, access_log=True)
+else:
+    app.run(host='0.0.0.0', port=__args__.port, debug=False, access_log=True)

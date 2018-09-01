@@ -32,18 +32,3 @@ class block:
         '''
         preHashedString = str(index) + previousHash + str(timestamp) + data
         return sha256(bytes(preHashedString, 'utf-8')).hexdigest()
-
-    def generateNextBlock(self, blockData):
-        '''Given the block data, generates the subsequent block in the blockchain.
-
-        Arguments:
-            blockData: the data of the new block.
-
-        Returns:
-            The new block generated with the given data and appropriate metadata.
-        '''
-        nextIndex = self.index + 1
-        nextTimestamp = dt.now()
-        nextHash = block.calculateHash(nextIndex, self.hash, nextTimestamp, blockData)
-
-        return block(nextIndex, nextHash, self.hash, nextTimestamp, blockData)

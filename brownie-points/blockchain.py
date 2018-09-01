@@ -9,10 +9,36 @@ from block import block
 
 
 # ==================== Globals ==================== #
-logger = logger.getLogger('Blockchain')
+logger = logging.getLogger('Blockchain')
+genesisBrownie = None
+brownieChain = None
+browniePeers = []
+
+def init():
+    global genesisBrownie
+    global brownieChain
+    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie')
+    brownieChain = [genesisBrownie]
 
 
 # ==================== Main ==================== #
+def generateNextBlock(blockData):
+    '''Given the block data, generates the subsequent block in the blockchain.
+
+    Arguments:
+        blockData: the data of the new block.
+
+    Returns:
+        The new block generated with the given data and appropriate metadata.
+    '''
+    latestBlock = brownieChain[-1]
+    nextIndex = latestBlock.index + 1
+    nextTimestamp = dt.now()
+    nextHash = block.calculateHash(nextIndex, latestBlock.hash, nextTimestamp, blockData)
+
+    return block(nextIndex, nextHash, latestBlock.hash, nextTimestamp, blockData)
+
+
 def isValidBlock(newBlock, previousBlock):
     '''Checks and returns whether the new block generated is valid with respect to its previous block in the blockchain.
 
@@ -37,6 +63,7 @@ def isValidBlock(newBlock, previousBlock):
         return False
 
     return True
+
 
 def isValidBlockStructure(testBlock):
     '''Checks and returns whether a block's structure is in line with the design for a standard block in the blockchain.
@@ -69,6 +96,7 @@ def isValidBlockStructure(testBlock):
 
     return True
 
+
 def isValidChain(testChain, genesisBlock):
     '''Checks and returns whether the given blockchain is a valid chain of blocks.
 
@@ -90,4 +118,27 @@ def isValidChain(testChain, genesisBlock):
             return False
 
     return True
-    
+
+
+def replaceChain(newChain):
+    '''Replaces the node's copy of the blockchain with the given chain if it is valid and longer.
+
+    Arguments:
+        newChain: the new chain to replace the existing blockchain.
+    '''
+    if isValidChain(newChain, genesisBrownie):
+        if len(newChain) > len(brownieChain):
+            brownieLogger.info('Replacing chain.')
+            brownieChain = newChain
+            # broadcastLatest()
+        else:
+            brownieLogger.info('Received chain is not longer. Discarding.')
+    else:
+        brownieLogger.info('Received invalid chain. Discarding.')
+
+
+def connectToPeer(peer):
+    '''Connects to another peer on the brownie p2p network.
+    '''
+    browniePeers.append(peer)
+    return
