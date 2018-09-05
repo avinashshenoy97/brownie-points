@@ -13,11 +13,11 @@ logger = logging.getLogger('Blockchain')
 genesisBrownie = None
 brownieChain = None
 browniePeers = []
-
+difficulty = 4
 def init():
     global genesisBrownie
     global brownieChain
-    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie')
+    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie',difficulty,0)
     brownieChain = [genesisBrownie]
 
 
