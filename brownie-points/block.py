@@ -16,7 +16,8 @@ class block:
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    def calculateHash(index, previousHash, timestamp, data,nonce):
+    @classmethod
+    def calculateHash(cls,index, previousHash, timestamp, data,nonce):
         '''Calculates a block's hash, given its index, the previous block's hash, its timestamp, its data and its nonce.
 
         Arguments:
@@ -35,13 +36,43 @@ class block:
         preHashedString = str(index) + previousHash + str(timestamp) + data + str(nonce)
         return sha256(bytes(preHashedString, 'utf-8')).hexdigest()
 
-    def hexToBinary(self,hash_str):
+    @classmethod
+    def hexToBinary(cls, hash_str):
         '''Converts the given input 'hash_str' from hexadecimal to its equivalent binary representation
 
+        :param
+            hash_str: hexadecimal string
         :return: string of 256 binary characters, representing the binary value of the hash
         '''
         return bin(int(hash_str, 16))[2:].zfill(256)
 
-    def hashMatchesDifficulty(self,hash):
-        binary_hash = self.hexToBinary(hash)
-        return binary_hash.startswith('0'*self.difficulty)
+    @classmethod
+    def hashMatchesDifficulty(cls, hash,difficulty):
+        '''Checks if the given hash matches the current difficulty level
+
+        :param
+            hash: bit string representing binary value of the hash
+            difficulty: current difficulty level of the network
+        :return: Boolean
+        '''
+        binary_hash = block.hexToBinary(hash)
+        return binary_hash.startswith('0'*difficulty)
+
+    @classmethod
+    def findBlock(cls, index, previousHash, timestamp, data, difficulty):
+        '''
+        Creates a new valid block by finding the nonce value such that the created block satisfies current difficulty
+        :param index: index of the block
+        :param previousHash: hash the block preceding the new block
+        :param timestamp: time when the new block is created
+        :param data: data
+        :param difficulty: current difficulty
+        :return: New block
+        '''
+        nonce = 0
+        while True:
+            hash = cls.calculateHash(index, previousHash, timestamp, data, nonce)
+            if cls.hashMatchesDifficulty(hash, difficulty):
+                return block(index, hash, previousHash, timestamp, data, difficulty, nonce)
+
+            nonce += 1
