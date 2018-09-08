@@ -14,6 +14,9 @@ genesisBrownie = None
 brownieChain = None
 browniePeers = []
 difficulty = 4
+BLOCK_GENERATION_INTERVAL = 10 # in seconds
+DIFFICULTY_ADJUSTMENT_INTERVAL = 10 # in blocks
+
 def init():
     global genesisBrownie
     global brownieChain
@@ -128,13 +131,13 @@ def replaceChain(newChain):
     '''
     if isValidChain(newChain, genesisBrownie):
         if len(newChain) > len(brownieChain):
-            brownieLogger.info('Replacing chain.')
+            logger.info('Replacing chain.')
             brownieChain = newChain
             # broadcastLatest()
         else:
-            brownieLogger.info('Received chain is not longer. Discarding.')
+            logger.info('Received chain is not longer. Discarding.')
     else:
-        brownieLogger.info('Received invalid chain. Discarding.')
+        logger.info('Received invalid chain. Discarding.')
 
 
 def connectToPeer(peer):
@@ -142,3 +145,43 @@ def connectToPeer(peer):
     '''
     browniePeers.append(peer)
     return
+
+def getDifficulty(brownieChain):
+    '''
+
+    :param brownieChain:
+    :return:
+    '''
+    latestBlock = brownieChain[-1]
+
+    if latestBlock.index % DIFFICULTY_ADJUSTMENT_INTERVAL == 0 and latestBlock.index != 0:
+        return getAdjustedDifficulty(latestBlock, brownieChain)
+
+    return latestBlock.difficulty
+
+def getAdjustedDifficulty(latestBlock, brownieChain):
+    '''
+
+    :param latestBlock:
+    :param brownieChain:
+    :return:
+    '''
+    prevAdjustmentBlock =  brownieChain[ -DIFFICULTY_ADJUSTMENT_INTERVAL]
+    timeExpected =  BLOCK_GENERATION_INTERVAL * DIFFICULTY_ADJUSTMENT_INTERVAL
+    timeTaken = latestBlock.timestamp - prevAdjustmentBlock.timestamp
+
+    if timeTaken < timeExpected / 2 :
+       return prevAdjustmentBlock.difficulty + 1
+    elif timeTaken > timeExpected * 2 :
+        return prevAdjustmentBlock.difficulty - 1
+
+    return prevAdjustmentBlock.difficulty
+
+def isValidTimestamp(newBlock, previousBlock):
+    '''
+
+    :param newBlock:
+    :param previousBlock:
+    :return:
+    '''
+    return  previousBlock.timestamp - 60 < newBlock.timestamp and newBlock.timestamp - 60 < dt.now()
