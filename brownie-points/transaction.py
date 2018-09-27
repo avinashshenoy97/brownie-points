@@ -4,9 +4,12 @@ Script for Transaction data structure and other utility functions.
 # ==================== Imports ==================== #
 from hashlib import sha256
 import logging
+from collections import Counter 
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
+COINBASE_AMOUNT = 50
+
 class unspentTxOut:
     def __init__(self, txOutId, txOutIndex, address, amount):
         self.txOutId = txOutId
@@ -38,7 +41,7 @@ def getTransactionId(transxtion):
     txContent = txInContent + txOutContent
     return(sha256(txContent.encode()).hexdigest())
 
-def validateTransactionStructure(transaction, aUnspentTxOut):
+def validateTransaction(transaction, aUnspentTxOut):
     if(not(isValidTransactionStructure(transaction))):
         return(False)
     
@@ -63,11 +66,57 @@ def validateTransactionStructure(transaction, aUnspentTxOut):
     return(True)
 
 
+def validateBlockTransaction(aTransactions, aUnspentTxOuts, blockIndex):
+    coinBaseTx = aTransactions[0]
+    if(not validateCoinbaseTx(coinBaseTx,blockIndex)):
+        logger.error("Invalid Coinbase Transaction:" + str(coinBaseTx))
+        return(False)
+    
+    
+    flatten=lambda l: sum(map(flatten,l),[]) if isinstance(l,list) else [l]
+    txIn = flatten(list(map(lambda x: x.txIns), aTransactions))
+
+    if(hasDuplicates(txIns)):
+        return(False)
+    
+
+    transactions = aTransactions[1:]
+    return(reduce(lambda x,y:x and y, list(map(lambda z: validateTransaction(z,aUnspentTxOuts), transactions)),True))
 
 
+def validateCoinbaseTx(transaction, blockIndex):
+    if(transaction == None):
+        logger.error('The first Transaction in the block must be a coinbase Transaction')
+        return(False)
+    
+    if(getTransactionId(transaction) != transaction.id):
+        logger.error('Invalid Coinbase Transcation ID: ' + transaction.id)
+        return(False)
 
+    if(len(transaction.txIns) != 1):
+        logger.error('One txIn must be specified in the coinbase transaction')
+        return(False)
+    
+    if (transaction.txIns[0].txOutIndex != blockIndex):
+        logger.error('The txIn signature in coinbase transaction must be the block height')
+        return(False)
+    
+    if (len(transaction.txOuts) != 1):
+        logger.error('Invalid number of txOuts in coinbase transaction')
+        return(False)
+    
+    if (transaction.txOuts[0].amount != COINBASE_AMOUNT):
+        logger.error('Invalid coinbase amount in coinbase transaction')
+        return(False)
+    
+    return(True)
 
-
+def hasDuplicates(txIns):
+    groups = Counter([i.txOutId + i.txOutIndex for i in txIns])
+    for i in groups.keys():
+        if(groups[i]>1):
+            logger.error("Duplicate Transaction Id: " + i)
+            return(True)
 
 
         
