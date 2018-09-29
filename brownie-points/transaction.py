@@ -1,9 +1,11 @@
 '''
 Script for Transaction data structure and other utility functions.
+Doubts : Signature (function prototype)
 '''
 # ==================== Imports ==================== #
 from hashlib import sha256
 import logging
+import rainbowKeygen
 from collections import Counter 
 
 # ==================== Main ==================== #
@@ -120,5 +122,35 @@ def hasDuplicates(txIns):
 
 
         
+def findUnspentTxOut(Id,Index, UnspentTxOuts):
+	for i in UnspentTxOuts:
+		if(i.txOutId==Id and i.txOutIndex==Index):
+			return i
+	return None
+
+def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
+	txIn = tx.txIns[txInIndex]
+	datatosign = tx.txId
+	referencedUnspentTxOut = findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, UnspentTxOuts);
+
+	if(referencedUnspentTxOut is None):
+		logger.error("could not find referenced txOut while creating transaction")
+		raise Exception("could not find referenced txOut while creating transaction")
+
+	referencedAddress = referencedUnspentTxOut.address
+	
+	'''
+	obtain pub key from priv key
+	'''
+	if(getPublicKey() != referencedAddress):
+		logger.error('Signing an input whose address doesnt match with that present in txIn')
+		raise Exception('Signing an input whose address doesnt match with that present in txIn')
+	
+	'''
+	?????????Doubts : Signature (function prototype)?????????
+	'''
+	signature = rainbowKeygen.sign(private_key, datatosign)
+
+	return signature
 
 
