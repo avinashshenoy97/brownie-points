@@ -3,7 +3,7 @@ from copy import deepcopy
 from functools import reduce
 import logging
 
-logger = logging.getLogger("TransactionPool")
+logger = logging.getLogger("Transaction")
 
 transactionPool = []
 

@@ -10,7 +10,7 @@ import os
 from transactions import *
 
 # ==================== Main ==================== #
-logger = logging.getLogger('Wallet')
+logger = logging.getLogger('Transaction')
 private_keylocn = "/Wallet/private_key"
 public_keylocn = "/Wallet/public_key"
 

@@ -1,9 +1,30 @@
 '''
 Script for Transaction data structure and other utility functions.
 Doubts : Signature (function prototype)
+Functions Implemented:
+
+getTransactionId - D
+validateTransaction - D 
+validateBlockTransactions - D
+hasDuplicates - D
+validateCoinbaseTx - D
+validateTxIn - D
+getTxInAmount - D
+findUnspentTxOut - D
+getCoinbaseTransaction - D
+signTxIn - D
+updateUnspentTxOuts
+processTransactions -D
+toHexString
+isValidTxInStructure 
+isValidTxOutStructure
+isValidTransactionStructure 
+isValidAddress
+
 '''
 # ==================== Imports ==================== #
 from hashlib import sha256
+import ecdsa
 import logging
 import rainbowKeygen
 from collections import Counter 
@@ -12,33 +33,33 @@ from collections import Counter
 logger = logging.getLogger('Transaction')
 COINBASE_AMOUNT = 50
 
-class unspentTxOut:
+class UnspentTxOut:
     def __init__(self, txOutId, txOutIndex, address, amount):
         self.txOutId = txOutId
         self.txOutIndex = txOutIndex
         self.address = address
         self.amount = amount
 
-class txOut:
+class TxOut:
     def __init__(self, address, amnt):
         self.address, self.amount = (address,amnt)
 
-class txIn:
+class TxIn:
     def __init__(self, txOutId, index, sign):
         self.txOutId, self.txOutIndex, self.signature = (txOutId, index, sign)
 
-class transaction:
+class Transaction:
     def __init__(self, txId, txIns, txOuts):
         self.txId, self.txIns, self.txOuts = (txId, txIns, txOuts)
 
 
-def getTransactionId(transxtion):
+def getTransactionId(transaction):
     
     txInContent = ''
     for i in transxtion.txIns:
         txInContent += i.txOutId + i.txOutIndex
     txOutContent = ''
-    for i in transxtion.txOuts:
+    for i in transaction.txOuts:
         txOutContent += i.address + i.amount
     txContent = txInContent + txOutContent
     return(sha256(txContent.encode()).hexdigest())
@@ -121,12 +142,51 @@ def hasDuplicates(txIns):
             return(True)
 
 
+
+def validateTxIn(txIn, transaction, aUnspentTxOuts):
+
+    referencedUTxOut = None
+    for uTxO in aUnspentTxOuts:
+        if(uTxO.txOutId == txIn.txOutId and uTxO.txOutIndex == txIn.txOutIndex):
+            referencedUTxOut = uTxO
         
-def findUnspentTxOut(Id,Index, UnspentTxOuts):
-	for i in UnspentTxOuts:
-		if(i.txOutId==Id and i.txOutIndex==Index):
-			return i
-	return None
+        if(referencedUTxOut == None):
+            logger.error("Referenced TxOut Not found: " + str(txIn.__dict__))
+            return(False)
+
+        addr = referencedUTxOut.address
+
+        vk = ecdsa.VerifyingKey.from_string(bytes.fromhex(addr), curve=ecdsa.SECP256k1)
+        if(not vk.verify(bytes.fromhex(txIn.signature), transaction.id)):
+            logger.error("Invalid TxIn Signature: " + txIn.signature + "txId: " + transaction.id + "address: " + addr)
+            return(False)
+        
+        return(True)
+
+
+def getTxInAmount(txIn, aUnspentTxOuts):
+    return(findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, aUnspentTxOuts).amount)
+
+
+def findUnspentTxOut(transactionId, index, aUnspentTxOuts):
+    for uTxO in aUnspentTxOuts:
+        if(uTxO.txOutId == transactionId and uTxO.txOutIndex == index):
+            return(uTxO)
+    
+    return(None)
+
+def getCoinbaseTransaction(address, blockIndex):
+    t = Transaction()
+    txIn = TxIn()
+    txIn.signature = ''
+    txIn.txOutId = ''
+    txIn.txOutIndex = blockIndex
+
+    t.txIns = [txIn]
+    t.txOuts = [TxOut(address, COINBASE_AMOUNT)]
+    t.id = getTransactionId(t);
+    return(t)
+
 
 def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	txIn = tx.txIns[txInIndex]
@@ -138,6 +198,7 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 		raise Exception("could not find referenced txOut while creating transaction")
 
 	referencedAddress = referencedUnspentTxOut.address
+    
 	
 	'''
 	obtain pub key from priv key
@@ -152,5 +213,15 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	signature = rainbowKeygen.sign(private_key, datatosign)
 
 	return signature
+
+
+def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
+    if(not validateBlockTransaction(aTransactions, aUnspentTxOuts, blockIndex)):
+        logger.error("Invalid Block Transaction")
+        return(None)
+    
+    return(updateUnspentTxOuts(aTransactions, aUnspentTxOuts))
+
+
 
 
