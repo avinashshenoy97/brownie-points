@@ -13,13 +13,13 @@ getTxInAmount - D
 findUnspentTxOut - D
 getCoinbaseTransaction - D
 signTxIn - D
-updateUnspentTxOuts
+updateUnspentTxOuts - D
 processTransactions -D
-toHexString
+toHexString - D
 isValidTxInStructure -D
 isValidTxOutStructure -D
 isValidTransactionStructure -D
-isValidAddress
+isValidAddress - D
 
 '''
 # ==================== Imports ==================== #
@@ -27,7 +27,9 @@ from hashlib import sha256
 import ecdsa
 import logging
 #import rainbowKeygen
-from collections import Counter 
+from collections import Counter
+from functools import reduce
+import re
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
@@ -218,6 +220,17 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	return str(signature)
 
 
+def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
+	newUnspentTxOuts = []
+	for t in aTransactions:
+		for txOut,index in enumerate(t.txOuts):
+			newUnspentTxOuts = UnspentTxOut(t.id, index, txOut.address,txOut.amount)
+	newUnspentTxOuts = reduce(lambda a,b : a + b, newUnspentTxOuts, [])
+	consumedTxOuts = map(lambda txIn : UnspentTxOut(txIn.txOutId, txIn.txOutIndex, '',0), reduce(lambda a,b : a + b, [ t.txIns for t in aTransactions], []))
+	resultingUnspentTxOuts = filter(lambda uTxO : findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts) == False, aUnspentTxOuts) + newUnspentTxOuts
+	return resultingUnspentTxOuts
+
+
 def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
     if(not validateBlockTransaction(aTransactions, aUnspentTxOuts, blockIndex)):
         logger.error("Invalid Block Transaction")
@@ -225,6 +238,17 @@ def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
     
     return(updateUnspentTxOuts(aTransactions, aUnspentTxOuts))
 
+'''
+const toHexString = (byteArray): string => {
+    return Array.from(byteArray, (byte: any) => {
+        return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('');
+};
+'''
+#not sure why they are taking byte by byte in the byteArray string?
+def toHexString(byteArray):
+	return reduce(lambda a, b : a + b,map(lambda byte: '0' + (hex(int(byte) & 0xFF)[2:])[-2:], [byte for byte in byteArray]))
+			
 def getPublicKey(private_key):
 	private_key = ecdsa.SigningKey.from_string(bytes.fromhex(private_key))
 	public_key = private_key.get_verifying_key().to_string().hex()
@@ -290,3 +314,17 @@ def isValidTransactionStructure(transaction):
 			return False
 	return True
 
+#valid address is a valid ecdsa public key in the 04 + X-coordinate + Y-coordinate format
+def isValidAddress(address):
+	if len(address) != 130:
+		logger.error(address)
+		logger.error('invalid public key length')
+		return False
+	p = re.compile('^[a-fA-F0-9]+$')
+	if p.match(address) is None:
+		logger.error('public key must contain only hex characters')
+		return False
+	if address[:2] == '04':
+		logger.error('public key must start with 04')
+		return False
+	return True
