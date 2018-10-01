@@ -4,46 +4,48 @@ Doubts:
 Getting public key from private key
 '''
 # ==================== Imports ==================== #
-import rainbowKeygen
+#import rainbowKeygen
+from ecdsa import SigningKey, SECP256k1
 import logging
 import os
 from transactions import *
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
-private_keylocn = "/Wallet/private_key"
-public_keylocn = "/Wallet/public_key"
+keylocn = "/Wallet"
 
 '''
 ???????Below two functions and function to obtain public key from private????
 '''
-def getPublicKey():
-	if os.path.isfile(public_keylocn):
-		f = open(public_keylocn,"r")
-		pub_key = f.readline()
-		return pub_key
+def getPublicFromWallet():
+	private_key = getPrivateFromWallet()
+	private_key = SigningKey.from_string(bytes.fromhex(private_key))
+	public_key = private_key.get_verifying_key().to_string().hex()
+	return public_key
 
-def getPrivateKey():
-	if os.path.isfile(private_keylocn):
-		f = open(private_keylocn,"r")
-		private_key = f.readline()
+def getPrivateFromWallet():
+	if os.path.isfile(keylocn+"/private.pem"):
+		private_key = open(keylocn+"/private.pem").read()
 		return private_key
 
-def generate_keypairs():
+def generatePrivateKey():
 	'''
 	generate keys using Quantum resistant keypairs
-	'''
 	myKeyObject = rainbowKeygen()
 	myKeyObject.generate_keys() # store keys in folder/wallet/keylocn
+	'''
+
+	private_key =  SigningKey.generate(curve = SECP256k1).to_string().hex()
+	return private_key
 
 def initWallet(): 
 	'''
 	check if key exists, if it doesnt then create the keypairs
 	'''
-	if os.path.isfile(private_keylocn) and os.path.isfile(public_keylocn):
+	if os.path.isfile(keylocn+"/private.pem"):
 		return
 	else:
-		generate_keypairs()
+		open(keylocn+"/private.pem","w").write(generate_keypairs())
 
 def getBalance(address,unspentTxOut):
 	balance = 0
@@ -82,7 +84,7 @@ def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
 	'''
 	obtain pub key from private key	
 	'''
-	myaddress = getPublicKey()
+	myaddress = getPublicKey(private_key)
 	myUnspentTxOuts = []	
 	for i in unspentTxOuts:
 		if(i.address==myaddress):
@@ -104,4 +106,4 @@ def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
 		txIn.signature = signTxIn(tx,index,private_key,unspentTxOuts)
 		index += 1
 
-	return txIn
+	return tx

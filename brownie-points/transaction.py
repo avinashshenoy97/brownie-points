@@ -16,9 +16,9 @@ signTxIn - D
 updateUnspentTxOuts
 processTransactions -D
 toHexString
-isValidTxInStructure 
-isValidTxOutStructure
-isValidTransactionStructure 
+isValidTxInStructure -D
+isValidTxOutStructure -D
+isValidTransactionStructure -D
 isValidAddress
 
 '''
@@ -26,7 +26,7 @@ isValidAddress
 from hashlib import sha256
 import ecdsa
 import logging
-import rainbowKeygen
+#import rainbowKeygen
 from collections import Counter 
 
 # ==================== Main ==================== #
@@ -209,10 +209,13 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	
 	'''
 	?????????Doubts : Signature (function prototype)?????????
+	#signature = rainbowKeygen.sign(private_key, datatosign)
 	'''
-	signature = rainbowKeygen.sign(private_key, datatosign)
 
-	return signature
+	private_key = SigningKey.from_string(bytes.fromhex(private_key))
+	signature = private_key.sign(datatosign.encode())
+
+	return str(signature)
 
 
 def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
@@ -222,6 +225,68 @@ def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
     
     return(updateUnspentTxOuts(aTransactions, aUnspentTxOuts))
 
+def getPublicKey(private_key):
+	private_key = ecdsa.SigningKey.from_string(bytes.fromhex(private_key))
+	public_key = private_key.get_verifying_key().to_string().hex()
+	return public_key
+
+def isValidTxInStructure(txIn):
+	if(txIn is None):
+		logger.error("txIn is null")
+		return False
+	elif(type(txIn.signature) is not str):
+		logger.error('invalid signature type in txIn')
+		return False
+	elif(type(txIn.txOutId) is not str):
+		logger.error('invalid txOutId in txIn')
+		return False
+	elif(not((type(txIn.signature) is int) or (type(txIn.signature) is long))):
+		logger.error('invalid txOutIndex type in txIn')
+		return False
+	else:
+		return True
 
 
+def isValidTxOutStructure(txOut):
+	if(txOut is None):
+		logger.error("txOut is null")
+		return False
+	elif(type(txOut.address) is not str):
+		logger.error('invalid address type in txOut')
+		return False
+	elif(not(isValidAddress(txOut.address)):
+		logger.error('invalid txOut address in txOut')
+		return False
+	elif(not((type(txOut.amount) is int) or (type(txOut.amount) is long))):
+		logger.error('invalid tamount type in txOut')
+		return False
+	else:
+		return True
+
+def isValidTransactionsStructure(transactions):
+	for transaction in transactions:
+		valid = isValidTransactionStructure(transaction)
+		if(not valid):
+			return False
+	return True
+
+def isValidTransactionStructure(transaction):
+	if(type(transaction.txId) is not str):
+		logger.error("transactionId missing")
+		return False
+	if(type(transaction.txIns) is not list):
+		logger.error("invalid txIns type in transaction")
+		return False
+	for txin in transaction.txIns:
+		valid = isValidTxInStructure(txin)
+		if(not valid):
+			return False
+	if(type(transaction.txOuts) is not list):
+		logger.error("invalid txOuts type in transaction")
+		return False
+	for txout in transaction.txOuts:
+		valid = isValidTxOutStructure(txout)
+		if(not valid):
+			return False
+	return True
 
