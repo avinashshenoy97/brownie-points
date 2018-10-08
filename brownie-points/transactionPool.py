@@ -1,4 +1,4 @@
-from transaction import transaction, txIn, unspentTxOut, validateTransaction
+from transaction import TxIn, UnspentTxOut, validateTransaction
 from copy import deepcopy
 from functools import reduce
 import logging
@@ -11,8 +11,8 @@ def getTransactionPool():
 	return deepcopy(transactionPool)
 
 
-def addToTransactionPool(tx, unspentTxOuts):
-	if(validateTransaction(tx, unspentTxOuts) == False):
+def addToTransactionPool(tx, UnspentTxOut):
+	if(validateTransaction(tx, UnspentTxOut) == False):
 		raise Exception("Trying to add invalid tx to pool")
 
 	if(isValidTxForPool(tx, transactionPool) == False):
@@ -23,21 +23,21 @@ def addToTransactionPool(tx, unspentTxOuts):
 	transactionPool.append(tx)
 
 
-def hasTxIn(txIn, unspentTxOuts):
+def hasTxIn(TxIn, UnspentTxOut):
 	foundTxIn = None
 
-	for uTxO in unspentTxOuts:
-		foundTxIn = (uTxO.txOutId == txIn.txOutId and uTxO.txOutIndex == txIn.txOutIndex)
+	for uTxO in UnspentTxOut:
+		foundTxIn = (uTxO.txOutId == TxIn.txOutId and uTxO.txOutIndex == TxIn.txOutIndex)
 
 	return (foundTxIn is not None)
 
 
-def updateTransactionPool(unspentTxOuts):
+def updateTransactionPool(UnspentTxOut):
 	invalidTxs = []
 	
 	for tx in transactionPool:
 		for txIn in tx.txIns:
-			if(hasTxIn(txIn, unspentTxOuts) == False):
+			if(hasTxIn(txIn, UnspentTxOut) == False):
 				invalidTxs.append(tx)
 				break
 	
@@ -53,9 +53,9 @@ def getTxPoolIns(aTransactionPool):
 def isValidTxForPool(tx, aTtransactionPool):
 	txPoolIns = getTxPoolIns(aTtransactionPool)
 
-	def containsTxIn(txIn):
+	def containsTxIn(TxIn):
 		for txPoolIn in txPoolIns:
-			if txIn.txOutIndex == txPoolIn.txOutIndex and txIn.txOutId == txPoolIn.txOutId:
+			if TxIn.txOutIndex == txPoolIn.txOutIndex and TxIn.txOutId == txPoolIn.txOutId:
 				return True
 		return False
 

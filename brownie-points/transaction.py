@@ -278,7 +278,7 @@ def isValidTxOutStructure(txOut):
 	elif(type(txOut.address) is not str):
 		logger.error('invalid address type in txOut')
 		return False
-	elif(not(isValidAddress(txOut.address)):
+	elif(not(isValidAddress(txOut.address))):
 		logger.error('invalid txOut address in txOut')
 		return False
 	elif(not((type(txOut.amount) is int) or (type(txOut.amount) is long))):

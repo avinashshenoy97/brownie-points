@@ -8,7 +8,7 @@ Getting public key from private key
 from ecdsa import SigningKey, SECP256k1
 import logging
 import os
-from transactions import *
+from transaction import *
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
