@@ -326,7 +326,7 @@
   </balance>
   </div>
     <div class="add-product" id="transactionStatus" :class="{'open': formOpen3}">
-    <div class="outer3 button-copy" id="transactionStatusRing" v-show="!formOpen3" @click="formOpen3 = true">
+    <div class="outer3 button-copy" id="transactionStatusRing" v-show="!formOpen3" @click="setValue3(true)">
       <div class="mask">
         <div class="ring">
           <span id="ring-text">View<br/>Status</span>
@@ -388,7 +388,7 @@
         </div>
         <!-- <div class="container-sep"></div> -->
         <div class="container-right">
-        <div class="container">
+        <!-- <div class="container">
           <div class="card">
             <div class="front"><h2>Transaction</h2></div>
             <div class="back">
@@ -409,7 +409,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         </div>
       </div>
     </div>
@@ -441,9 +441,9 @@
   <script src="{% static 'js/menuoptions.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/contact.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/address.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/transaction.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/main.js' %}" type="text/javascript"></script> 
   <script src="{% static 'js/sendCoins.js' %}" type="text/javascript"></script>
-  <script src="{% static 'js/transaction.js' %}" type="text/javascript"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/triangles/1.0.2/js/triangles.js" type="text/javascript"></script>
   <script src="{% static 'js/background.js' %}" type="text/javascript"></script>
 

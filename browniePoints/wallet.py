@@ -23,25 +23,12 @@ def getPublicFromWallet():
 	public_key = private_key.get_verifying_key().to_string().hex()
 	return public_key
 
-# ####################################################################################
-# def getPublicFromWallet2():
-# 	private_key = getPrivateFromWallet2()
-# 	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
-# >>>>>>> transactions-dev:brownie-points/wallet.py
-# 	public_key = private_key.get_verifying_key().to_string().hex()
-# 	return public_key
 
 ########################################################################################
 def getPrivateFromWallet():
 	if os.path.isfile(keylocn+"/private.txt"):
 		private_key = open(keylocn+"/private.txt").read()
 		return private_key
-
-# #################################################################################################
-# def getPrivateFromWallet2():
-# 	if os.path.isfile(keylocn+"/private2.txt"):
-# 		private_key = open(keylocn+"/private2.txt").read()
-# 		return private_key
 
 
 ##################################################################################################
@@ -117,8 +104,8 @@ def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
 	'''
 	obtain pub key from private key	
 	'''
-	myaddress = private_key
-	# myaddress = getPublicKey(private_key)
+	# myaddress = private_key
+	myaddress = getPublicKey(private_key)
 	myUnspentTxOuts = []	
 	for i in unspentTxOuts:
 		if(i.address==myaddress):

@@ -163,37 +163,12 @@ $(".submit_coins").click(function(){
     $(".sa-success").removeClass("hide");
   }, 100);
 
-  setTimeout(function() {
-    var $addr=vue.$refs.send_coins.sendCoins.address;
-    var $coinCount = vue.$refs.send_coins.sendCoins.coinCount;
-    var $myaddr = vue.$refs.public_address.publicaddress
-    var $transaction = "<div class='container'>";
-    $transaction+= "<div class='card'>"
-    $transaction+= "<div class='front'><h2>Transaction "+vue.$refs.send_coins.transactionNumber+"</h2></div>"
-    $transaction+= "<div class='back'>"
-    $transaction+= "<div class='content'>"
-    $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
-    $transaction+= "<p class='cardContent'>"+$myaddr+"</p>"
-    $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
-    $transaction+= "<p class='cardContent'>"+$addr+"</p>"
-    $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"
-    $transaction+= "<p class='cardContent'>"+$coinCount+"</p>"
-    // $transaction+= "<h3 class='cardTitle'>Timestamp</h3>"
-    // $transaction+= "<p class='cardContent'>1234</p>"
-    $transaction+= "</div>"
-    $transaction+= "</div>"
-    $transaction+= "</div>"
-    $transaction+= "</div>"
-    var $transaction_el = $($transaction);
-    $(".container-right").append($transaction_el);
-    $('.card').unbind('click');
-    $('.card').click(function(){
-      $(this).toggleClass('flipped');
-    });
-  
   vue.$refs.send_coins.submitCoins();
+  vue.$refs.transaction_status.getTransactionDetails();
+  setTimeout(function() {
+  
   vue.$refs.send_coins.cancel1();
-  }, 3000);
+  }, 1500);
 
-  setTimeout(resetForm,4000);
+  setTimeout(resetForm,2000);
 })

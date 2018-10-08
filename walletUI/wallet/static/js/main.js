@@ -18,6 +18,7 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
       Vue.http.put('/wallet/wallet/sendCoins',this.sendCoins)
           .then((response) => {
             console.log("sent",response);
+            this.transactionNumber=response.data['transactionNumber']
           })
           .catch((err) => {
             console.log("error",err);
@@ -29,9 +30,9 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
 var transactionStatus=Vue.component('transaction-status',{
   data:function(){
     return{
-      transactionDetails:{
-
-      }
+      transactionDetails:{},
+      transactionDetailsAddr:[],
+      transactionDetailsCoins:[]
     }
   },
   methods:{
@@ -40,13 +41,55 @@ var transactionStatus=Vue.component('transaction-status',{
       this.$parent.formClose3 = true;
     },
     getTransactionDetails: function() {
-      this.$http.get('/getTransactionDetails',this.transactionDetails)
+      this.$http.get('/wallet/wallet/getTransactionDetails',this.transactionDetails)
           .then((response) => {
-            console.log("received",response);
+            console.log("received",response.data);
+            this.transactionDetailsAddr=response.data['transactionAddr'];
+            this.transactionDetailsCoins=response.data['transactionCoins'];
+            this.updateTransactions();
+            console.log("gotit",this.transactionDetailsAddr);
           })
           .catch((err) => {
             console.log(err);
           })
+     },
+     updateTransactions: function(){
+        var $transactionDetailsAddr = this.transactionDetailsAddr;
+        var $transactionDetailsCoins = this.transactionDetailsCoins;
+        var i=1;
+        $(".container-right").empty();
+        for(i=0;i<$transactionDetailsAddr.length;i++){ 
+          var j=i+1;
+          // var $addr=$transactionDetails[i].txOuts[0].address;
+          // var $coinCount = $transactionDetails[i].txOuts[0].coinCount;
+          var $addr=$transactionDetailsAddr[i];
+          var $coinCount=$transactionDetailsCoins[i];
+          var $myaddr = vue.$refs.public_address.publicaddress
+          var $transaction = "<div class='container'>";
+          $transaction+= "<div class='card'>"
+          $transaction+= "<div class='front'><h2>Transaction "+j+"</h2></div>"
+          $transaction+= "<div class='back'>"
+          $transaction+= "<div class='content'>"
+          $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
+          $transaction+= "<p class='cardContent'>"+$myaddr+"</p>"
+          $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
+          $transaction+= "<p class='cardContent'>"+$addr+"</p>"
+          $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"
+          $transaction+= "<p class='cardContent'>"+$coinCount+"</p>"
+          // $transaction+= "<h3 class='cardTitle'>Timestamp</h3>"
+          // $transaction+= "<p class='cardContent'>1234</p>"
+          $transaction+= "</div>"
+          $transaction+= "</div>"
+          $transaction+= "</div>"
+          $transaction+= "</div>"
+          var $transaction_el = $($transaction);
+          $(".container-right").append($transaction_el);
+        }
+        $('.card').unbind('click');
+        $('.card').click(function(){
+          $(this).toggleClass('flipped');
+        });
+
      } 
   }
 });
@@ -126,6 +169,7 @@ var vue = new Vue({
       vue.$refs.get_balance.getBalance();
     },
     setValue3: function(arg1){
+      vue.$refs.transaction_status.getTransactionDetails();
       this.formOpen3 = arg1;
     },
     cancel1: function(){

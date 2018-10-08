@@ -16,21 +16,32 @@ from browniePoints import transaction as t
 context={}
 publicAddr=w.getPublicFromWallet()
 unspentTxOut=[]
+transactions=[]
+transactionAddr=[]
+transactionCoins=[]
+
+w.initWallet()
+trans,usp = t.getCoinbaseTransaction(publicAddr,0)
+unspentTxOut.append(usp)
+transactions.append(trans)
 def wallet(request):
-	w.initWallet()
-	unspentTxOut.append(t.getCoinbaseTransaction(publicAddr, 0))
 	return render(request, "index.html",context)
 
 class sendCoinsView(APIView):
 	def put(self,request):
+		global unspentTxOut
 		print("put",request.data)
-		# unspentTxOut=w.createTransaction(request.data['address'],request.data['coinCount'],publicAddr,unspentTxOut)
-		data={"Coins":"Sent"}
+		tra = w.createTransaction(request.data['address'],request.data['coinCount'],w.getPrivateFromWallet(),unspentTxOut)
+		transactions.append(tra)
+		transactionAddr.append(tra.txOuts[0].address)
+		transactionCoins.append(tra.txOuts[0].amount)
+		data={"transactionNumber":len(transactionAddr)}
 		return Response(data)
 
 class transactionStatusView(APIView):
 	def get(self,request):
-		data={"transaction":"status"}
+		data={"transactionAddr":transactionAddr,"transactionCoins":transactionCoins}
+		print(data)
 		return Response(data)
 
 class publicAddressView(APIView):
@@ -41,6 +52,6 @@ class publicAddressView(APIView):
 
 class balanceView(APIView):
 	def get(self,request):
-		balance = getBalance(publicAddr,unspentTxOut)
+		balance = w.getBalance(publicAddr,unspentTxOut)
 		data={"balance":balance}
 		return Response(data)
