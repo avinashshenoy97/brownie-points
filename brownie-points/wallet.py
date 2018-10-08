@@ -8,25 +8,41 @@ Getting public key from private key
 from ecdsa import SigningKey, SECP256k1
 import logging
 import os
-from transactions import *
+from transaction import *
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
-keylocn = "/Wallet"
+keylocn = "Wallet"
 
 '''
 ???????Below two functions and function to obtain public key from private????
 '''
 def getPublicFromWallet():
 	private_key = getPrivateFromWallet()
-	private_key = SigningKey.from_string(bytes.fromhex(private_key))
+	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
+	public_key = private_key.get_verifying_key().to_string().hex()
+	return public_key
+####################################################################################
+def getPublicFromWallet2():
+	private_key = getPrivateFromWallet2()
+	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
 	public_key = private_key.get_verifying_key().to_string().hex()
 	return public_key
 
+########################################################################################
 def getPrivateFromWallet():
-	if os.path.isfile(keylocn+"/private.pem"):
-		private_key = open(keylocn+"/private.pem").read()
+	if os.path.isfile(keylocn+"/private.txt"):
+		private_key = open(keylocn+"/private.txt").read()
 		return private_key
+#################################################################################################
+def getPrivateFromWallet2():
+	if os.path.isfile(keylocn+"/private2.txt"):
+		private_key = open(keylocn+"/private2.txt").read()
+		return private_key
+
+
+##################################################################################################
+
 
 def generatePrivateKey():
 	'''
@@ -42,11 +58,23 @@ def initWallet():
 	'''
 	check if key exists, if it doesnt then create the keypairs
 	'''
-	if os.path.isfile(keylocn+"/private.pem"):
+	if os.path.isfile(keylocn+"/private.txt"):
 		return
 	else:
-		open(keylocn+"/private.pem","w").write(generate_keypairs())
+		open(keylocn+"/private.txt","w").write(generatePrivateKey())
+#################################################################################################33
+def initWallet2(): 
+	'''
+	check if key exists, if it doesnt then create the keypairs
+	'''
+	if os.path.isfile(keylocn+"/private2.txt"):
+		return
+	else:
+		open(keylocn+"/private2.txt","w").write(generatePrivateKey())
 
+
+
+################################################################################################
 def getBalance(address,unspentTxOut):
 	balance = 0
 	for i in unspentTxOut:
@@ -54,15 +82,15 @@ def getBalance(address,unspentTxOut):
 			balance += i.amount
 	return balance
 
-	
+
 def findTxOutsforAmount(amount,myUnspentTxOuts):
 	currentAmount = 0
 	includedUnspentTxOuts = []
 	for myUnspentTxOut in myUnspentTxOuts:
-		includedUnsoentTxOuts.append(myUnspentTxOut)
+		includedUnspentTxOuts.append(myUnspentTxOut)
 		currentAmount += myUnspentTxOut.amount
 		if(currentAmount >= amount):
-			leftoverAmount = currentAmount - amount
+			leftOverAmount = currentAmount - amount
 			return includedUnspentTxOuts,leftOverAmount
 
 	raise Exception("not enough coins to send transaction")
@@ -77,7 +105,7 @@ def createTxOuts(receiver_address,myaddress,amount,leftover_amount):
 		return [receiver_Tx,leftover_Tx]
 	
 def toUnsignedTxIn(unspentTxOut):
-	trans_In = txIn(unspentTxOut.txOutId,unspentTxOut.txOutIndex,unspentTxOut.signature)
+	trans_In =TxIn(unspentTxOut.txOutId,unspentTxOut.txOutIndex,None)
 	return trans_In
 	
 def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
@@ -90,7 +118,7 @@ def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
 		if(i.address==myaddress):
 			myUnspentTxOuts.append(i)
 
-	includedUnspentTxOuts, leftOverAmount = findTxOutsForAmount(amount, myUnspentTxOuts)
+	includedUnspentTxOuts, leftOverAmount =  findTxOutsforAmount(amount, myUnspentTxOuts)
 
 	unsignedTxIns = []
 	for i in includedUnspentTxOuts:

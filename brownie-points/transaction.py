@@ -58,11 +58,11 @@ class Transaction:
 def getTransactionId(transaction):
     
     txInContent = ''
-    for i in transxtion.txIns:
-        txInContent += i.txOutId + i.txOutIndex
+    for i in transaction.txIns:
+        txInContent += i.txOutId + str(i.txOutIndex)
     txOutContent = ''
     for i in transaction.txOuts:
-        txOutContent += i.address + i.amount
+        txOutContent += i.address + str(i.amount)
     txContent = txInContent + txOutContent
     return(sha256(txContent.encode()).hexdigest())
 
@@ -99,7 +99,7 @@ def validateBlockTransaction(aTransactions, aUnspentTxOuts, blockIndex):
     
     
     flatten=lambda l: sum(map(flatten,l),[]) if isinstance(l,list) else [l]
-    txIn = flatten(list(map(lambda x: x.txIns), aTransactions))
+    txIns = flatten(list(map(lambda x: x.txIns, aTransactions)))
 
     if(hasDuplicates(txIns)):
         return(False)
@@ -114,7 +114,7 @@ def validateCoinbaseTx(transaction, blockIndex):
         logger.error('The first Transaction in the block must be a coinbase Transaction')
         return(False)
     
-    if(getTransactionId(transaction) != transaction.id):
+    if(getTransactionId(transaction) != transaction.txId):
         logger.error('Invalid Coinbase Transcation ID: ' + transaction.id)
         return(False)
 
@@ -137,7 +137,7 @@ def validateCoinbaseTx(transaction, blockIndex):
     return(True)
 
 def hasDuplicates(txIns):
-    groups = Counter([i.txOutId + i.txOutIndex for i in txIns])
+    groups = Counter([i.txOutId + str(i.txOutIndex) for i in txIns])
     for i in groups.keys():
         if(groups[i]>1):
             logger.error("Duplicate Transaction Id: " + i)
@@ -178,6 +178,13 @@ def findUnspentTxOut(transactionId, index, aUnspentTxOuts):
     return(None)
 
 def getCoinbaseTransaction(address, blockIndex):
+    signature = ''
+    txOutId = ''
+    txOutIndex = 0
+    txIn = TxIn(txOutId, txOutIndex, signature)
+
+    t = Transaction('',[txIn], [TxOut(address, COINBASE_AMOUNT)])
+    """
     t = Transaction()
     txIn = TxIn()
     txIn.signature = ''
@@ -186,9 +193,11 @@ def getCoinbaseTransaction(address, blockIndex):
 
     t.txIns = [txIn]
     t.txOuts = [TxOut(address, COINBASE_AMOUNT)]
-    t.id = getTransactionId(t);
-    return(t)
-
+    """
+    t.id = getTransactionId(t)
+    usp = UnspentTxOut(txOutId,txOutIndex,address,COINBASE_AMOUNT)
+    return(t,usp)
+    
 
 def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	txIn = tx.txIns[txInIndex]
@@ -205,7 +214,7 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	'''
 	obtain pub key from priv key
 	'''
-	if(getPublicKey() != referencedAddress):
+	if(getPublicKey(private_key) != referencedAddress):
 		logger.error('Signing an input whose address doesnt match with that present in txIn')
 		raise Exception('Signing an input whose address doesnt match with that present in txIn')
 	
@@ -214,21 +223,24 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	#signature = rainbowKeygen.sign(private_key, datatosign)
 	'''
 
-	private_key = SigningKey.from_string(bytes.fromhex(private_key))
+	private_key = ecdsa.SigningKey.from_string(bytes.fromhex(private_key), curve = ecdsa.SECP256k1)
 	signature = private_key.sign(datatosign.encode())
 
 	return str(signature)
 
 
 def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
-	newUnspentTxOuts = []
-	for t in aTransactions:
-		for txOut,index in enumerate(t.txOuts):
-			newUnspentTxOuts = UnspentTxOut(t.id, index, txOut.address,txOut.amount)
-	newUnspentTxOuts = reduce(lambda a,b : a + b, newUnspentTxOuts, [])
-	consumedTxOuts = map(lambda txIn : UnspentTxOut(txIn.txOutId, txIn.txOutIndex, '',0), reduce(lambda a,b : a + b, [ t.txIns for t in aTransactions], []))
-	resultingUnspentTxOuts = filter(lambda uTxO : findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts) == False, aUnspentTxOuts) + newUnspentTxOuts
-	return resultingUnspentTxOuts
+    newUnspentTxOuts = []
+    for t in aTransactions:
+        for index,txOut in enumerate(t.txOuts):
+            newUnspentTxOuts.append(UnspentTxOut(t.id, index, txOut.address,txOut.amount))
+	
+
+    
+    consumedTxOuts =list(map(lambda txIn : UnspentTxOut(txIn.txOutId, txIn.txOutIndex, '',0), reduce(lambda a,b: a.append(b), [t.txIns for t in aTransactions])))
+    resultingUnspentTxOuts = newUnspentTxOuts.append(filter(lambda uTxO : findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts) == False, aUnspentTxOuts))
+    print(resultingUnspentTxOuts)
+    return(resultingUnspentTxOuts)
 
 
 def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
@@ -250,7 +262,7 @@ def toHexString(byteArray):
 	return reduce(lambda a, b : a + b,map(lambda byte: '0' + (hex(int(byte) & 0xFF)[2:])[-2:], [byte for byte in byteArray]))
 			
 def getPublicKey(private_key):
-	private_key = ecdsa.SigningKey.from_string(bytes.fromhex(private_key))
+	private_key = ecdsa.SigningKey.from_string(bytes.fromhex(private_key),curve=ecdsa.SECP256k1)
 	public_key = private_key.get_verifying_key().to_string().hex()
 	return public_key
 
@@ -278,10 +290,10 @@ def isValidTxOutStructure(txOut):
 	elif(type(txOut.address) is not str):
 		logger.error('invalid address type in txOut')
 		return False
-	elif(not(isValidAddress(txOut.address)):
+	elif(not isValidAddress(txOut.address)):
 		logger.error('invalid txOut address in txOut')
 		return False
-	elif(not((type(txOut.amount) is int) or (type(txOut.amount) is long))):
+	elif(not ((type(txOut.amount) is int) or (type(txOut.amount) is long))):
 		logger.error('invalid tamount type in txOut')
 		return False
 	else:
