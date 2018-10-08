@@ -94,9 +94,11 @@ a {
     padding: 0 18px;
     /*background-color: white;*/
     position: relative;
-    margin-left: 2%;
+    margin-left: -15%;
     max-height: 0;
     overflow: hidden;
+    max-width: 80%;
+    word-wrap: break-word;
     transition: max-height 0.4s ease-out;
 }
 

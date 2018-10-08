@@ -17,7 +17,6 @@ context={}
 publicAddr=w.getPublicFromWallet()
 unspentTxOut=[]
 def wallet(request):
-	# context['form']=req_form()
 	w.initWallet()
 	unspentTxOut.append(t.getCoinbaseTransaction(publicAddr, 0))
 	return render(request, "index.html",context)

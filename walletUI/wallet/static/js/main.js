@@ -12,6 +12,7 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
     cancel1: function(){
       this.$parent.formOpen1 = false;
       this.$parent.formClose1 = true;
+      resetForm();
     },
    submitCoins: function() {
       Vue.http.put('/wallet/wallet/sendCoins',this.sendCoins)
@@ -91,6 +92,9 @@ var publicAddress=Vue.component('public-address',{
             console.log(err);
           })
      }      
+  },
+  mounted(){
+    this.getPublicAddress();
   }
 });
 
@@ -127,10 +131,7 @@ var vue = new Vue({
     cancel1: function(){
       this.formOpen1 = false;
       this.formClose1 = true;
-      this.sendCoins = {
-        address:null,
-        coinCount:0
-      }
+      resetForm();
     },
     cancel2: function() {
       this.formOpen2 = false;

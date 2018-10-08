@@ -1,13 +1,89 @@
-
-//jQuery time
 var current_fs, next_fs, previous_fs; //fieldsets
 var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 
+var resetForm=function(){
+{
+  
+  $(".success_div").addClass("hide");
+  $(".success_div").prev().removeClass("hide");
+  $(".success_div").next().removeClass("hide");
+  $(".success_div").next().next().removeClass("hide");
+
+
+  if(animating) return false;
+    animating = true;
+  
+  current_fs = $('#confirmation');
+  previous_fs = $('#confirmation').prev();
+
+  //de-activate current step on progressbar
+  $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+  
+  //show the previous fieldset
+  previous_fs.show(); 
+  //hide the current fieldset with style
+  current_fs.animate({opacity: 0}, {
+    step: function(now, mx) {
+      //as the opacity of current_fs reduces to 0 - stored in "now"
+      //1. scale previous_fs from 80% to 100%
+      scale = 0.8 + (1 - now) * 0.2;
+      //2. take current_fs to the right(50%) - from 0%
+      left = ((1-now) * 50)+"%";
+      //3. increase opacity of previous_fs to 1 as it moves in
+      opacity = 1 - now;
+      current_fs.css({'left': left});
+      previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+    }, 
+    duration: 800, 
+    complete: function(){
+      current_fs.hide();
+      previous_fs.css({'position':'relative'});
+      animating = false;
+    }, 
+    //this comes from the custom easing plugin
+    easing: 'easeInOutBack'
+  });
+
+  current_fs = $('#enterCoin');
+  previous_fs = $('#enterCoin').prev();
+
+  //de-activate current step on progressbar
+  $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+  
+  //show the previous fieldset
+  previous_fs.show(); 
+  //hide the current fieldset with style
+  current_fs.animate({opacity: 0}, {
+    step: function(now, mx) {
+      //as the opacity of current_fs reduces to 0 - stored in "now"
+      //1. scale previous_fs from 80% to 100%
+      scale = 0.8 + (1 - now) * 0.2;
+      //2. take current_fs to the right(50%) - from 0%
+      left = ((1-now) * 50)+"%";
+      //3. increase opacity of previous_fs to 1 as it moves in
+      opacity = 1 - now;
+      current_fs.css({'left': left});
+      previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+    }, 
+    duration: 800, 
+    complete: function(){
+      current_fs.hide();
+      previous_fs.css({'position':'relative'});
+      animating = false;
+    }, 
+    //this comes from the custom easing plugin
+    easing: 'easeInOutBack'
+  });
+
+  vue.$refs.send_coins.sendCoins.address=null;
+  vue.$refs.send_coins.sendCoins.coinCount=0;
+  }
+}
+
 $(".next").click(function(){
   if(animating) return false;
   animating = true;
-  
   current_fs = $(this).parent();
   next_fs = $(this).parent().next();
   //activate next step on progressbar using the index of next_fs
@@ -90,19 +166,20 @@ $(".submit_coins").click(function(){
   setTimeout(function() {
     var $addr=vue.$refs.send_coins.sendCoins.address;
     var $coinCount = vue.$refs.send_coins.sendCoins.coinCount;
+    var $myaddr = vue.$refs.public_address.publicaddress
     var $transaction = "<div class='container'>";
     $transaction+= "<div class='card'>"
     $transaction+= "<div class='front'><h2>Transaction "+vue.$refs.send_coins.transactionNumber+"</h2></div>"
     $transaction+= "<div class='back'>"
     $transaction+= "<div class='content'>"
     $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
-    $transaction+= "<p class='cardContent'>blahblah</p>"
+    $transaction+= "<p class='cardContent'>"+$myaddr+"</p>"
     $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
     $transaction+= "<p class='cardContent'>"+$addr+"</p>"
     $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"
     $transaction+= "<p class='cardContent'>"+$coinCount+"</p>"
-    $transaction+= "<h3 class='cardTitle'>Timestamp</h3>"
-    $transaction+= "<p class='cardContent'>1234</p>"
+    // $transaction+= "<h3 class='cardTitle'>Timestamp</h3>"
+    // $transaction+= "<p class='cardContent'>1234</p>"
     $transaction+= "</div>"
     $transaction+= "</div>"
     $transaction+= "</div>"
@@ -118,80 +195,5 @@ $(".submit_coins").click(function(){
   vue.$refs.send_coins.cancel1();
   }, 3000);
 
-  setTimeout(function(){
-  
-  $(".success_div").addClass("hide");
-  $(".success_div").prev().removeClass("hide");
-  $(".success_div").next().removeClass("hide");
-  $(".success_div").next().next().removeClass("hide");
-
-
-  if(animating) return false;
-    animating = true;
-  
-  current_fs = $('#confirmation');
-  previous_fs = $('#confirmation').prev();
-
-  //de-activate current step on progressbar
-  $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-  
-  //show the previous fieldset
-  previous_fs.show(); 
-  //hide the current fieldset with style
-  current_fs.animate({opacity: 0}, {
-    step: function(now, mx) {
-      //as the opacity of current_fs reduces to 0 - stored in "now"
-      //1. scale previous_fs from 80% to 100%
-      scale = 0.8 + (1 - now) * 0.2;
-      //2. take current_fs to the right(50%) - from 0%
-      left = ((1-now) * 50)+"%";
-      //3. increase opacity of previous_fs to 1 as it moves in
-      opacity = 1 - now;
-      current_fs.css({'left': left});
-      previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
-    }, 
-    duration: 800, 
-    complete: function(){
-      current_fs.hide();
-      previous_fs.css({'position':'relative'});
-      animating = false;
-    }, 
-    //this comes from the custom easing plugin
-    easing: 'easeInOutBack'
-  });
-
-  current_fs = $('#enterCoin');
-  previous_fs = $('#enterCoin').prev();
-
-  //de-activate current step on progressbar
-  $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-  
-  //show the previous fieldset
-  previous_fs.show(); 
-  //hide the current fieldset with style
-  current_fs.animate({opacity: 0}, {
-    step: function(now, mx) {
-      //as the opacity of current_fs reduces to 0 - stored in "now"
-      //1. scale previous_fs from 80% to 100%
-      scale = 0.8 + (1 - now) * 0.2;
-      //2. take current_fs to the right(50%) - from 0%
-      left = ((1-now) * 50)+"%";
-      //3. increase opacity of previous_fs to 1 as it moves in
-      opacity = 1 - now;
-      current_fs.css({'left': left});
-      previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
-    }, 
-    duration: 800, 
-    complete: function(){
-      current_fs.hide();
-      previous_fs.css({'position':'relative'});
-      animating = false;
-    }, 
-    //this comes from the custom easing plugin
-    easing: 'easeInOutBack'
-  });
-
-  vue.$refs.send_coins.sendCoins.address=null;
-  vue.$refs.send_coins.sendCoins.coinCount=0;
-  },4000);
+  setTimeout(resetForm,4000);
 })
