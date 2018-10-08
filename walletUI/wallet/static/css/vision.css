@@ -1,0 +1,79 @@
+#visionMenu{
+  height: 70%;
+  width: 70%;
+  position: relative;
+  /*display: block;*/
+  background-color: white;
+  /*left: 20%*/
+  /*top:20%;*/
+  z-index: 6;
+  text-align:center;
+  /*border-radius: 15%;*/
+  margin-top: 5%;
+  margin-left: 15%;
+  padding-top:25vh;
+  /*padding-left: 5vw;*/
+  overflow:hidden;
+    -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translate3d(0,0,0);
+  /*animation-delay: 7s;*/
+  /*animation: moveup 7s forwards;*/
+}
+
+
+#visionContent {
+  display:inline-block;
+  overflow:hidden;
+  white-space:nowrap;
+
+}
+
+#visionContent span{
+  position: relative;
+  left:-3vw;
+}
+
+#visionContent:first-of-type {    
+  animation: showup 7s forwards;
+}
+
+#visionContent:last-of-type {
+  width:0px;
+  animation: reveal 7s forwards;
+}
+
+#visionContent:last-of-type span {
+  margin-left:-355px;
+  animation: slidein 7s forwards;
+}
+
+@keyframes showup {
+    0% {opacity:0;}
+    20% {opacity:0;}
+    80% {opacity:1;}
+    100% {opacity:1;}
+}
+
+@keyframes moveup {
+    0% {padding-top:25vh;}
+    20% {padding-top:20vh;}
+    50% {padding-top:15vh;}
+    80% {padding-top:10vh;}
+    100% {padding-top:5vh;}
+}
+
+@keyframes slidein {
+    0% { margin-left:-800px; }
+    20% { margin-left:-800px; }
+    35% { margin-left:0px; }
+    100% { margin-left:0px; }
+}
+
+@keyframes reveal {
+    0% {opacity:0;width:0px;}
+    20% {opacity:1;width:0px;}
+    30% {width:355px;}
+    80% {opacity:1;}
+    100% {opacity:1;width:355px;animation: moveup 7s forwards;}
+}

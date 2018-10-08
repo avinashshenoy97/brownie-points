@@ -58,11 +58,11 @@ class Transaction:
 def getTransactionId(transaction):
     
     txInContent = ''
-    for i in transxtion.txIns:
-        txInContent += i.txOutId + i.txOutIndex
+    for i in transaction.txIns:
+        txInContent += i.txOutId + str(i.txOutIndex)
     txOutContent = ''
     for i in transaction.txOuts:
-        txOutContent += i.address + i.amount
+        txOutContent += i.address + str(i.amount)
     txContent = txInContent + txOutContent
     return(sha256(txContent.encode()).hexdigest())
 
@@ -178,14 +178,19 @@ def findUnspentTxOut(transactionId, index, aUnspentTxOuts):
     return(None)
 
 def getCoinbaseTransaction(address, blockIndex):
-    t = Transaction()
-    txIn = TxIn()
-    txIn.signature = ''
-    txIn.txOutId = ''
-    txIn.txOutIndex = blockIndex
+    signature=''
+    txOutId=''
+    txOutIndex=0
+    txIn=TxIn(txOutId,txOutIndex,signature)
 
-    t.txIns = [txIn]
-    t.txOuts = [TxOut(address, COINBASE_AMOUNT)]
+    t = Transaction('',[txIn],[TxOut(address,COINBASE_AMOUNT)])
+    # txIn = TxIn()
+    # txIn.signature = ''
+    # txIn.txOutId = ''
+    # txIn.txOutIndex = blockIndex
+
+    # t.txIns = [txIn]
+    # t.txOuts = [TxOut(address, COINBASE_AMOUNT)]
     t.id = getTransactionId(t);
     return(t)
 
@@ -272,20 +277,20 @@ def isValidTxInStructure(txIn):
 
 
 def isValidTxOutStructure(txOut):
-	if(txOut is None):
-		logger.error("txOut is null")
-		return False
-	elif(type(txOut.address) is not str):
-		logger.error('invalid address type in txOut')
-		return False
-	elif(not(isValidAddress(txOut.address)):
-		logger.error('invalid txOut address in txOut')
-		return False
-	elif(not((type(txOut.amount) is int) or (type(txOut.amount) is long))):
-		logger.error('invalid tamount type in txOut')
-		return False
-	else:
-		return True
+    if(txOut is None):
+        logger.error("txOut is null")
+        return False
+    elif(type(txOut.address) is not str):
+        logger.error('invalid address type in txOut')
+        return False
+    elif(not(isValidAddress(txOut.address))):
+        logger.error('invalid txOut address in txOut')
+        return False
+    elif(not((type(txOut.amount) is int) or (type(txOut.amount) is long))):
+        logger.error('invalid tamount type in txOut')
+        return False
+    else:
+        return True
 
 def isValidTransactionsStructure(transactions):
 	for transaction in transactions:

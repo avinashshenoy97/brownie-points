@@ -8,24 +8,24 @@ Getting public key from private key
 from ecdsa import SigningKey, SECP256k1
 import logging
 import os
-from transactions import *
+from transaction import *
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
-keylocn = "/Wallet"
+keylocn = "../browniePoints/Wallet"
 
 '''
 ???????Below two functions and function to obtain public key from private????
 '''
 def getPublicFromWallet():
 	private_key = getPrivateFromWallet()
-	private_key = SigningKey.from_string(bytes.fromhex(private_key))
+	private_key = SigningKey.from_string(bytes.fromhex(private_key),curve=SECP256k1)
 	public_key = private_key.get_verifying_key().to_string().hex()
 	return public_key
 
 def getPrivateFromWallet():
-	if os.path.isfile(keylocn+"/private.pem"):
-		private_key = open(keylocn+"/private.pem").read()
+	if os.path.isfile(keylocn+"/private.txt"):
+		private_key = open(keylocn+"/private.txt").read()
 		return private_key
 
 def generatePrivateKey():
@@ -42,10 +42,10 @@ def initWallet():
 	'''
 	check if key exists, if it doesnt then create the keypairs
 	'''
-	if os.path.isfile(keylocn+"/private.pem"):
+	if os.path.isfile(keylocn+"/private.txt"):
 		return
 	else:
-		open(keylocn+"/private.pem","w").write(generate_keypairs())
+		open(keylocn+"/private.txt","w").write(generatePrivateKey())
 
 def getBalance(address,unspentTxOut):
 	balance = 0
@@ -84,7 +84,8 @@ def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
 	'''
 	obtain pub key from private key	
 	'''
-	myaddress = getPublicKey(private_key)
+	myaddress = private_key
+	# myaddress = getPublicKey(private_key)
 	myUnspentTxOuts = []	
 	for i in unspentTxOuts:
 		if(i.address==myaddress):

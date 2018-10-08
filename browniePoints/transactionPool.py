@@ -1,4 +1,4 @@
-from transaction import transaction, txIn, unspentTxOut, validateTransaction
+from transaction import Transaction, TxIn, UnspentTxOut, validateTransaction
 from copy import deepcopy
 from functools import reduce
 import logging
