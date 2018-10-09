@@ -35,17 +35,17 @@
 }
 
 #visionContent:first-of-type {    
-  animation: showup 7s forwards;
+  animation: showup 3s forwards;
 }
 
 #visionContent:last-of-type {
   width:0px;
-  animation: reveal 7s forwards;
+  animation: reveal 10s forwards;
 }
 
 #visionContent:last-of-type span {
-  margin-left:-355px;
-  animation: slidein 7s forwards;
+  margin-left:-37%;
+  animation: slidein 10s forwards;
 }
 
 @keyframes showup {
@@ -64,16 +64,17 @@
 }
 
 @keyframes slidein {
-    0% { margin-left:-800px; }
-    20% { margin-left:-800px; }
-    35% { margin-left:0px; }
+    0% { margin-left:-60%; }
+    20% { margin-left:-60%; }
+    35% { margin-left:-60%; }
+    50% { margin-left:0px; }
     100% { margin-left:0px; }
 }
 
 @keyframes reveal {
     0% {opacity:0;width:0px;}
     20% {opacity:1;width:0px;}
-    30% {width:355px;}
+    30% {width:37%;}
     80% {opacity:1;}
-    100% {opacity:1;width:355px;animation: moveup 7s forwards;}
+    100% {opacity:1;width:37%;}
 }

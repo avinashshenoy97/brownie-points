@@ -1,0 +1,40 @@
+#supportMenu{
+  height: 70%;
+  width: 70%;
+  position: relative;
+  /*display: block;*/
+  background-color: white;
+  /*left: 20%*/
+  /*top:20%;*/
+  z-index: 6;
+  text-align:center;
+  /*border-radius: 15%;*/
+  margin-top: 5%;
+  margin-left: 15%;
+  /*padding-left: 5vw;*/
+  overflow:hidden;
+    -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translate3d(0,0,0);
+  /*animation-delay: 7s;*/
+  /*animation: moveup 7s forwards;*/
+}
+
+
+.supportwrapper {
+  height: 100vh;
+  display: flex;
+}
+
+#supportText{
+	font-size: 2em;
+	margin-left: 0%;
+	margin-top: 5%;
+	width: 100%;	
+}
+
+svg {
+  position: absolute;
+  margin-top: 15%;
+  margin-left: 43%;
+}

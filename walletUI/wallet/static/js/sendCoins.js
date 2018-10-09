@@ -168,7 +168,7 @@ $(".submit_coins").click(function(){
   setTimeout(function() {
   
   vue.$refs.send_coins.cancel1();
-  }, 1500);
+  }, 3000);
 
-  setTimeout(resetForm,2000);
+  setTimeout(resetForm,3500);
 })
