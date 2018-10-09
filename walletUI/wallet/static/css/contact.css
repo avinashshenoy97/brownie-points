@@ -1,3 +1,9 @@
+@font-face {
+  font-family: brownieFontIcon;
+  src: url('../fonts/FontAwesome.otf');
+}
+
+
 .contact_us{
   position: relative;
   /*background-color: #252626;*/
@@ -47,9 +53,9 @@
   font-family: brownieFont;
 }
 
-.mail:before {font-family: FontAwesome;content: "\f0e0";}
-.phone_number:before {font-family: FontAwesome;content: "\f095";}
-.adress:before {font-family: FontAwesome;content: "\f041";}
+.mail:before {font-family: brownieFontIcon;content: "\f0e0";}
+.phone_number:before {font-family: brownieFontIcon;content: "\f095";}
+.adress:before {font-family: brownieFontIcon;content: "\f041";}
 
 
 .contact_us_right{
@@ -78,10 +84,10 @@
   color:  #000000;
   -webkit-transition:  0.9s;
 }
-.icon_feedback:before {font-family: FontAwesome; content: "\f0e0";}
-.icon_twitter:before {font-family: FontAwesome; content: "\f099";}
-.icon_google_plus:before {font-family: FontAwesome; content: "\f0d5";}
-.icon_linkedin:before {font-family: FontAwesome; content: "\f0e1";}
+.icon_feedback:before {font-family: brownieFontIcon; content: "\f0e0";}
+.icon_twitter:before {font-family: brownieFontIcon; content: "\f099";}
+.icon_google_plus:before {font-family: brownieFontIcon; content: "\f0d5";}
+.icon_linkedin:before {font-family: brownieFontIcon; content: "\f0e1";}
 
 .red_text_2{
   padding: 0px 0 10px 0px;

@@ -57,7 +57,8 @@ var transactionStatus=Vue.component('transaction-status',{
         var $transactionDetailsAddr = this.transactionDetailsAddr;
         var $transactionDetailsCoins = this.transactionDetailsCoins;
         var i=1;
-        $(".container-right").empty();
+        if($transactionDetailsAddr.length>0)
+          $(".container-right").empty();
         for(i=0;i<$transactionDetailsAddr.length;i++){ 
           var j=i+1;
           // var $addr=$transactionDetails[i].txOuts[0].address;
@@ -71,7 +72,7 @@ var transactionStatus=Vue.component('transaction-status',{
           $transaction+= "<div class='back'>"
           $transaction+= "<div class='content'>"
           $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
-          $transaction+= "<p class='cardContent'>"+$myaddr+"</p>"
+          $transaction+= "<p class='cardContent' title='"+$myaddr+"'>"+$myaddr+"</p>"
           $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
           $transaction+= "<p class='cardContent'>"+$addr+"</p>"
           $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"

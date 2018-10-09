@@ -9,7 +9,6 @@
   <!-- <meta content="width=device-width, initial-scale=1" name="viewport"> -->
   <meta content="Webflow" name="generator">
   <link href="{% static 'css/menubar.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'css/normalize.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/webflow.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/styles.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/circle.css' %}" rel="stylesheet" type="text/css">
@@ -21,9 +20,6 @@
   <link href="{% static 'css/background.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/transaction.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/balance.css' %}" rel="stylesheet" type="text/css">
-<link href="https://fonts.googleapis.com/css?family=Fjalla+One|Oswald|Pathway+Gothic+One|Play|Titillium+Web" rel="stylesheet">
-  <script src="https://use.fontawesome.com/622cc25ba3.js"></script>
-  <script src="{% static 'js/modernizr.custom.js' %}" type="text/javascript"></script>
   <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
 
   <link href="{% static 'images/logo.ico' %}" rel="shortcut icon" type="image/x-icon">
@@ -106,9 +102,10 @@
   <div class="at-grid" data-column="3">
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"/></div>
-        <div class="at-user__name">Aaron Rossi</div>
-        <div class="at-user__title">CEO &amp; Co-Founder</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Aditi Srinivas</div>
+        <!-- <div class="at-user__title">CEO &amp; Co-Founder</div> -->
+        <div class="at-user__title">Crypto Vinaigrette</div>
         <ul class="at-social">
           
           <li class="at-social__item"><a href="">
@@ -120,9 +117,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/rem/128.jpg"/></div>
-        <div class="at-user__name">Marco Gomez</div>
-        <div class="at-user__title">Co-Founder, Creative Director</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Avinash Shenoy</div>
+        <div class="at-user__title">Minimal Working Blockchain</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -133,9 +130,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/boheme/128.jpg"/></div>
-        <div class="at-user__name">Brad Joe</div>
-        <div class="at-user__title">Office Manager</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Aditya Ramani</div>
+        <div class="at-user__title">Proof of Work</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -146,9 +143,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/ok/128.jpg"/></div>
-        <div class="at-user__name">Mitch Petty</div>
-        <div class="at-user__title">Lead Developer</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Abhishek Dwivedi</div>
+        <div class="at-user__title">Transaction</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -159,9 +156,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg"/></div>
-        <div class="at-user__name">Philip Satemburgo</div>
-        <div class="at-user__title">Community Manager</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Aishwarya Manjunath</div>
+        <div class="at-user__title">Wallet</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -172,9 +169,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/marcogomes/128.jpg"/></div>
-        <div class="at-user__name">George Petty</div>
-        <div class="at-user__title">Lead Designer</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Akshaykanth D L</div>
+        <div class="at-user__title">Transaction &amp; Integration</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -185,9 +182,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/dancounsell/128.jpg"/></div>
-        <div class="at-user__name">Petty Rossi</div>
-        <div class="at-user__title">Brand Designer</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Alekhya K</div>
+        <div class="at-user__title">P2P</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -198,9 +195,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/kolage/128.jpg"/></div>
-        <div class="at-user__name">Mitch Rossi</div>
-        <div class="at-user__title">New Business</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Anusha Kamath</div>
+        <div class="at-user__title">Transaction Pool</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -211,9 +208,9 @@
     </div>
     <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/tonychester/128.jpg"/></div>
-        <div class="at-user__name">George Mitch</div>
-        <div class="at-user__title">UX Designer</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Anwika Bhandary</div>
+        <div class="at-user__title">UI Developer</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -224,11 +221,11 @@
     </div>
     <div class="at-column">
     </div>
-        <div class="at-column">
+      <div class="at-column">
       <div class="at-user">
-        <div class="at-user__avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/tonychester/128.jpg"/></div>
-        <div class="at-user__name">George Mitch</div>
-        <div class="at-user__title">UX Designer</div>
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Anvith Shetty</div>
+        <div class="at-user__title">UI Developer</div>
         <ul class="at-social">
           <li class="at-social__item"><a href="">
               <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -388,6 +385,7 @@
         </div>
         <!-- <div class="container-sep"></div> -->
         <div class="container-right">
+          <h3 style="color: #000000;padding-top: 5%;">No Transactions to show</h3>
         <!-- <div class="container">
           <div class="card">
             <div class="front"><h2>Transaction</h2></div>
@@ -428,14 +426,10 @@
 
 
   
-  <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script> -->
-  <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script> -->
   <script src="{% static 'js/jquery.js' %}" type="text/javascript"></script>
-  <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
+  <script src="{% static 'js/jquery-ui.min.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/webflow.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/menubar.js' %}" type="text/javascript"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.0/vue.min.js"></script> -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.13/vue-resource.min.js"></script> -->
   <script src="{% static 'js/vue.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/vue-resource.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/menuoptions.js' %}" type="text/javascript"></script>
@@ -444,7 +438,7 @@
   <script src="{% static 'js/transaction.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/main.js' %}" type="text/javascript"></script> 
   <script src="{% static 'js/sendCoins.js' %}" type="text/javascript"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/triangles/1.0.2/js/triangles.js" type="text/javascript"></script>
+  <script src="{% static 'js/triangles.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/background.js' %}" type="text/javascript"></script>
 
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mo-js/0.288.2/mo.js"></script>
