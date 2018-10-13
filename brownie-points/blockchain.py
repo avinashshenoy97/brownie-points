@@ -25,6 +25,19 @@ def init():
 
 
 # ==================== Main ==================== #
+
+def getBlockchain():
+    ''' Returns: The chain stored on the node.
+    '''
+    global brownieChain
+    return brownieChain
+
+def getLatestBlock():
+    ''' Returns: The latest block that was added to the chain on the node.
+    '''
+    global brownieChain
+    return brownieChain[-1]
+
 def generateNextBlock(blockData):
     '''Given the block data, generates the subsequent block in the blockchain.
 
