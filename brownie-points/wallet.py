@@ -101,7 +101,7 @@ def createTxOuts(receiver_address,myaddress,amount,leftover_amount):
 		return [receiver_Tx]
 	
 	else:
-		leftover_Tx = TxOut(myaddress,leftover_amount)
+		leftover_Tx = TxOut(myaddress, leftover_amount)
 		return [receiver_Tx,leftover_Tx]
 	
 def toUnsignedTxIn(unspentTxOut):
@@ -119,7 +119,8 @@ def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
 			myUnspentTxOuts.append(i)
 
 	includedUnspentTxOuts, leftOverAmount =  findTxOutsforAmount(amount, myUnspentTxOuts)
-
+	
+	#print("unspent:",includedUnspentTxOuts[0].txOutId)
 	unsignedTxIns = []
 	for i in includedUnspentTxOuts:
 		unsignedTxIns.append(toUnsignedTxIn(i))

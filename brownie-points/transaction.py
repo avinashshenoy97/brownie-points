@@ -25,6 +25,7 @@ isValidAddress - D
 # ==================== Imports ==================== #
 from hashlib import sha256
 import ecdsa
+import binascii
 import logging
 #import rainbowKeygen
 from collections import Counter
@@ -70,22 +71,25 @@ def validateTransaction(transaction, aUnspentTxOut):
     if(not(isValidTransactionStructure(transaction))):
         return(False)
     
-    if(getTransactionId(transaction) != transaction.id):
-        logger.error("Invalid Transaction ID: "+ transaction.id)
+    if(getTransactionId(transaction) != transaction.txId):
+        logger.error("Invalid Transaction ID: "+ transaction.txId)
         return(False)
     
-    hasvalidTxIns = reduce(lambda x,y:x and y, list(map(lambda z: validateTxIn(z,transaction,aUnspentTxOut, transaction.txIns))))
+    hasvalidTxIns = reduce(lambda x,y:x and y, list(map(lambda z: validateTxIn(z,transaction,aUnspentTxOut), transaction.txIns)))
 
+    '''for tin in transaction.txIns:
+        print("tin :",tin.txOutId,"\t",tin.txOutIndex)
+        print(validateTxIn(tin,transaction,aUnspentTxOut))'''
     if(not(hasvalidTxIns)):
-        logger.error("Some of the Transaction Inputs are Invalid: ", transaction.id)
+        logger.error("Some of the Transaction Inputs are Invalid: "+ transaction.txId)
         return(False)
     
     totalTxInValues = reduce(lambda x,y:x+y, list(map(lambda z:getTxInAmount(z,aUnspentTxOut),transaction.txIns)))
 
-    totalTxOutValues = reduce(lambda x,y:x+y, list(map(lambda z:z.amount),transaction.txOuts))
+    totalTxOutValues = reduce(lambda x,y:x+y, list(map(lambda z:z.amount,transaction.txOuts)))
 
     if(totalTxInValues != totalTxOutValues):
-        logger.error( "totalTxInValues != totalTxOutValues: " + transaction.id)
+        logger.error( "totalTxInValues != totalTxOutValues: " + transaction.txId)
         return(False)
     
     return(True)
@@ -101,6 +105,7 @@ def validateBlockTransaction(aTransactions, aUnspentTxOuts, blockIndex):
     flatten=lambda l: sum(map(flatten,l),[]) if isinstance(l,list) else [l]
     txIns = flatten(list(map(lambda x: x.txIns, aTransactions)))
 
+    #print("hiiiiii",txIns[0].txOutId,txIns[1].txOutId)
     if(hasDuplicates(txIns)):
         return(False)
     
@@ -115,7 +120,7 @@ def validateCoinbaseTx(transaction, blockIndex):
         return(False)
     
     if(getTransactionId(transaction) != transaction.txId):
-        logger.error('Invalid Coinbase Transcation ID: ' + transaction.id)
+        logger.error('Invalid Coinbase Transcation ID: ' + transaction.txId)
         return(False)
 
     if(len(transaction.txIns) != 1):
@@ -123,6 +128,7 @@ def validateCoinbaseTx(transaction, blockIndex):
         return(False)
     
     if (transaction.txIns[0].txOutIndex != blockIndex):
+        print(transaction.txIns[0].txOutIndex,blockIndex)
         logger.error('The txIn signature in coinbase transaction must be the block height')
         return(False)
     
@@ -138,32 +144,46 @@ def validateCoinbaseTx(transaction, blockIndex):
 
 def hasDuplicates(txIns):
     groups = Counter([i.txOutId + str(i.txOutIndex) for i in txIns])
+    '''for i in txIns:
+       print("txin:",i.txOutId,"and:",i.txOutIndex)
+    print(groups)'''
     for i in groups.keys():
         if(groups[i]>1):
             logger.error("Duplicate Transaction Id: " + i)
             return(True)
 
+    return False
 
 
 def validateTxIn(txIn, transaction, aUnspentTxOuts):
 
     referencedUTxOut = None
+    
+    '''print("Incoming unspent:", txIn.txOutId, "\t",txIn.txOutIndex)
+    for uTxO in aUnspentTxOuts:
+         print("unspent:", uTxO.txOutId,"\t",uTxO.txOutIndex)     
+         print(uTxO.txOutIndex == txIn.txOutIndex and uTxO.txOutId == txIn.txOutId)'''
     for uTxO in aUnspentTxOuts:
         if(uTxO.txOutId == txIn.txOutId and uTxO.txOutIndex == txIn.txOutIndex):
             referencedUTxOut = uTxO
         
-        if(referencedUTxOut == None):
-            logger.error("Referenced TxOut Not found: " + str(txIn.__dict__))
-            return(False)
+    if(referencedUTxOut == None):
+        logger.error("Referenced TxOut Not found: " + str(txIn.__dict__))
+        return(False)
 
-        addr = referencedUTxOut.address
-
-        vk = ecdsa.VerifyingKey.from_string(bytes.fromhex(addr), curve=ecdsa.SECP256k1)
-        if(not vk.verify(bytes.fromhex(txIn.signature), transaction.id)):
-            logger.error("Invalid TxIn Signature: " + txIn.signature + "txId: " + transaction.id + "address: " + addr)
-            return(False)
-        
-        return(True)
+    addr = referencedUTxOut.address
+        #print("addr in validateTxIn is:",addr)
+    vk = ecdsa.VerifyingKey.from_string(bytes.fromhex(addr), curve=ecdsa.SECP256k1)
+    '''
+    print("vk in validateTxIn is:",vk.to_string().hex())
+    print("sign :",txIn.signature)
+    print("str of sign is:",bytes.fromhex(txIn.signature))
+    '''
+    if(not vk.verify(bytes.fromhex(txIn.signature), transaction.txId.encode())):
+        logger.error("Invalid TxIn Signature: " + txIn.signature + "txId: " + transaction.id + "address: " + addr)
+        return(False)
+        #print("SIGN VALID................")
+    return(True)
 
 
 def getTxInAmount(txIn, aUnspentTxOuts):
@@ -171,8 +191,10 @@ def getTxInAmount(txIn, aUnspentTxOuts):
 
 
 def findUnspentTxOut(transactionId, index, aUnspentTxOuts):
+    #print("incoming to findunspent:",transactionId, index)
     for uTxO in aUnspentTxOuts:
         if(uTxO.txOutId == transactionId and uTxO.txOutIndex == index):
+            #print("findUnspent:",uTxO.txOutId,"index:",uTxO.txOutIndex)
             return(uTxO)
     
     return(None)
@@ -180,7 +202,7 @@ def findUnspentTxOut(transactionId, index, aUnspentTxOuts):
 def getCoinbaseTransaction(address, blockIndex):
     signature = ''
     txOutId = ''
-    txOutIndex = 0
+    txOutIndex = blockIndex
     txIn = TxIn(txOutId, txOutIndex, signature)
 
     t = Transaction('',[txIn], [TxOut(address, COINBASE_AMOUNT)])
@@ -194,9 +216,9 @@ def getCoinbaseTransaction(address, blockIndex):
     t.txIns = [txIn]
     t.txOuts = [TxOut(address, COINBASE_AMOUNT)]
     """
-    t.id = getTransactionId(t)
-    usp = UnspentTxOut(txOutId,txOutIndex,address,COINBASE_AMOUNT)
-    return(t,usp)
+    t.txId = getTransactionId(t)
+    #usp = UnspentTxOut(txOutId,txOutIndex,address,COINBASE_AMOUNT)
+    return t
     
 
 def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
@@ -225,21 +247,72 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 
 	private_key = ecdsa.SigningKey.from_string(bytes.fromhex(private_key), curve = ecdsa.SECP256k1)
 	signature = private_key.sign(datatosign.encode())
-
-	return str(signature)
+	
+	str_sign = signature.hex()
+	#print("signature is :",type(str_sign),"\n and it is:",str_sign)
+	return str_sign
 
 
 def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
+    '''
+    print("\naUnspentTxouts.............")
+    for i in aUnspentTxOuts:
+        print("id:",i.txOutId,"index:",i.txOutIndex,i.amount)
+    print("***************")'''
     newUnspentTxOuts = []
     for t in aTransactions:
+        #print("aTransactions:",t.txId)
         for index,txOut in enumerate(t.txOuts):
-            newUnspentTxOuts.append(UnspentTxOut(t.id, index, txOut.address,txOut.amount))
+            newUnspentTxOuts.append(UnspentTxOut(t.txId, index, txOut.address,txOut.amount))
 	
+    '''print("\nNew Unspent tx...............")
+    for i in newUnspentTxOuts:
+        print("id:",i.txOutId,"index:",i.txOutIndex,i.amount)
+    print("***************")'''
 
     
-    consumedTxOuts =list(map(lambda txIn : UnspentTxOut(txIn.txOutId, txIn.txOutIndex, '',0), reduce(lambda a,b: a.append(b), [t.txIns for t in aTransactions])))
-    resultingUnspentTxOuts = newUnspentTxOuts.append(filter(lambda uTxO : findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts) == False, aUnspentTxOuts))
-    print(resultingUnspentTxOuts)
+    consumedTxOuts = []
+    txin = []
+    '''
+    for t in aTransactions:
+        txin.append(t.txIns)
+    for txIn in txin:
+        consumedTxOuts.append(UnspentTxOut(txIn.txOutId, txIn.txOutIndex, '',0))
+    '''
+    for t in aTransactions: 
+        txin.append(t.txIns)
+    #print("txin is:",txin)
+    for txIn in txin:
+        consumedTxOuts.append(UnspentTxOut(txIn[0].txOutId, txIn[0].txOutIndex, '',0))
+    #print(consumedTxOuts)
+    #consumedTxOuts =list(map(lambda txIn : UnspentTxOut(txIn.txOutId, txIn.txOutIndex, '',0), reduce(lambda a,b: a.append(b), [t.txIns for t in aTransactions])))
+    #print("consumed:",consumedTxOuts[0].amount)
+    '''print("\nConsumed...............")
+    for i in consumedTxOuts:
+        print("id:",i.txOutId,"index:",i.txOutIndex)
+    print("***************")'''
+   
+
+
+    '''
+    const resultingUnspentTxOuts = aUnspentTxOuts
+        .filter(((uTxO) => !findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts)))
+.concat(newUnspentTxOuts);
+    '''
+
+
+    for uTxO in aUnspentTxOuts:
+        if(not(findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts))):
+           newUnspentTxOuts.append(uTxO)
+           #print('resulting unspent:',uTxO.txOutId)
+    
+    resultingUnspentTxOuts = newUnspentTxOuts
+    '''print("resulting....")
+    for i in resultingUnspentTxOuts:
+        print("adr:",i.address,"amount:",i.amount)
+    print("***************")'''
+    
+    #print("resulting unspent list:",resultingUnspentTxOuts)
     return(resultingUnspentTxOuts)
 
 
@@ -276,7 +349,7 @@ def isValidTxInStructure(txIn):
 	elif(type(txIn.txOutId) is not str):
 		logger.error('invalid txOutId in txIn')
 		return False
-	elif(not((type(txIn.signature) is int) or (type(txIn.signature) is long))):
+	elif(not((type(txIn.txOutIndex) is int) or (type(txIn.txOutIndex) is long))):
 		logger.error('invalid txOutIndex type in txIn')
 		return False
 	else:
@@ -290,14 +363,15 @@ def isValidTxOutStructure(txOut):
 	elif(type(txOut.address) is not str):
 		logger.error('invalid address type in txOut')
 		return False
-	elif(not isValidAddress(txOut.address)):
-		logger.error('invalid txOut address in txOut')
-		return False
+
 	elif(not ((type(txOut.amount) is int) or (type(txOut.amount) is long))):
 		logger.error('invalid tamount type in txOut')
 		return False
 	else:
 		return True
+	'''elif(not isValidAddress(txOut.address)):
+		logger.error('invalid txOut address in txOut')
+		return False'''
 
 def isValidTransactionsStructure(transactions):
 	for transaction in transactions:
