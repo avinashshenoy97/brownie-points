@@ -6,6 +6,7 @@ import logging
 from datetime import datetime as dt
 
 from block import block
+from b2b import *
 
 
 # ==================== Globals ==================== #
@@ -20,7 +21,8 @@ DIFFICULTY_ADJUSTMENT_INTERVAL = 10 # in blocks
 def init():
     global genesisBrownie
     global brownieChain
-    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie',difficulty,0)
+    global difficulty
+    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie', difficulty, 0)
     brownieChain = [genesisBrownie]
 
 
@@ -50,9 +52,9 @@ def generateNextBlock(blockData):
     latestBlock = brownieChain[-1]
     nextIndex = latestBlock.index + 1
     nextTimestamp = dt.now()
-    nextHash = block.calculateHash(nextIndex, latestBlock.hash, nextTimestamp, blockData)
+    nextHash = block.calculateHash(nextIndex, latestBlock.hash, nextTimestamp, blockData, 0)
 
-    return block(nextIndex, nextHash, latestBlock.hash, nextTimestamp, blockData)
+    return block(nextIndex, nextHash, latestBlock.hash, nextTimestamp, blockData, difficulty, 0)
 
 
 def isValidBlock(newBlock, previousBlock):
@@ -74,7 +76,7 @@ def isValidBlock(newBlock, previousBlock):
         logger.error('New block hash at: ' + str(newBlock.index) + ' is invalid after: ' + str(previousBlock.index))
         return False
 
-    if newBlock.hash != block.calculateHash(newBlock.index, newBlock.previousHash, newBlock.timestamp, newBlock.data):
+    if newBlock.hash != block.calculateHash(newBlock.index, newBlock.previousHash, newBlock.timestamp, newBlock.data, newBlock.nonce):
         logger.error('New block hash at: ' + str(newBlock.index) + ' is invalid...calculated hash does not match block\'s hash.')
         return False
 
@@ -128,7 +130,7 @@ def isValidChain(testChain, genesisBlock):
         logger.error('Invalid block chain, genesis block does not match.')
         return False
 
-    for b in range(len(testChain)):
+    for b in range(1, len(testChain)):
         if not isValidBlock(testChain[b], testChain[b - 1]):
             logger.error('Block chain inconsistent at index: ' + str(b))
             return False
@@ -142,11 +144,13 @@ def replaceChain(newChain):
     Arguments:
         newChain: the new chain to replace the existing blockchain.
     '''
+    global brownieChain
     if isValidChain(newChain, genesisBrownie):
         if len(newChain) > len(brownieChain):
             logger.info('Replacing chain.')
             brownieChain = newChain
             # broadcastLatest()
+            broadcastFullChain()
         else:
             logger.info('Received chain is not longer. Discarding.')
     else:
@@ -158,6 +162,11 @@ def connectToPeer(peer):
     '''
     browniePeers.append(peer)
     return
+
+def broadcastFullChain():
+    global brownieNet
+    msg = {'msg_type': 'response_blockchain', 'payload': json.dumps(getBlockchain(), cls=blockEncoder)}
+    brownieNet.broadcast(msg)
 
 def getDifficulty(brownieChain):
     '''

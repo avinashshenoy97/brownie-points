@@ -1,2 +1,6 @@
 sanic==0.7.0
 pyp2p==0.7.9
+future==0.16.0
+psutil
+ecdsa
+python-dateutil
