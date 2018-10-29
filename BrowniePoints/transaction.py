@@ -188,6 +188,7 @@ class Transaction:
         
         return(True)
 
+
     def hasDuplicates(txIns):
         groups = Counter([i.txOutId + str(i.txOutIndex) for i in txIns])
         '''for i in txIns:
@@ -201,9 +202,6 @@ class Transaction:
         return False
 
 
-    
-
-
     def findUnspentTxOut(transactionId, index, unspentTxOuts):
         #print("incoming to findunspent:",transactionId, index)
         for uTxO in unspentTxOuts:
@@ -212,6 +210,7 @@ class Transaction:
                 return(uTxO)
         
         return(None)
+
 
     def getCoinbaseTransaction(address, blockIndex):
         signature = ''
@@ -317,7 +316,7 @@ class Transaction:
 
         for uTxO in unspentTxOuts:
             if(not(findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts))):
-            newUnspentTxOuts.append(uTxO)
+                newUnspentTxOuts.append(uTxO)
             #print('resulting unspent:',uTxO.txOutId)
         
         resultingUnspentTxOuts = newUnspentTxOuts
