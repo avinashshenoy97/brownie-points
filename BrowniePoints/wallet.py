@@ -4,135 +4,109 @@ Doubts:
 Getting public key from private key
 '''
 # ==================== Imports ==================== #
-#import rainbowKeygen
+from CryptoVinaigrette.Generators import rainbowKeygen
 from ecdsa import SigningKey, SECP256k1
 import logging
 import os
 from transaction import *
+import dill
 
-# ==================== Main ==================== #
-logger = logging.getLogger('Transaction')
+
+# ==================== Globals ==================== #
+walletLogger = logging.getLogger('Brownie-Wallet')
+__privKeyFile__ = 'rPriv.rkey'
+__pubKeyFile__ = 'rPub.rkey'
 keylocn = "Wallet"
 
-'''
-???????Below two functions and function to obtain public key from private????
-'''
-def getPublicFromWallet():
-	private_key = getPrivateFromWallet()
-	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
-	public_key = private_key.get_verifying_key().to_string().hex()
-	return public_key
-####################################################################################
-def getPublicFromWallet2():
-	private_key = getPrivateFromWallet2()
-	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
-	public_key = private_key.get_verifying_key().to_string().hex()
-	return public_key
 
-########################################################################################
-def getPrivateFromWallet():
-	if os.path.isfile(keylocn+"/private.txt"):
-		private_key = open(keylocn+"/private.txt").read()
-		return private_key
-#################################################################################################
-def getPrivateFromWallet2():
-	if os.path.isfile(keylocn+"/private2.txt"):
-		private_key = open(keylocn+"/private2.txt").read()
-		return private_key
+# ==================== Main ==================== #
+class brownieWallet:
+	def __init__(self):
+		'''Initialise brownie wallet with private and public keys. Generates keys if they do not exist already.'''
+		if os.path.exists(__privKeyFile__) and os.path.exists(__pubKeyFile__):
+			self.privKey = dill.load(__privKeyFile__)
+			self.pubKey = dill.load(__pubKeyFile__)
+		else:
+			keyGen = rainbowKeygen()
+			self.privKey = keyGen.generate_privatekey(both=True, save=True)
+			self.pubKey = self.privKey.pubKey
 
+	def getPublicFromWallet(self):
+		'''Returns the public key for quantum resistant cryptographic signature verification.'''
+		return self.pubKey
 
-##################################################################################################
+	def getPrivateFromWallet(self):
+		'''Returns the private key for quantum resistant cryptographic signing.'''
+		return self.privKey
 
+	def getBalance(self, address, unspentTxOut):
+		'''Returns the wallet balance of a given address, given the unspect transaction output objects.
+		
+		Arguments:
+			address: the wallet address whose balance to retrieve
+			
+			unspectTxOut: the unspect transaction output objects using which, the wallet balance is to be calculated.
+			
+		Returns:
+			The wallet balance in brownie-points.
+		'''
+		return sum([float(i.amount) for i in unspectTxOut if i.address == address])
+		# balance = 0
+		# for i in unspentTxOut:
+		# 	if(i.address == address):
+		# 		balance += i.amount
+		# return balance
 
-def generatePrivateKey():
-	'''
-	generate keys using Quantum resistant keypairs
-	myKeyObject = rainbowKeygen()
-	myKeyObject.generate_keys() # store keys in folder/wallet/keylocn
-	'''
+	def findTxOutsforAmount(self, amount, myUnspentTxOuts):
+		currentAmount = 0
+		includedUnspentTxOuts = []
+		for myUnspentTxOut in myUnspentTxOuts:
+			includedUnspentTxOuts.append(myUnspentTxOut)
+			currentAmount += myUnspentTxOut.amount
+			if(currentAmount >= amount):
+				leftOverAmount = currentAmount - amount
+				return (includedUnspentTxOuts, leftOverAmount)
 
-	private_key =  SigningKey.generate(curve = SECP256k1).to_string().hex()
-	return private_key
+		raise Exception("Not enough coins to send transaction")
 
-def initWallet(): 
-	'''
-	check if key exists, if it doesnt then create the keypairs
-	'''
-	if os.path.isfile(keylocn+"/private.txt"):
-		return
-	else:
-		open(keylocn+"/private.txt","w").write(generatePrivateKey())
-#################################################################################################33
-def initWallet2(): 
-	'''
-	check if key exists, if it doesnt then create the keypairs
-	'''
-	if os.path.isfile(keylocn+"/private2.txt"):
-		return
-	else:
-		open(keylocn+"/private2.txt","w").write(generatePrivateKey())
+	def createTxOuts(self, receiver_address, myaddress, amount, leftover_amount):
+		receiver_Tx = TxOut(receiver_address,a mount)
+		if(leftover_amount==0):
+			return [receiver_Tx]
+		
+		else:
+			leftover_Tx = TxOut(myaddress, leftover_amount)
+			return [receiver_Tx,leftover_Tx]
+		
+	def toUnsignedTxIn(self, unspentTxOut):
+		trans_In = TxIn(unspentTxOut.txOutId, unspentTxOut.txOutIndex, None)
+		return trans_In
+		
+	def createTransaction(self, receiver_address, amount, private_key, unspentTxOuts):
+		'''
+		obtain pub key from private key	
+		'''
+		myaddress = getPublicKey(private_key)
+		myUnspentTxOuts = []	
+		for i in unspentTxOuts:
+			if(i.address == myaddress):
+				myUnspentTxOuts.append(i)
 
+		includedUnspentTxOuts, leftOverAmount =  findTxOutsforAmount(amount, myUnspentTxOuts)
+		
+		#print("unspent:",includedUnspentTxOuts[0].txOutId)
+		unsignedTxIns = []
+		for i in includedUnspentTxOuts:
+			unsignedTxIns.append(toUnsignedTxIn(i))
 
+		txOuts = createTxOuts(receiver_address, myaddress, amount, leftOverAmount)
 
-################################################################################################
-def getBalance(address,unspentTxOut):
-	balance = 0
-	for i in unspentTxOut:
-		if(i.address==address):
-			balance += i.amount
-	return balance
+		tx = Transaction('',unsignedTxIns,txOuts)
+		tx.txId = getTransactionId(tx)
+		
+		index = 0
+		for txIn in tx.txIns:
+			txIn.signature = signTxIn(tx,index,private_key,unspentTxOuts)
+			index += 1
 
-
-def findTxOutsforAmount(amount,myUnspentTxOuts):
-	currentAmount = 0
-	includedUnspentTxOuts = []
-	for myUnspentTxOut in myUnspentTxOuts:
-		includedUnspentTxOuts.append(myUnspentTxOut)
-		currentAmount += myUnspentTxOut.amount
-		if(currentAmount >= amount):
-			leftOverAmount = currentAmount - amount
-			return includedUnspentTxOuts,leftOverAmount
-
-	raise Exception("not enough coins to send transaction")
-
-def createTxOuts(receiver_address,myaddress,amount,leftover_amount):
-	receiver_Tx = TxOut(receiver_address,amount)
-	if(leftover_amount==0):
-		return [receiver_Tx]
-	
-	else:
-		leftover_Tx = TxOut(myaddress, leftover_amount)
-		return [receiver_Tx,leftover_Tx]
-	
-def toUnsignedTxIn(unspentTxOut):
-	trans_In =TxIn(unspentTxOut.txOutId,unspentTxOut.txOutIndex,None)
-	return trans_In
-	
-def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
-	'''
-	obtain pub key from private key	
-	'''
-	myaddress = getPublicKey(private_key)
-	myUnspentTxOuts = []	
-	for i in unspentTxOuts:
-		if(i.address==myaddress):
-			myUnspentTxOuts.append(i)
-
-	includedUnspentTxOuts, leftOverAmount =  findTxOutsforAmount(amount, myUnspentTxOuts)
-	
-	#print("unspent:",includedUnspentTxOuts[0].txOutId)
-	unsignedTxIns = []
-	for i in includedUnspentTxOuts:
-		unsignedTxIns.append(toUnsignedTxIn(i))
-
-	txOuts = createTxOuts(receiver_address, myaddress, amount, leftOverAmount)
-
-	tx = Transaction('',unsignedTxIns,txOuts)
-	tx.txId = getTransactionId(tx)
-	
-	index = 0
-	for txIn in tx.txIns:
-		txIn.signature = signTxIn(tx,index,private_key,unspentTxOuts)
-		index += 1
-
-	return tx
+		return tx

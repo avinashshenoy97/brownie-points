@@ -15,15 +15,16 @@ import blockchain
 from b2b import b2b
 from controlAPI import controlAPI
 
+
 # ==================== Command Line Arguements ==================== #
 parser = argparse.ArgumentParser(description='Brownie Points - New Age, Quantum Resistant CryptoCurrency and ex-social currency.')
 
-parser.add_argument('--debug', default=False, action='store_true')
-parser.add_argument('--first', default=False, action='store_true')
-parser.add_argument('--no-api', default=False, action='store_true')
-parser.add_argument('rendezvous_ip', type=str)
-parser.add_argument('rendezvous_port', type=str, default=8000)
-parser.add_argument('--p', '--port', type=int, default=16000)
+parser.add_argument('-d', '--debug', default=False, action='store_true', help='Run in debug mode.')
+parser.add_argument('-f', '--first', default=False, action='store_true', help='First node, automatically starts rendezvous server.')
+parser.add_argument('-na', '--no-api', default=False, action='store_true', help='Don\'t start the REST API.')
+parser.add_argument('rendezvous_ip', type=str, help='Rendezvous server IP address.')
+parser.add_argument('rendezvous_port', type=str, default=8000, help='Rendezvous server PORT at IP address.')
+parser.add_argument('-p', '--port', type=int, default=16000, help='REST API port to listen on.')
 
 __args__ = parser.parse_args()
 if __args__.debug:

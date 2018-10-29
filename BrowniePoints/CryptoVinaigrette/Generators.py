@@ -186,7 +186,7 @@ class rainbowKeygen:
         
         return
 
-    def generate_publickey(self):
+    def generate_publickey(self, save=True):
         '''
         Generates the public key
         '''
@@ -251,13 +251,16 @@ class rainbowKeygen:
         pubKey.linear = self.polynomial.linear
         pubKey.consts = self.polynomial.constant
         
-        with open('rPub.rkey', 'wb') as pubFile:
-            dill.dump(pubKey, pubFile)
+        if save:
+            with open('rPub.rkey', 'wb') as pubFile:
+                dill.dump(pubKey, pubFile)
         
         if args.v:
             print("Done")
 
-    def generate_privatekey(self):
+        return pubKey
+
+    def generate_privatekey(self, both=False, save=True):
         '''
         Generates the private key.
         '''
@@ -275,11 +278,17 @@ class rainbowKeygen:
         privKey.F_layers = self.F_layers
         privKey.k = self.k
 
-        with open('rPriv.rkey', 'wb') as privFile:
-            dill.dump(privKey, privFile)
+        if both:
+            privKey.pubKey = self.generate_publickey(save=save)
+
+        if save:
+            with open('rPriv.rkey', 'wb') as privFile:
+                dill.dump(privKey, privFile)
 
         if args.v:
             print("Done.")
+
+        return privKey
 
 
     def generate_targets(n, v0, k, message):
@@ -321,25 +330,34 @@ class rainbowKeygen:
 
         return ret
 
-    def sign(keyFile, msgFile):
+    def sign(keyFile, msgFile, loadKey=True, loadMsg=True):
         '''
         Sign message at msgFile with private key at keyFile!
         '''
         
         if args.v:
             pass#print("Signing...")
+        
         # Load private key
-        with open(keyFile, 'rb') as kFile:
-            privKey = dill.load(kFile)
-            privKey.n = len(privKey.F_layers[-1][0]['alphas'][0]) + len(privKey.F_layers[-1][0]['betas'])
-            privKey.layers = len(privKey.F_layers)
+        if loadKey:
+            with open(keyFile, 'rb') as kFile:
+                privKey = dill.load(kFile)
+        else:
+            privKey = keyFile
+        
+        privKey.n = len(privKey.F_layers[-1][0]['alphas'][0]) + len(privKey.F_layers[-1][0]['betas'])
+        privKey.layers = len(privKey.F_layers)
 
         # Load message (as n dimensional vector)
-        with open(msgFile, 'r') as mFile:
-            message = mFile.read()
-            y = rainbowKeygen.generate_targets(privKey.n, len(privKey.F_layers[0][0]['alphas'][0]), privKey.k, message)
-            if args.v >= 2:
-                print(y)
+        if loadMsg:
+            with open(msgFile, 'r') as mFile:
+                message = mFile.read()
+        else:
+            message = msgFile
+        
+        y = rainbowKeygen.generate_targets(privKey.n, len(privKey.F_layers[0][0]['alphas'][0]), privKey.k, message)
+        if args.v >= 2:
+            print(y)
         
         # Apply L1^(-1)
 
@@ -437,12 +455,15 @@ class rainbowKeygen:
             print("Done.")
         return signature
     
-    def verify(keyFile, signature, msgFile):
+    def verify(keyFile, signature, msgFile, loadKey=True, loadMsg=True):
         '''
         Verify the signature using the public key
         '''
-        with open(keyFile, 'rb') as kFile:
-            pubKey = dill.load(kFile)
+        if loadKey:
+            with open(keyFile, 'rb') as kFile:
+                pubKey = dill.load(kFile)
+        else:
+            pubKey = keyFile
 
         pubKey.quadratic = list()
 
@@ -456,11 +477,14 @@ class rainbowKeygen:
                 temp2d.append(temp)
             pubKey.quadratic.append(temp2d)
 
-        with open(msgFile, 'r') as mFile:
-            message = mFile.read()
-            if args.v >= 2:
-                print(message)
-            y = rainbowKeygen.generate_targets(pubKey.n, pubKey.v0, pubKey.k, message)
+        if loadMsg:
+            with open(msgFile, 'r') as mFile:
+                message = mFile.read()
+                if args.v >= 2:
+                    print(message)
+        else:
+            message = msgFile
+        y = rainbowKeygen.generate_targets(pubKey.n, pubKey.v0, pubKey.k, message)
 
         ret = [0] * len(pubKey.quads)
         for p in range(len(pubKey.quads)):
