@@ -1,9 +1,9 @@
-#supportMenu{
-  height: 70%;
+#termsMenu{
+  height: 80%;
   width: 70%;
   position: relative;
   /*display: block;*/
-  background-color: white;
+  background-color: #ffffff;
   /*left: 20%*/
   /*top:20%;*/
   z-index: 6;
@@ -11,7 +11,7 @@
   /*border-radius: 15%;*/
   margin-top: 5%;
   margin-left: 15%;
-  /*padding-left: 5vw;*/
+  padding:5vh;
   overflow:hidden;
     -webkit-backface-visibility: hidden;
   -webkit-perspective: 1000;
@@ -21,20 +21,6 @@
 }
 
 
-.supportwrapper {
-  height: 100vh;
-  display: flex;
-}
-
-#supportText{
-	font-size: 2em;
-	margin-left: 0%;
-	margin-top: 5%;
-	width: 100%;	
-}
-
-#support {
-  position: absolute;
-  margin-top: 15%;
-  margin-left: 43%;
+#termsContent {
+  text-align: justify;
 }

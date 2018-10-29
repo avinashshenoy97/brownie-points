@@ -10,8 +10,9 @@ body {
   
   /*background:   linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);*/
 
-  background-color: #25274D;
+  /*background-color: #000000;*/
 
+  background-color: #25274D;
   /*background: radial-gradient(ellipse at center, rgba(49,16,47,1) 0%, rgba(40,11,41,1) 100%);*/
 
   font-family: brownieFont;

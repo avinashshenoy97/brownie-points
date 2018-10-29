@@ -5,6 +5,7 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
         address:null,
         coinCount:0,
       },
+    checkbalance:0,
     transactionNumber:0
     }
   },
@@ -15,7 +16,7 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
       resetForm();
     },
    submitCoins: function() {
-      Vue.http.put('/wallet/wallet/sendCoins',this.sendCoins)
+      Vue.http.put('/wallet/sendCoins',this.sendCoins)
           .then((response) => {
             console.log("sent",response);
             this.transactionNumber=response.data['transactionNumber']
@@ -41,7 +42,7 @@ var transactionStatus=Vue.component('transaction-status',{
       this.$parent.formClose3 = true;
     },
     getTransactionDetails: function() {
-      this.$http.get('/wallet/wallet/getTransactionDetails',this.transactionDetails)
+      this.$http.get('/wallet/getTransactionDetails',this.transactionDetails)
           .then((response) => {
             console.log("received",response.data);
             this.transactionDetailsAddr=response.data['transactionAddr'];
@@ -107,10 +108,12 @@ var balance=Vue.component('balance',{
       this.$parent.formClose2 = true;
     },
     getBalance: function() {
-      this.$http.get('/wallet/wallet/getBalance',this.transactionDetails)
+      this.$http.get('/wallet/getBalance',this.transactionDetails)
           .then((response) => {
             console.log("received",response.data);
-            this.balanceCoins=response.data['balance']
+            this.balanceCoins=response.data['balance'];
+            vue.$refs.send_coins.checkbalance = this.balanceCoins;
+
           })
           .catch((err) => {
             console.log(err);
@@ -127,7 +130,7 @@ var publicAddress=Vue.component('public-address',{
   },
   methods:{
     getPublicAddress: function() {
-      this.$http.get('/wallet/wallet/getPublicAddress',this.publicaddress)
+      this.$http.get('/wallet/getPublicAddress',this.publicaddress)
           .then((response) => {
             console.log("received",response.data);
             this.publicaddress=response.data['publicKey']
@@ -162,6 +165,7 @@ var vue = new Vue({
     setValue1: function(arg1,arg2){
       this.formOpen1 = arg1;
       this.formClose1 = arg2;
+      vue.$refs.get_balance.getBalance();
       // console.log(this.step,this.progressValue)
     },
     setValue2: function(arg1,arg2){

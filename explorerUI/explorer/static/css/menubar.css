@@ -73,10 +73,7 @@
 	-webkit-flex-wrap: wrap;
 	flex-wrap: wrap;
 	margin-top: -3%;
-	/*border-left: 0.5em solid #000000;*/
 	border-left: 0.5em solid #25274D;
-	/*border-right: 0.5em solid #000000;  */
-
 	border-right: 0.5em solid #25274D;  
 }
 .menu-con {
@@ -89,7 +86,6 @@
 	position: relative;
 	top: -100%;
 	border: 0.5em solid #000000;
-	/*border: 0.5em solid #25274D;*/
 	transition: all 0.5s;
 }
 .menu-con p:before {
