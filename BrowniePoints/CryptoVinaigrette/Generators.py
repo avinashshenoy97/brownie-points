@@ -13,14 +13,6 @@ from CryptoVinaigrette.GF256 import *
 class pubKeyClass: pass
 class privKeyClass: pass
 
-# -------------------- Command Line Args -------------------- #
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-v', type=int, nargs='?', default=0)
-args = parser.parse_args()
-if args.v is None:
-    args.v = 0 
-
 
 # -------------------- Module -------------------- #
 
@@ -531,6 +523,13 @@ class rainbowKeygen:
 
 
 if __name__ == '__main__':
+        
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', type=int, nargs='?', default=0)
+    args = parser.parse_args()
+    if args.v is None:
+        args.v = 0 
+        
     myKeyObject = rainbowKeygen()
     
     start = dt.now()
