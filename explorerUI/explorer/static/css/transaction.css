@@ -300,8 +300,17 @@ h2, h3 {
     transition: max-height 0.4s ease-out;
 }
 
+.sortPanel>p{
+    transition: 0.6s;
+}
+
+#searchAccordion:after {font-family: brownieFontIcon;content: "\f002";}
+#filterAccordion:after {font-family: brownieFontIcon;content: "\f0b0";}
+#sortAccordion:after {font-family: brownieFontIcon;content: "\f0dc";}
+
 .sortPanel>p:hover{
   cursor: pointer;
+  transform: scale(1.25);
 }
 
 .search{
@@ -319,7 +328,7 @@ h2, h3 {
     color: #000000;
     cursor: pointer;
     padding: 3% 0 0 0;
-    width: 20%;
+    width: 30%;
     height: 10%;
     border: none;
     text-align: center;
@@ -361,7 +370,7 @@ h2, h3 {
     color: #000000;
     cursor: pointer;
     padding: 3% 0 0 0;
-    width: 20%;
+    width: 22%;
     height: 10%;
     border: none;
     text-align: center;

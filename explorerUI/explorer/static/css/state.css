@@ -16,7 +16,9 @@
   text-align: center;
   font-weight: 400;
   font-size: 1.3em;
-  color: #3CA3F2;
+  /*color: #3CA3F2;*/
+  color: #ffffff;
+
 }
 .box-paginacao .box-vitrines {
   width: 100%;
@@ -206,11 +208,11 @@
   width: 100%;
 */  
     position: fixed; /* Stay in place */
-    z-index: 8; /* Sit on top */
-    padding-top: 5%; /* Location of the box */
+    z-index: 12; /* Sit on top */
+    padding-top: 0%; /* Location of the box */
     padding-left: 5%;
     left: 0;
-    top: 0;
+    top: 0%;
     opacity: 1;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
@@ -219,6 +221,15 @@
     background-color: rgba(0,0,0,1); 
     /*background-color: #71bc78;*/
   animation: blowUpModal 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+#blockModal{
+  width: 60%;
+  height: 80%;
+  margin-left: 20%;
+  /*background-color: #25274D;*/
+  background-color: #71bc78;
+  color: #ffffff;
 }
 
 .stateModal.close {
@@ -255,7 +266,17 @@
 }
 
 
-/*#closeStateButton{
-  float:right;
-  top:5%;
-}*/
+#closeStateButton{
+  top:-5%;
+  font-size: 1.5em;
+}
+
+#closeStateButton:hover{
+  cursor: pointer;
+}
+#blockContent{
+  text-align: center;
+}
+#blockContent>h2{
+  padding-bottom: 0;
+}

@@ -14,13 +14,11 @@ var blockState=Vue.component('block-state-comp',{
       this.stateOpen=false;
       $('.btn-paginacao').css("z-index","0");
       $('#closeButton').css("opacity","1");
-      console.log("here1");
     },
     setStateValue: function(){
       this.stateOpen = true;
-      $('.btn-paginacao').css("z-index","-1");
       $('#closeButton').css("opacity","0");
-
+      $('.btn-paginacao').css("z-index","-1");
     },
    submitCoins: function() {
       Vue.http.put('/wallet/sendCoins',this.sendCoins)
@@ -158,7 +156,8 @@ var vue = new Vue({
         else{
         $container.each(function(){
         var txt = $('#blockAddr').val();
-        $(this).find('.cardContent:not(:contains("'+txt+'"))').parent().parent().parent().parent().hide();      
+        $(this).find('.senderAddr:not(:contains("'+txt+'"))').parent().parent().parent().parent().hide();      
+        $(this).find('.recAddr:contains("'+txt+'")').parent().parent().parent().parent().show();      
       });
       }
     });

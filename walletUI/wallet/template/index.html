@@ -350,10 +350,10 @@
             <h2 class="fs-title">Enter Number of Coins</h2>
             <!-- <h3 class="fs-subtitle">Enter the number of coins to be sent</h3> -->
             <input type="number" name="coinCount" placeholder="Number of Coins" v-model="sendCoins.coinCount"/>
-            <span v-cloak v-if="sendCoins.coinCount<0" class="text-danger">* Enter positive number of coins</span><br>
+            <span v-cloak v-if="sendCoins.coinCount<0 || Number(sendCoins.coinCount)!==sendCoins.coinCount" class="text-danger">* Enter positive number of coins</span><br>
             <span v-cloak v-if="sendCoins.coinCount>checkbalance" class="text-danger">* Not enough balance ( Balance = [[ checkbalance ]] )</span><br>
             <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="button" name="next" class="next action-button" :disabled="sendCoins.coinCount<0 || sendCoins.coinCount>checkbalance" value="Next" />
+            <input type="button" name="next" class="next action-button" :disabled="sendCoins.coinCount<0 || Number(sendCoins.coinCount)!==sendCoins.coinCount || sendCoins.coinCount>checkbalance" value="Next" />
           </fieldset>
           <fieldset id="confirmation">
             <h2 class="fs-title">Confirmation</h2>
@@ -422,44 +422,60 @@
         <div class="container-left">
         <div class="container">
           <div class="card">
-            <div class="front"><h2>Transaction</h2></div>
+            <div class="front"><h2>Transaction 1</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent">abc</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent">def</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">15</p>
               </div>
             </div>
           </div>
         </div>
         <div class="container">
           <div class="card">
-            <div class="front"><h2>Transaction</h2></div>
+            <div class="front"><h2>Transaction 2</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent">def</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent">aaa</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">10</p>
               </div>
             </div>
           </div>
         </div>
         <div class="container">
           <div class="card">
-            <div class="front"><h2>Transaction</h2></div>
+            <div class="front"><h2>Transaction 3</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent">xyz</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent">mno</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">5</p>
               </div>
             </div>
           </div>
         </div>
         <div class="container">
           <div class="card">
-            <div class="front"><h2>Transaction</h2></div>
+            <div class="front"><h2>Transaction 4</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent">abc</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent">xyz</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">8</p>
               </div>
             </div>
           </div>

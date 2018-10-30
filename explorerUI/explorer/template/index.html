@@ -325,46 +325,75 @@
         <ul id="blocks">
           <div class="vitrine1 vitrine">
             <div class="line line1">-</div>
-            <h2>Blockchain State</h2>
-            <li @click="setStateValue()">Vitrine</li>
+            <h2>Page 1</h2>
+            <li @click="setStateValue()">Transaction</li>
             <div :class="{'open':stateOpen}" class="stateModal" >
-              <div id="closeStateButton" @click="cancelState()"><span>&times</span></div>      
+              <div id="closeStateButton" @click="cancelState()"><span>&times</span></div>
+              <div id="blockModal">
+                <span id="blockContent"><h2>Sender Address : <br>Test</h2></span>
+                <span id="blockContent"><h2 >Receiver Address : <br>Test</h2></span>
+                <span id="blockContent"><h2>Number Of Coins : <br>10</h2></span>
+              </div>      
             </div>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
+            <li @click="setStateValue()">Transaction</li>
+            <div :class="{'open':stateOpen}" class="stateModal" >
+              <div id="closeStateButton" @click="cancelState()"><span>&times</span></div>
+              <div id="blockModal">
+                <span id="blockContent"><h2>Sender Address : <br>Test</h2></span>
+                <span id="blockContent"><h2 >Receiver Address : <br>Test</h2></span>
+                <span id="blockContent"><h2>Number Of Coins : <br>10</h2></span>
+              </div>      
+            </div>
+            <li @click="setStateValue()">Transaction</li>
+            <div :class="{'open':stateOpen}" class="stateModal" >
+              <div id="closeStateButton" @click="cancelState()"><span>&times</span></div>
+              <div id="blockModal">
+                <span id="blockContent"><h2>Sender Address : <br>Test</h2></span>
+                <span id="blockContent"><h2 >Receiver Address : <br>Test</h2></span>
+                <span id="blockContent"><h2>Number Of Coins : <br>10</h2></span>
+              </div>      
+            </div>
+            <li @click="setStateValue()">Transaction</li>
+            <div :class="{'open':stateOpen}" class="stateModal" >
+              <div id="closeStateButton" @click="cancelState()"><span>&times</span></div>
+              <div id="blockModal">
+                <span id="blockContent"><h2><b>Sender Address : </b><br>Test</h2></span>
+                <span id="blockContent"><h2><b>Receiver Address : </b><br>Test</h2></span>
+                <span id="blockContent"><h2><b>Number Of Coins : </b><br>10</h2></span>
+              </div>      
+            </div>
           </div>
           <div class="vitrine2 vitrine">
             <div class="line line2">-</div>
-            <h2>Pagina 2</h2>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
+            <h2>Page 2</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
           </div>
           <div class="vitrine3 vitrine">
             <div class="line line3">-</div>
-            <h2>Pagina 3</h2>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
+            <h2>Page 3</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
           </div>
           <div class="vitrine4 vitrine">
             <div class="line line4">-</div>
-            <h2>Pagina 4</h2>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
+            <h2>Page 4</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
           </div>
           <div class="vitrine5 vitrine">
             <div class="line line5">-</div>
-            <h2>Pagina 5</h2>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
-            <li>Vitrine</li>
+            <h2>Page 5</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
           </div>
         </ul>                  
         <div class="btn-paginacao">
@@ -398,20 +427,20 @@
         <div class="container-left">
           <div class="wrapper-title">
           <div class="sort">
-            <button onclick="sortAcc(event)" id="sortAccordion">Sort</button>
+            <button onclick="sortAcc(event)" id="sortAccordion">Sort </button>
             <div class="sortPanel">
-              <p onclick="sortOld(event)">Old</p>
-              <p onclick="sortNew(event)">New</p>
+              <p onclick="sortOld(event)" id="oldSort">Oldest</p>
+              <p onclick="sortNew(event)" id="newSort">Newest</p>
             </div>
           </div>
           <div class="search">
-            <button onclick="searchAcc(event)" id="searchAccordion">Search</button>
+            <button onclick="searchAcc(event)" id="searchAccordion">Search </button>
             <div class="searchPanel">
               <input type="number" id="blockVal" name="searchBlock">
             </div>
           </div>
           <div class="filter">
-            <button onclick="filterAcc(event)" id="filterAccordion">Filter</button>
+            <button onclick="filterAcc(event)" id="filterAccordion">Filter </button>
             <div class="filterPanel">
               <input type="text" id="blockAddr" name="searchBlockByAddr">
             </div>
@@ -423,8 +452,12 @@
             <div class="front"><h2 id="txnNo">Transaction 2</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem Hello ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">abc</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">xyz</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">8</p>
               </div>
             </div>
           </div>
@@ -434,8 +467,12 @@
             <div class="front"><h2 id="txnNo">Transaction 3</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem Hello ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">def</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">aaa</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">10</p>
               </div>
             </div>
           </div>
@@ -445,8 +482,12 @@
             <div class="front"><h2 id="txnNo">Transaction 1</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">xyz</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">mno</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">5</p>
               </div>
             </div>
           </div>
@@ -456,8 +497,12 @@
             <div class="front"><h2 id="txnNo">Transaction 4</h2></div>
             <div class="back">
               <div class="content">
-                <h3 class="cardTitle">Details</h3>
-                <p class="cardContent">Lorem ipsum dolor sit amet</p>
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">abc</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">def</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent">15</p>
               </div>
             </div>
           </div>
