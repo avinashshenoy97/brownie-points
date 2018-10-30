@@ -12,36 +12,18 @@ from transaction import *
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
-keylocn = "Wallet"
+folder = "Wallet"
 
-'''
-???????Below two functions and function to obtain public key from private????
-'''
-def getPublicFromWallet():
-	private_key = getPrivateFromWallet()
-	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
-	public_key = private_key.get_verifying_key().to_string().hex()
-	return public_key
-####################################################################################
-def getPublicFromWallet2():
-	private_key = getPrivateFromWallet2()
+def getPublicFromWallet(keylocn):
+	private_key = getPrivateFromWallet(keylocn)
 	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
 	public_key = private_key.get_verifying_key().to_string().hex()
 	return public_key
 
-########################################################################################
-def getPrivateFromWallet():
-	if os.path.isfile(keylocn+"/private.txt"):
-		private_key = open(keylocn+"/private.txt").read()
+def getPrivateFromWallet(keylocn):
+	if os.path.isfile(folder+"/"+keylocn+"/private.txt"):
+		private_key = open(folder+"/"+keylocn+"/private.txt").read()
 		return private_key
-#################################################################################################
-def getPrivateFromWallet2():
-	if os.path.isfile(keylocn+"/private2.txt"):
-		private_key = open(keylocn+"/private2.txt").read()
-		return private_key
-
-
-##################################################################################################
 
 
 def generatePrivateKey():
@@ -54,27 +36,17 @@ def generatePrivateKey():
 	private_key =  SigningKey.generate(curve = SECP256k1).to_string().hex()
 	return private_key
 
-def initWallet(): 
+def initWallet(keyloc): #parameter is only for testing
 	'''
 	check if key exists, if it doesnt then create the keypairs
 	'''
-	if os.path.isfile(keylocn+"/private.txt"):
+	if(os.path.isdir(keyloc) == False):
+		os.mkdir(folder+"/"+keyloc)
+	if os.path.isfile(folder+"/"+keyloc+"/private.txt"):
 		return
 	else:
-		open(keylocn+"/private.txt","w").write(generatePrivateKey())
-#################################################################################################33
-def initWallet2(): 
-	'''
-	check if key exists, if it doesnt then create the keypairs
-	'''
-	if os.path.isfile(keylocn+"/private2.txt"):
-		return
-	else:
-		open(keylocn+"/private2.txt","w").write(generatePrivateKey())
+		open(folder+"/"+keyloc+"/private.txt","w").write(generatePrivateKey())
 
-
-
-################################################################################################
 def getBalance(address,unspentTxOut):
 	balance = 0
 	for i in unspentTxOut:

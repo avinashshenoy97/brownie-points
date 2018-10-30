@@ -2,7 +2,6 @@
 Script for Transaction data structure and other utility functions.
 Doubts : Signature (function prototype)
 Functions Implemented:
-
 getTransactionId - D
 validateTransaction - D 
 validateBlockTransactions - D
@@ -20,14 +19,13 @@ isValidTxInStructure -D
 isValidTxOutStructure -D
 isValidTransactionStructure -D
 isValidAddress - D
-
 '''
 # ==================== Imports ==================== #
 from hashlib import sha256
 import ecdsa
 import binascii
 import logging
-#import rainbowKeygen
+from CryptoVinaigrette.Generators import rainbowKeygen
 from collections import Counter
 from functools import reduce
 import re
@@ -212,7 +210,6 @@ def getCoinbaseTransaction(address, blockIndex):
     txIn.signature = ''
     txIn.txOutId = ''
     txIn.txOutIndex = blockIndex
-
     t.txIns = [txIn]
     t.txOuts = [TxOut(address, COINBASE_AMOUNT)]
     """

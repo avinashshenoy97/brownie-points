@@ -7,19 +7,11 @@ Generate UOV parameters and keys
 import secrets, argparse, numpy as np
 import dill, errno, os, subprocess as sp, atexit, hashlib
 from datetime import datetime as dt
-from Affine import *
-from GF256 import *
+from CryptoVinaigrette.Affine import *
+from CryptoVinaigrette.GF256 import *
 
 class pubKeyClass: pass
 class privKeyClass: pass
-
-# -------------------- Command Line Args -------------------- #
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-v', type=int, nargs='?', default=0)
-args = parser.parse_args()
-if args.v is None:
-    args.v = 0 
 
 
 # -------------------- Module -------------------- #
@@ -445,11 +437,11 @@ class rainbowKeygen:
             except GF256Errors as e:
                 print("Layer", layer, "of", privKey.layers)
                 print("Restarting with new vinegar! because", e)
-                raise e
+                #raise e
             except Exception as e:
                 if args.v:
                     print("Restarting with new vinegar because", e, "!")
-                    raise e
+                    #raise e
         
         if args.v:
             print("Done.")
@@ -531,6 +523,13 @@ class rainbowKeygen:
 
 
 if __name__ == '__main__':
+        
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', type=int, nargs='?', default=0)
+    args = parser.parse_args()
+    if args.v is None:
+        args.v = 0 
+        
     myKeyObject = rainbowKeygen()
     
     start = dt.now()

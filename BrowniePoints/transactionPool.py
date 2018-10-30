@@ -60,7 +60,7 @@ def isValidTxForPool(tx, aTtransactionPool):
 		return False
 
 	for txIn in tx.txIns:
-		if(containsTxIn(txPoolIns, txIn) == True):
+		if(containsTxIn(txIn) == True):
 			logger.info("txIn already found in the txPool")
 			return False
 	return True
