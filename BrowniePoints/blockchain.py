@@ -7,6 +7,9 @@ from datetime import datetime as dt
 from transaction import UnspentTxOut, Transaction, processTransactions
 from block import block
 from b2b import *
+from transaction import getCoinbaseTransaction
+from wallet import initWallet, getPublicFromWallet
+from copy import deepcopy
 
 
 # ==================== Globals ==================== #
@@ -23,11 +26,16 @@ def init():
     global genesisBrownie
     global brownieChain
     global difficulty
-    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', None, dt.now(), 'the holy brownie', difficulty, 0)
+    initWallet("creator")
+    random_user = getPublicFromWallet("creator")
+    genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', '0000000000' , dt.now(), getCoinbaseTransaction(random_user, 0), difficulty, 0)
     brownieChain = [genesisBrownie]
 
 
 # ==================== Main ==================== #
+
+def getUnspentTxOuts():
+	return deepcopy(unspentTxOuts)
 
 def getBlockchain():
     ''' Returns: The chain stored on the node.
@@ -56,7 +64,7 @@ def generateNextBlock(blockData):
     nextTimestamp = dt.now()
     newBlock = findBlock(nextIndex, latestBlock.hash, nextTimestamp, blockData, difficulty)
     if addBlockToChain(newBlock):
-        broadcastLatest()
+        #broadcastLatest() #when P2P is integrated
         return newBlock
     else:
         return None
