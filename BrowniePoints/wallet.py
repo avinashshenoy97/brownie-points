@@ -14,11 +14,13 @@ from transaction import *
 logger = logging.getLogger('Transaction')
 folder = "Wallet"
 
+
 def getPublicFromWallet(keylocn):
 	private_key = getPrivateFromWallet(keylocn)
 	private_key = SigningKey.from_string(bytes.fromhex(private_key), curve = SECP256k1)
 	public_key = private_key.get_verifying_key().to_string().hex()
 	return public_key
+
 
 def getPrivateFromWallet(keylocn):
 	if os.path.isfile(folder+"/"+keylocn+"/private.txt"):
@@ -36,18 +38,20 @@ def generatePrivateKey():
 	private_key =  SigningKey.generate(curve = SECP256k1).to_string().hex()
 	return private_key
 
+
 def initWallet(keyloc): #parameter is only for testing
 	'''
 	check if key exists, if it doesnt then create the keypairs
 	'''
 	if(os.path.isdir(keyloc) == False):
-		os.mkdir(folder+"/"+keyloc)
+		os.makedirs(folder+"/"+keyloc, exist_ok=True)
 	if os.path.isfile(folder+"/"+keyloc+"/private.txt"):
 		return
 	else:
 		open(folder+"/"+keyloc+"/private.txt","w").write(generatePrivateKey())
 
-def getBalance(address,unspentTxOut):
+
+def getBalance(address, unspentTxOut):
 	balance = 0
 	for i in unspentTxOut:
 		if(i.address==address):
@@ -55,7 +59,7 @@ def getBalance(address,unspentTxOut):
 	return balance
 
 
-def findTxOutsforAmount(amount,myUnspentTxOuts):
+def findTxOutsforAmount(amount, myUnspentTxOuts):
 	currentAmount = 0
 	includedUnspentTxOuts = []
 	for myUnspentTxOut in myUnspentTxOuts:
@@ -67,7 +71,8 @@ def findTxOutsforAmount(amount,myUnspentTxOuts):
 
 	raise Exception("not enough coins to send transaction")
 
-def createTxOuts(receiver_address,myaddress,amount,leftover_amount):
+
+def createTxOuts(receiver_address, myaddress, amount, leftover_amount):
 	receiver_Tx = TxOut(receiver_address,amount)
 	if(leftover_amount==0):
 		return [receiver_Tx]
@@ -76,11 +81,13 @@ def createTxOuts(receiver_address,myaddress,amount,leftover_amount):
 		leftover_Tx = TxOut(myaddress, leftover_amount)
 		return [receiver_Tx,leftover_Tx]
 	
+
 def toUnsignedTxIn(unspentTxOut):
 	trans_In =TxIn(unspentTxOut.txOutId,unspentTxOut.txOutIndex,None)
 	return trans_In
 	
-def createTransaction(receiver_address,amount,private_key,unspentTxOuts):
+
+def createTransaction(receiver_address, amount, private_key, unspentTxOuts):
 	'''
 	obtain pub key from private key	
 	'''

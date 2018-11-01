@@ -12,6 +12,7 @@ import atexit
 
 from block import block
 import blockchain
+import transactionPool
 from b2b import b2b
 from controlAPI import controlAPI
 
@@ -21,6 +22,7 @@ parser = argparse.ArgumentParser(description='Brownie Points - New Age, Quantum 
 
 parser.add_argument('-d', '--debug', default=False, action='store_true', help='Run in debug mode.')
 parser.add_argument('-f', '--first', default=False, action='store_true', help='First node, automatically starts rendezvous server.')
+parser.add_argument('-c', '--client', default=False, action='store_true', help='Start as a client that mines continuously.')
 parser.add_argument('-na', '--no-api', default=False, action='store_true', help='Don\'t start the REST API.')
 parser.add_argument('rendezvous_ip', type=str, help='Rendezvous server IP address.')
 parser.add_argument('rendezvous_port', type=str, default=8000, help='Rendezvous server PORT at IP address.')
@@ -61,9 +63,7 @@ def favicon_handler(request):
 
 if __args__.first:
     sp.Popen(['python3', 'BrowniePoints/rendezvous-server/rendezvous_server.py'])
-    print('TEST')
     brownieLogger.info('Mmmmm... that fresh brownie smell in the air!')
-    blockchain.brownieChain.append(blockchain.generateNextBlock('test'))
     brownieLogger.debug(str(blockchain.brownieChain))
     brownieLogger.info('Joining b2b network')
     brownieNet = b2b(__args__.rendezvous_ip, __args__.rendezvous_port)
@@ -75,6 +75,7 @@ else:
     brownieLogger.debug(str(blockchain.brownieChain))
 
 blockchain.brownieNet = brownieNet
+transactionPool.brownieNet = brownieNet
 
 if not __args__.no_api:
     brownieLogger.info('Starting brownie API')

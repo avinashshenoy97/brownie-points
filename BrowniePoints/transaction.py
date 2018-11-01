@@ -34,6 +34,7 @@ import re
 logger = logging.getLogger('Transaction')
 COINBASE_AMOUNT = 50
 
+
 class UnspentTxOut:
     def __init__(self, txOutId, txOutIndex, address, amount):
         self.txOutId = txOutId
@@ -41,13 +42,16 @@ class UnspentTxOut:
         self.address = address
         self.amount = amount
 
+
 class TxOut:
     def __init__(self, address, amnt):
-        self.address, self.amount = (address,amnt)
+        self.address, self.amount = (address, amnt)
+
 
 class TxIn:
     def __init__(self, txOutId, index, sign):
         self.txOutId, self.txOutIndex, self.signature = (txOutId, index, sign)
+
 
 class Transaction:
     def __init__(self, txId, txIns, txOuts):
@@ -55,7 +59,6 @@ class Transaction:
 
 
 def getTransactionId(transaction):
-    
     txInContent = ''
     for i in transaction.txIns:
         txInContent += i.txOutId + str(i.txOutIndex)
@@ -64,6 +67,7 @@ def getTransactionId(transaction):
         txOutContent += i.address + str(i.amount)
     txContent = txInContent + txOutContent
     return(sha256(txContent.encode()).hexdigest())
+
 
 def validateTransaction(transaction, aUnspentTxOut):
     if(not(isValidTransactionStructure(transaction))):
@@ -218,10 +222,11 @@ def getCoinbaseTransaction(address, blockIndex):
     return t
     
 
-def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
+def signTxIn(tx, txInIndex, private_key, UnspentTxOuts):
+	global logger
 	txIn = tx.txIns[txInIndex]
 	datatosign = tx.txId
-	referencedUnspentTxOut = findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, UnspentTxOuts);
+	referencedUnspentTxOut = findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, UnspentTxOuts)
 
 	if(referencedUnspentTxOut is None):
 		logger.error("could not find referenced txOut while creating transaction")
@@ -247,6 +252,7 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	
 	str_sign = signature.hex()
 	#print("signature is :",type(str_sign),"\n and it is:",str_sign)
+	logger.debug('Signature is: ' + str(str_sign))
 	return str_sign
 
 

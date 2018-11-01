@@ -28,6 +28,15 @@ class block:
         '''
         
         return block(d['index'], d['hash'], d['previousHash'], dtparser(d['timestamp']), d['data'], d['difficulty'], d['nonce'])
+
+    def calculateHash(self):
+        '''Calculates hash for given block.
+
+        Returns:
+            SHA256 hash of block.
+        '''
+        preHashedString = str(self.index) + self.previousHash + str(self.timestamp) + str(self.data) + str(self.difficulty) + str(self.nonce)
+        return sha256(bytes(preHashedString, 'utf-8')).hexdigest()
     
 
 

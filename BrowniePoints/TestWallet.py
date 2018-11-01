@@ -23,6 +23,7 @@ transactionPool.append(coin_base)
 
 #solving Proof Of Work, validate Transactions create a new block and add to blockchain
 block1 = generateNextBlock(transactionPool)
+print('Nonce:', block1.nonce)
 
 unspentTxOuts = None
 

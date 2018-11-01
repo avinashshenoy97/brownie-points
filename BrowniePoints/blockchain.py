@@ -37,17 +37,20 @@ def init():
 def getUnspentTxOuts():
 	return deepcopy(unspentTxOuts)
 
+
 def getBlockchain():
     ''' Returns: The chain stored on the node.
     '''
     global brownieChain
     return brownieChain
 
+
 def getLatestBlock():
     ''' Returns: The latest block that was added to the chain on the node.
     '''
     global brownieChain
     return brownieChain[-1]
+
 
 def generateNextBlock(blockData):
     '''Given the block data, generates the subsequent block in the blockchain.
@@ -64,10 +67,11 @@ def generateNextBlock(blockData):
     nextTimestamp = dt.now()
     newBlock = findBlock(nextIndex, latestBlock.hash, nextTimestamp, blockData, difficulty)
     if addBlockToChain(newBlock):
-        #broadcastLatest() #when P2P is integrated
+        broadcastLatest()
         return newBlock
     else:
         return None
+
 
 def addBlockToChain(block):
     
@@ -83,6 +87,7 @@ def addBlockToChain(block):
             unspentTxOuts = ret
             return True
     return False
+
 
 def isValidBlock(newBlock, previousBlock):
     '''Checks and returns whether the new block generated is valid with respect to its previous block in the blockchain.
@@ -103,7 +108,7 @@ def isValidBlock(newBlock, previousBlock):
         logger.error('New block hash at: ' + str(newBlock.index) + ' is invalid after: ' + str(previousBlock.index))
         return False
 
-    if newBlock.hash != calculateHash(newBlock.index, newBlock.previousHash, newBlock.timestamp, newBlock.data, newBlock.difficulty, newBlock.nonce):
+    if newBlock.hash != newBlock.calculateHash():
         logger.error('New block hash at: ' + str(newBlock.index) + ' is invalid...calculated hash does not match block\'s hash.')
         return False
 
@@ -135,9 +140,9 @@ def isValidBlockStructure(testBlock):
         logger.error('Invalid type of timestamp: ' + str(type(testBlock.timestamp)) + ' at index is ' + str(testBlock.index))
         return False
 
-    if type(testBlock.data) != str:
+    '''if type(testBlock.data) != str:
         logger.error('Invalid type of data: ' + str(type(testBlock.data)) + ' at index is ' + str(testBlock.index))
-        return False
+        return False'''
 
     return True
 
@@ -183,22 +188,27 @@ def replaceChain(newChain):
     else:
         logger.info('Received invalid chain. Discarding.')
 
-
+# Redundant function
+"""
 def connectToPeer(peer):
     '''Connects to another peer on the brownie p2p network.
     '''
     browniePeers.append(peer)
     return
+"""
+
 
 def broadcastFullChain():
     global brownieNet
     msg = {'msg_type': 'response_blockchain', 'payload': json.dumps(getBlockchain(), cls=blockEncoder)}
     brownieNet.broadcast(msg)
 
+
 def broadcastLatest():
     global brownieNet
     msg = {'msg_type': 'response_latest', 'payload': json.dumps(str(getLatestBlock()))}
     brownieNet.broadcast(msg)
+
 
 def getDifficulty(brownieChain):
     '''
@@ -212,6 +222,7 @@ def getDifficulty(brownieChain):
         return getAdjustedDifficulty(latestBlock, brownieChain)
 
     return latestBlock.difficulty
+
 
 def getAdjustedDifficulty(latestBlock, brownieChain):
     '''
@@ -231,6 +242,7 @@ def getAdjustedDifficulty(latestBlock, brownieChain):
 
     return prevAdjustmentBlock.difficulty
 
+
 def isValidTimestamp(newBlock, previousBlock):
     '''
 
@@ -240,15 +252,22 @@ def isValidTimestamp(newBlock, previousBlock):
     '''
     return  previousBlock.timestamp - 60 < newBlock.timestamp and newBlock.timestamp - 60 < dt.now()
 
+
 def findBlock(index, previousHash, timestamp, data, difficulty):
-    '''
-    Creates a new valid block by finding the nonce value such that the created block satisfies current difficulty
-    :param index: index of the block
-    :param previousHash: hash the block preceding the new block
-    :param timestamp: time when the new block is created
-    :param data: data
-    :param difficulty: current difficulty
-    :return: New block
+    '''Creates a new valid block by finding the nonce value such that the created block satisfies current difficulty.
+
+    Arguments:
+        index: index of the block
+    
+        previousHash: hash the block preceding the new block
+    
+        timestamp: time when the new block is created
+    
+        data: data
+        
+        difficulty: current difficulty
+    Returns:
+        The new block generated with the correct nonce.
     '''
     nonce = 0
     while True:
@@ -257,6 +276,7 @@ def findBlock(index, previousHash, timestamp, data, difficulty):
             return block(index, hash, previousHash, timestamp, data, difficulty, nonce)
 
         nonce += 1
+
 
 def hexToBinary(hash_str):
     '''Converts the given input 'hash_str' from hexadecimal to its equivalent binary representation
@@ -267,16 +287,21 @@ def hexToBinary(hash_str):
     '''
     return bin(int(hash_str, 16))[2:].zfill(256)    
 
-def hashMatchesDifficulty(hash,difficulty):
+
+def hashMatchesDifficulty(hash, difficulty):
     '''Checks if the given hash matches the current difficulty level
 
-    :param
+    Arguments:
         hash: bit string representing binary value of the hash
+        
         difficulty: current difficulty level of the network
-    :return: Boolean
+    
+    Returns: 
+        A boolean indicating whether the hash matches the difficulty or not.
     '''
     binary_hash = hexToBinary(hash)
     return binary_hash.startswith('0' * difficulty)
+
 
 def calculateHash(index, previousHash, timestamp, data, difficulty, nonce):
     '''Calculates a block's hash, given its index, the previous block's hash, its timestamp, its data and its nonce.

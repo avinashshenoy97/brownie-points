@@ -100,6 +100,7 @@ class b2b:
                 blockchain.replaceChain(newChain)
         elif msg['msg_type'] == 'response_transaction_pool':
             self.logger.info('Response containing transaction pool recieved!')
+            transactionPool.transactionPool = json.loads(msg['payload'])
         elif msg['msg_type'] == 'test':
             self.logger.info('TESTING B2B!')
             print(msg)

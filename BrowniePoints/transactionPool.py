@@ -1,14 +1,32 @@
-from transaction import Transaction, TxIn, UnspentTxOut, validateTransaction
+'''
+Script incharge of maintaining the transaction pool.
+'''
+# ==================== Imports ==================== #
 from copy import deepcopy
 from functools import reduce
+import json
 import logging
 
+from transaction import Transaction, TxIn, UnspentTxOut, validateTransaction
+
+
+# ==================== Globals ==================== #
+transactionPool = []
 logger = logging.getLogger("Transaction")
 
-transactionPool = []
+
+# ==================== Main ==================== #
 
 def getTransactionPool():
+	global transactionPool
 	return deepcopy(transactionPool)
+
+
+def broadcastFullTransactionPool():
+	global transactionPool
+	global brownieNet
+	msg = {'msg_type': 'response_transaction_pool', 'payload': json.dumps(transactionPool)}
+	brownieNet.broadcast(msg)
 
 
 def addToTransactionPool(tx, UnspentTxOut):
@@ -21,6 +39,7 @@ def addToTransactionPool(tx, UnspentTxOut):
 	logger.info("Adding to tx pool : " + str(tx.txId)) #JSON.stringify(tx)??
 
 	transactionPool.append(tx)
+	broadcastFullTransactionPool()
 
 
 def hasTxIn(TxIn, UnspentTxOut):
@@ -33,6 +52,7 @@ def hasTxIn(TxIn, UnspentTxOut):
 
 
 def updateTransactionPool(UnspentTxOut):
+	global transactionPool
 	invalidTxs = []
 	
 	for tx in transactionPool:
@@ -42,8 +62,9 @@ def updateTransactionPool(UnspentTxOut):
 				break
 	
 	if(len(invalidTxs) > 0):
-		logger.error("removing the following transactions from txPool:" + reduce(lambda a,b : str(a.txId) + ',' + str(b.txId), invalidTxs))
+		logger.error("Removing the following transactions from txPool:" + reduce(lambda a,b : str(a.txId) + ',' + str(b.txId), invalidTxs))
 		transactionPool = [ tx for tx in transactionPool if tx not in invalidTxs]
+		broadcastFullTransactionPool()
 
 
 def getTxPoolIns(aTransactionPool):
