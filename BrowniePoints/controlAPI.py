@@ -2,6 +2,7 @@
 The HTTP API endpoints for controlling the node.
 '''
 # ==================== Imports ==================== #
+import logging
 from sanic import Sanic, Blueprint, response
 
 import blockchain
@@ -9,6 +10,7 @@ import transactionPool
 
 
 # ==================== API ==================== #
+logger = logging.getLogger('APILogger')
 controlAPI = Blueprint('controlAPI', url_prefix='/control')
 
 

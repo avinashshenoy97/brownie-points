@@ -25,7 +25,7 @@ from hashlib import sha256
 import ecdsa
 import binascii
 import logging
-from CryptoVinaigrette.Generators import rainbowKeygen
+#from CryptoVinaigrette.Generators import rainbowKeygen
 from collections import Counter
 from functools import reduce
 import re
@@ -257,7 +257,28 @@ def signTxIn(tx, txInIndex, private_key, UnspentTxOuts):
 
 
 def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
-    '''
+    newUnspentTxOuts = list()
+    for transaction in aTransactions:
+        index = 0
+        for txOut in transaction.txOuts:
+            newUnspentTxOuts.append(UnspentTxOut(transaction.txId, index, txOut.address, txOut.amount))
+            index += 1
+    # print(newUnspentTxOuts)
+
+    consumedTxOuts = list()
+    temp = list()
+    for transaction in aTransactions:
+        temp.extend(transaction.txIns)
+    for t in temp:
+        consumedTxOuts.append(UnspentTxOut(t.txOutId, t.txOutIndex, '', 0))
+    # print(consumedTxOuts)
+
+    resultingUnspentTxOuts = newUnspentTxOuts + (list(filter(lambda uTxO: not findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts), aUnspentTxOuts)))
+    # print(resultingUnspentTxOuts)
+    
+    return resultingUnspentTxOuts
+
+    """'''
     print("\naUnspentTxouts.............")
     for i in aUnspentTxOuts:
         print("id:",i.txOutId,"index:",i.txOutIndex,i.amount)
@@ -316,7 +337,9 @@ def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
     print("***************")'''
     
     #print("resulting unspent list:",resultingUnspentTxOuts)
+    UnspentTxOuts = resultingUnspentTxOuts
     return(resultingUnspentTxOuts)
+    """
 
 
 def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
@@ -324,7 +347,7 @@ def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
         logger.error("Invalid Block Transaction")
         return(None)
     
-    return(updateUnspentTxOuts(aTransactions, aUnspentTxOuts))
+    return updateUnspentTxOuts(aTransactions, aUnspentTxOuts)
 
 '''
 const toHexString = (byteArray): string => {

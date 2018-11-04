@@ -16,7 +16,6 @@ logger = logging.getLogger("Transaction")
 
 
 # ==================== Main ==================== #
-
 def getTransactionPool():
 	global transactionPool
 	return deepcopy(transactionPool)
@@ -85,3 +84,31 @@ def isValidTxForPool(tx, aTtransactionPool):
 			logger.info("txIn already found in the txPool")
 			return False
 	return True
+
+
+def filterTxPoolTxs(unspentTxOuts):
+	'''Remove unspentTxOuts that have already been used in a transaction that is not yet verified/mined.
+
+	unspentTxOuts: the unspent TxOuts to filter
+
+	Returns:
+		unspent TxOuts not a part of any transaction in the transaction pool
+	'''
+	transactionPool = getTransactionPool()
+	notRemovable = list()
+	
+	txIns = list()
+	for t in transactionPool:
+		txIns.extend(t.txIns)
+
+	for unspentTxOut in unspentTxOuts:
+		found = False
+		for txIn in txIns:
+			if txIn.txOutIndex == unspentTxOut.txOutIndex and txIn.txOutId == unspentTxOut.txOutId:
+				found = True
+				break
+		if not found:
+			notRemovable.append(unspentTxOut)
+
+	return notRemovable
+
