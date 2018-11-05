@@ -4,19 +4,19 @@ Script for blockchain helper functions.
 # ==================== Imports ==================== #
 import logging
 from datetime import datetime as dt
-from transaction import UnspentTxOut, Transaction, processTransactions
-from block import block
-from b2b import *
-from transaction import getCoinbaseTransaction
-from transactionPool import getTransactionPool
-from wallet import initWallet, getPublicFromWallet
 from copy import deepcopy
+
+import transaction
+import transactionPool
+import wallet
+from block import block, customEncoder
+from b2b import *
 
 
 # ==================== Globals ==================== #
 logger = logging.getLogger('Blockchain')
 genesisBrownie = None
-brownieChain = None
+brownieChain = []
 browniePeers = []
 unspentTxOuts = []
 difficulty = 4
@@ -28,11 +28,11 @@ def init():
 	global brownieChain
 	global difficulty
 	global unspentTxOuts
-	initWallet("creator")
-	random_user = getPublicFromWallet("creator")
-	genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', '0000000000' , dt.now(), getCoinbaseTransaction(random_user, 0), difficulty, 0)
+	wallet.initWallet()
+	random_user = wallet.getPublicFromWallet()
+	genesisBrownie = block(0, '7bbf374f987ffc593c6e28a4d558c3a299a9346e98c6448ef4c0c8d248078a36', '0000000000' , dt.now(), [transaction.getCoinbaseTransaction(random_user, 0)], difficulty, 0)
 	brownieChain = [genesisBrownie]
-	unspentTxOuts.extend(processTransactions([genesisBrownie.data], [], 0))
+	unspentTxOuts.extend(transaction.processTransactions(genesisBrownie.data, [], 0))
 
 
 # ==================== Main ==================== #
@@ -75,16 +75,55 @@ def generateRawNextBlock(blockData):
 	Returns:
 		The new block generated with the given data and appropriate metadata.
 	'''
+	global logger
+
 	latestBlock = brownieChain[-1]
 	difficulty = getDifficulty(getBlockchain())
 	nextIndex = latestBlock.index + 1
 	nextTimestamp = dt.now()
 	newBlock = findBlock(nextIndex, latestBlock.hash, nextTimestamp, blockData, difficulty)
 	if addBlockToChain(newBlock):
-		broadcastLatest()
+		#broadcastLatest()
+		broadcastFullChain()
 		return newBlock
 	else:
+		logger.error('Error adding block to chain!')
 		return None
+
+
+def generateNextBlock():
+	'''Generate next block by generating a coinbase transaction for it and adding transactions from the transactionPool.
+
+	Returns:
+		The newly generated block.
+	'''
+	coinbaseTx = transaction.getCoinbaseTransaction(wallet.getPublicFromWallet(), getLatestBlock().index + 1)
+	return generateRawNextBlock([coinbaseTx] + transactionPool.getTransactionPool())
+
+
+def findBlock(index, previousHash, timestamp, data, difficulty):
+	'''Creates a new valid block by finding the nonce value such that the created block satisfies current difficulty.
+
+	Arguments:
+		index: index of the block
+	
+		previousHash: hash the block preceding the new block
+	
+		timestamp: time when the new block is created
+	
+		data: data
+		
+		difficulty: current difficulty
+	Returns:
+		The new block generated with the correct nonce.
+	'''
+	nonce = 0
+	while True:
+		hash = calculateHash(index, previousHash, timestamp, data, difficulty, nonce)
+		if hashMatchesDifficulty(hash, difficulty):
+			return block(index, hash, previousHash, timestamp, data, difficulty, nonce)
+
+		nonce += 1
 
 
 def addBlockToChain(block):
@@ -92,12 +131,13 @@ def addBlockToChain(block):
 	global unspentTxOuts
 	
 	if isValidBlock(block, getLatestBlock()) :
-		ret = processTransactions(block.data, unspentTxOuts, block.index)
+		ret = transaction.processTransactions(block.data, unspentTxOuts, block.index)
 		if ret is None:
 			return False
 		else:
 			brownieChain.append(block)
-			unspentTxOuts = ret
+			setUnspentTxOuts(ret)
+			transactionPool.updateTransactionPool(getUnspentTxOuts())
 			return True
 	return False
 
@@ -121,7 +161,7 @@ def isValidBlock(newBlock, previousBlock):
 		logger.error('New block hash at: ' + str(newBlock.index) + ' is invalid after: ' + str(previousBlock.index))
 		return False
 
-	if newBlock.hash != newBlock.calculateHash():
+	if newBlock.hash != calculateHash(newBlock.index, newBlock.previousHash, newBlock.timestamp, newBlock.data, newBlock.difficulty, newBlock.nonce): #newBlock.calculateHash(preHash=True):
 		logger.error('New block hash at: ' + str(newBlock.index) + ' is invalid...calculated hash does not match block\'s hash.')
 		return False
 
@@ -194,6 +234,14 @@ def replaceChain(newChain):
 		if len(newChain) > len(brownieChain):
 			logger.info('Replacing chain.')
 			brownieChain = newChain
+			
+			aUnspentTxOuts = list()
+			for b in brownieChain:
+				aUnspentTxOuts = transaction.processTransactions(b.data, aUnspentTxOuts, b.index)
+				# have to check for null
+
+			setUnspentTxOuts(aUnspentTxOuts)
+			transactionPool.updateTransactionPool(unspentTxOuts)
 			# broadcastLatest()
 			broadcastFullChain()
 		else:
@@ -213,7 +261,7 @@ def connectToPeer(peer):
 
 def broadcastFullChain():
 	global brownieNet
-	msg = {'msg_type': 'response_blockchain', 'payload': json.dumps(getBlockchain(), cls=blockEncoder)}
+	msg = {'msg_type': 'response_blockchain', 'payload': json.dumps(getBlockchain(), cls=customEncoder)}
 	brownieNet.broadcast(msg)
 
 
@@ -277,41 +325,6 @@ def isValidTimestamp(newBlock, previousBlock):
 	return  previousBlock.timestamp - 60 < newBlock.timestamp and newBlock.timestamp - 60 < dt.now()
 
 
-def generateNextBlock():
-	'''Generate next block by generating a coinbase transaction for it and adding transactions from the transactionPool.
-
-	Returns:
-		The newly generated block.
-	'''
-	coinbaseTx = getCoinbaseTransaction(getPublicFromWallet(), getLatestBlock().index + 1)
-	return generateRawNextBlock([coinbaseTx] + getTransactionPool())
-
-
-def findBlock(index, previousHash, timestamp, data, difficulty):
-	'''Creates a new valid block by finding the nonce value such that the created block satisfies current difficulty.
-
-	Arguments:
-		index: index of the block
-	
-		previousHash: hash the block preceding the new block
-	
-		timestamp: time when the new block is created
-	
-		data: data
-		
-		difficulty: current difficulty
-	Returns:
-		The new block generated with the correct nonce.
-	'''
-	nonce = 0
-	while True:
-		hash = calculateHash(index, previousHash, timestamp, data, difficulty, nonce)
-		if hashMatchesDifficulty(hash, difficulty):
-			return block(index, hash, previousHash, timestamp, data, difficulty, nonce)
-
-		nonce += 1
-
-
 def hexToBinary(hash_str):
 	'''Converts the given input 'hash_str' from hexadecimal to its equivalent binary representation
 
@@ -353,5 +366,9 @@ def calculateHash(index, previousHash, timestamp, data, difficulty, nonce):
 	Returns:
 		The hash string (in hexadecimals) of the given data.
 	'''
-	preHashedString = str(index) + previousHash + str(timestamp) + str(data) + str(difficulty) + str(nonce)
+	_data = list()
+	for d in data:
+		_data.append(str(d))
+	preHashedString = str(index) + previousHash + str(timestamp) + str(_data) + str(difficulty) + str(nonce)
+	logger.debug('PREHASHED: ' + preHashedString)
 	return sha256(bytes(preHashedString, 'utf-8')).hexdigest()

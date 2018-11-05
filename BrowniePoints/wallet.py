@@ -9,8 +9,8 @@ from ecdsa import SigningKey, SECP256k1
 import logging
 import os
 
+import blockchain
 from transaction import *
-from blockchain import getUnspentTxOuts
 from transactionPool import getTransactionPool, addToTransactionPool, filterTxPoolTxs
 
 
@@ -75,7 +75,7 @@ def getBalance(address, unspentTxOut):
 
 
 def getAccountBalance():
-	return getBalance(getPublicFromWallet(), getUnspentTxOuts())
+	return getBalance(getPublicFromWallet(), blockchain.getUnspentTxOuts())
 
 
 def findTxOutsforAmount(amount, myUnspentTxOuts):
@@ -98,7 +98,7 @@ def createTxOuts(receiver_address, myaddress, amount, leftover_amount):
 	
 	else:
 		leftover_Tx = TxOut(myaddress, leftover_amount)
-		return [receiver_Tx,leftover_Tx]
+		return [receiver_Tx, leftover_Tx]
 	
 
 def toUnsignedTxIn(unspentTxOut):
@@ -110,7 +110,7 @@ def createTransaction(receiver_address, amount, private_key, unspentTxOuts):
 	'''
 	obtain pub key from private key	
 	'''
-	myaddress = getPublicKey(private_key)
+	myaddress = getPublicFromWallet()
 	myUnspentTxOuts = []	
 	for i in unspentTxOuts:
 		if i.address == myaddress:
@@ -149,7 +149,10 @@ def sendTransaction(address, amount):
 	Returns:
 		Broadcasts the updated transaction pool and returns the transaction object.
 	'''
-	tx = createTransaction(address, amount, getPrivateFromWallet(), getUnspentTxOuts(), getTransactionPool())
-	addToTransactionPool(tx, getUnspentTxOuts())
+	tx = createTransaction(address, amount, getPrivateFromWallet(), blockchain.getUnspentTxOuts())
+	addToTransactionPool(tx, blockchain.getUnspentTxOuts())
 	return tx
 
+
+if __name__ == '__main__':
+	initWallet()

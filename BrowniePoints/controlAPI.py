@@ -4,9 +4,11 @@ The HTTP API endpoints for controlling the node.
 # ==================== Imports ==================== #
 import logging
 from sanic import Sanic, Blueprint, response
+from sanic.exceptions import ServerError
 
 import blockchain
 import transactionPool
+import wallet
 
 
 # ==================== API ==================== #
@@ -29,19 +31,28 @@ async def getUnspentTxOuts(request):
     return response.json(blockchain.unspentTxOuts)
 
 
-@controlAPI.route('/mineBlock', methods=['POST'])
+@controlAPI.route('/mineRawBlock', methods=['POST'])
+async def mineRawBlock(request):
+    return response.json(blockchain.generateRawNextBlock(request.json['data']))
+
+
+@controlAPI.route('/mineBlock', methods=['PUT'])
 async def mineBlock(request):
-    return response.json(blockchain.generateNextBlock(request.json['data']))
+    return response.json(blockchain.generateNextBlock())
 
-"""
-@controlAPI.route('/getAllPeers', methods=['GET'])
-async def getAllPeers(request):
-    return response.json(blockchain.browniePeers)
-"""
 
-"""
-@controlAPI.route('/addPeer/<peer>')
-async def addPeer(request, peer):
-    blockchain.connectToPeer(peer)
-    return response.json({}, status=200)
-"""
+@controlAPI.route('/getWalletAddress', methods=['GET'])
+async def getWalletAddress(request):
+    return response.json({'address': wallet.getPublicFromWallet()})
+
+
+@controlAPI.route('/sendTransaction', methods=['POST'])
+async def sendTransaction(request):
+    if not 'address' in request.json:
+        raise ServerError('`address` is required!', status=400)
+    if not 'amount' in request.json:
+        raise ServerError('`amount` is required!', status=400)
+
+    logger.info('Sending ' + str(request.json['amount']) + ' to ' + str(request.json['address']))
+    return response.json(wallet.sendTransaction(request.json['address'], float(request.json['amount'])))
+

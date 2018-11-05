@@ -584,5 +584,6 @@ if __name__ == "__main__":
     print("Starting rendezvous server.")
     factory = RendezvousFactory()
     reactor.listenTCP(8000, factory, interface="0.0.0.0")
+    print('Listening...')
     reactor.run()
 

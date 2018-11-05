@@ -8,6 +8,7 @@ import json
 import logging
 
 from transaction import Transaction, TxIn, UnspentTxOut, validateTransaction
+from block import customEncoder
 
 
 # ==================== Globals ==================== #
@@ -24,7 +25,7 @@ def getTransactionPool():
 def broadcastFullTransactionPool():
 	global transactionPool
 	global brownieNet
-	msg = {'msg_type': 'response_transaction_pool', 'payload': json.dumps(transactionPool)}
+	msg = {'msg_type': 'response_transaction_pool', 'payload': json.dumps(transactionPool, cls=customEncoder)}
 	brownieNet.broadcast(msg)
 
 
@@ -42,12 +43,14 @@ def addToTransactionPool(tx, UnspentTxOut):
 
 
 def hasTxIn(TxIn, UnspentTxOut):
-	foundTxIn = None
+	foundTxIn = False
 
 	for uTxO in UnspentTxOut:
 		foundTxIn = (uTxO.txOutId == TxIn.txOutId and uTxO.txOutIndex == TxIn.txOutIndex)
+		if foundTxIn:
+			break
 
-	return (foundTxIn is not None)
+	return foundTxIn
 
 
 def updateTransactionPool(UnspentTxOut):
@@ -56,12 +59,12 @@ def updateTransactionPool(UnspentTxOut):
 	
 	for tx in transactionPool:
 		for txIn in tx.txIns:
-			if(hasTxIn(txIn, UnspentTxOut) == False):
+			if not hasTxIn(txIn, UnspentTxOut):
 				invalidTxs.append(tx)
 				break
 	
 	if(len(invalidTxs) > 0):
-		logger.error("Removing the following transactions from txPool:" + reduce(lambda a,b : str(a.txId) + ',' + str(b.txId), invalidTxs))
+		logger.error("Removing the following transactions from txPool:" + str([str(t) for t in invalidTxs]))
 		transactionPool = [ tx for tx in transactionPool if tx not in invalidTxs]
 		broadcastFullTransactionPool()
 

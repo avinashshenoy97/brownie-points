@@ -3,16 +3,19 @@ Main script for Brownie Points.
 '''
 # ==================== Imports ==================== #
 import logging
+import os
 from datetime import datetime as dt
 import argparse
 from sanic import Sanic, response
 import subprocess as sp
 import sys
 import atexit
+import time
 
 from block import block
 import blockchain
 import transactionPool
+import wallet
 from b2b import b2b
 from controlAPI import controlAPI
 
@@ -22,7 +25,8 @@ parser = argparse.ArgumentParser(description='Brownie Points - New Age, Quantum 
 
 parser.add_argument('-d', '--debug', default=False, action='store_true', help='Run in debug mode.')
 parser.add_argument('-f', '--first', default=False, action='store_true', help='First node, automatically starts rendezvous server.')
-parser.add_argument('-c', '--client', default=False, action='store_true', help='Start as a client that mines continuously.')
+parser.add_argument('-w', '--wallet', default=False, action='store_true', help='Create new keypair for wallet.')
+parser.add_argument('-m', '--miner', default=False, action='store_true', help='Start as a client that mines continuously.')
 parser.add_argument('-na', '--no-api', default=False, action='store_true', help='Don\'t start the REST API.')
 parser.add_argument('rendezvous_ip', type=str, help='Rendezvous server IP address.')
 parser.add_argument('rendezvous_port', type=str, default=8000, help='Rendezvous server PORT at IP address.')
@@ -49,9 +53,6 @@ else:
 logging.getLogger('pyp2p').setLevel(logging.INFO)
 brownieLogger = logging.getLogger('MainBrownie')
 
-blockchain.init()
-brownieLogger.info('Created genesis brownie and initiated own blockchain.')
-
 app = Sanic('BrowniePoints')
 
 app.blueprint(controlAPI)
@@ -63,19 +64,29 @@ def favicon_handler(request):
 
 if __args__.first:
     sp.Popen(['python3', 'BrowniePoints/rendezvous-server/rendezvous_server.py'])
-    brownieLogger.info('Mmmmm... that fresh brownie smell in the air!')
     brownieLogger.debug(str(blockchain.brownieChain))
+    time.sleep(2)
     brownieLogger.info('Joining b2b network')
     brownieNet = b2b(__args__.rendezvous_ip, __args__.rendezvous_port)
+    blockchain.brownieNet = brownieNet
+    transactionPool.brownieNet = brownieNet
+    brownieLogger.info('Mmmmm... that fresh brownie smell in the air!')
+    blockchain.init()
+    brownieLogger.info('Created genesis brownie and initiated own blockchain.')
 else:
     brownieLogger.info('Joining b2b network')
     brownieNet = b2b(__args__.rendezvous_ip, __args__.rendezvous_port)
+    blockchain.brownieNet = brownieNet
+    transactionPool.brownieNet = brownieNet
     brownieLogger.info('Synchronizing with brownie network!')
     brownieNet.broadcast({'msg_type': 'query_all'})
     brownieLogger.debug(str(blockchain.brownieChain))
 
-blockchain.brownieNet = brownieNet
-transactionPool.brownieNet = brownieNet
+
+brownieLogger.info('Initialising wallet...')
+if __args__.wallet:
+    os.system('rm -rf Wallet')
+wallet.initWallet()
 
 if not __args__.no_api:
     brownieLogger.info('Starting brownie API')

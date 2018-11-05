@@ -26,9 +26,10 @@ import ecdsa
 import binascii
 import logging
 #from CryptoVinaigrette.Generators import rainbowKeygen
-from collections import Counter
+from collections import Counter, OrderedDict
 from functools import reduce
 import re
+from json import JSONEncoder
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
@@ -42,20 +43,58 @@ class UnspentTxOut:
         self.address = address
         self.amount = amount
 
+    def __str__(self):
+        return str(OrderedDict([(key, self.__dict__[key]) for key in sorted(self.__dict__)]))
+
+    def deserialize(d):
+        return UnspentTxOut(d['txOutId'], d['txOutIndex'], d['address'], d['amount'])
+
 
 class TxOut:
     def __init__(self, address, amnt):
         self.address, self.amount = (address, amnt)
+
+    def __str__(self):
+        return str(OrderedDict([(key, self.__dict__[key]) for key in sorted(self.__dict__)]))
+
+    def deserialize(d):
+        return TxOut(d['address'], d['amount'])
 
 
 class TxIn:
     def __init__(self, txOutId, index, sign):
         self.txOutId, self.txOutIndex, self.signature = (txOutId, index, sign)
 
+    def __str__(self):
+        return str(OrderedDict([(key, self.__dict__[key]) for key in sorted(self.__dict__)]))
+
+    def deserialize(d):
+        return TxIn(d['txOutId'], d['txOutIndex'], d['signature'])
+
 
 class Transaction:
     def __init__(self, txId, txIns, txOuts):
         self.txId, self.txIns, self.txOuts = (txId, txIns, txOuts)
+
+    def __str__(self):
+        txIns = list()
+        for t in self.txIns:
+            txIns.append(str(t))
+        
+        txOuts = list()
+        for t in self.txOuts:
+            txOuts.append(str(t))
+
+        return str(OrderedDict([(key, {'txId': str(self.txId), 'txIns': str(txIns), 'txOuts': str(txOuts)}[key]) for key in sorted({'txId': str(self.txId), 'txIns': str(txIns), 'txOuts': str(txOuts)})]))
+
+    def deserialize(d):
+        TxIns = list()
+        for t in d['txIns']:
+            TxIns.append(TxIn.deserialize(t))
+        TxOuts = list()
+        for t in d['txOuts']:
+            TxOuts.append(TxOut.deserialize(t))
+        return Transaction(d['txId'], TxIns, TxOuts)
 
 
 def getTransactionId(transaction):
@@ -390,7 +429,7 @@ def isValidTxOutStructure(txOut):
 		logger.error('invalid address type in txOut')
 		return False
 
-	elif(not ((type(txOut.amount) is int) or (type(txOut.amount) is long))):
+	elif(not ((type(txOut.amount) is int) or (type(txOut.amount) is float))):
 		logger.error('invalid tamount type in txOut')
 		return False
 	else:
@@ -440,3 +479,4 @@ def isValidAddress(address):
 		logger.error('public key must start with 04')
 		return False
 	return True
+
