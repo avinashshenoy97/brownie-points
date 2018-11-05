@@ -2,6 +2,7 @@
 .DS_STORE
 *.log
 *.rkey
+Wallet/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

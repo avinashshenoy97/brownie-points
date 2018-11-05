@@ -4,9 +4,6 @@ Script for the peer to peer brownie network.
 # ==================== Imports ==================== #
 
 from pyp2p.net import *
-import blockchain
-from block import *
-import transactionPool
 import json
 import logging
 import threading 
@@ -14,6 +11,11 @@ import time
 import signal
 import atexit
 import argparse
+
+import blockchain
+from block import *
+import transactionPool
+import transaction
 
 # ==================== Main ==================== #
 
@@ -76,16 +78,30 @@ class b2b:
         msg = json.loads(msg)
         if msg['msg_type'] == 'query_latest':
             self.logger.info('Query for latest block recieved!')
-            msg = {'msg_type': 'response_latest', 'payload': json.dumps(blockchain.getLatestBlock(), cls=blockEncoder)}
+            if len(blockchain.brownieChain) == 0:
+                self.logger.info('Unable to respond')
+                return
+            msg = {'msg_type': 'response_latest', 'payload': json.dumps(blockchain.getLatestBlock(), cls=customEncoder)}
             con.send_line(json.dumps(msg))
         elif msg['msg_type'] == 'query_all':
             self.logger.info('Query for full blockchain recieved!')
-            msg = {'msg_type': 'response_blockchain', 'payload': json.dumps(blockchain.getBlockchain(), cls=blockEncoder)}
+            if len(blockchain.brownieChain) == 0:
+                self.logger.info('Unable to respond')
+                return
+            msg = {'msg_type': 'response_blockchain', 'payload': json.dumps(blockchain.getBlockchain(), cls=customEncoder)}
             con.send_line(json.dumps(msg))
         elif msg['msg_type'] == 'query_transaction_pool':
             self.logger.info('Query for transaction pool recieved!')
-            msg = {'msg_type': 'response_transaction_pool', 'payload': json.dumps(transactionPool.transactionPool)}
+            msg = {'msg_type': 'response_transaction_pool', 'payload': json.dumps(transactionPool.transactionPool, cls=customEncoder)}
             con.send_line(json.dumps(msg))
+        elif msg['msg_type'] == 'response_latest':
+            self.logger.info('Latest block received')
+            newBlock = block.deserialize(json.loads(msg['payload']))
+            if blockchain.isValidBlock(newBlock, blockchain.getLatestBlock()):
+                blockchain.addBlockToChain(newBlock)
+                self.logger.info('Added block to brownieChain')
+            else:
+                self.logger.error('Invalid block...')
         elif msg['msg_type'] == 'response_blockchain':
             self.logger.info('Response containing blockchain recieved!')
             recvChain = json.loads(msg['payload'])
@@ -96,10 +112,22 @@ class b2b:
                 except Exception as e:
                     self.logger.error('An error occurred while adopting received blockchain: ' + str(e) + '\n ABORTING!')
                     return
+            if len(blockchain.brownieChain) == 0:
+                blockchain.genesisBrownie = newChain[0]
+                blockchain.replaceChain(newChain)
+                return
             if blockchain.isValidChain(newChain, blockchain.genesisBrownie):
                 blockchain.replaceChain(newChain)
         elif msg['msg_type'] == 'response_transaction_pool':
             self.logger.info('Response containing transaction pool recieved!')
+            newPool = list()
+            for t in json.loads(msg['payload']):
+                try:
+                    newPool.append(transaction.Transaction.deserialize(t))
+                except Exception as e:
+                    self.logger.error('An error occurred while adopting received transaction pool: ' + str(e) + '\n ABORTING!')
+                    return
+            transactionPool.transactionPool = newPool
         elif msg['msg_type'] == 'test':
             self.logger.info('TESTING B2B!')
             print(msg)

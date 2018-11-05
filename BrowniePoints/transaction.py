@@ -25,14 +25,16 @@ from hashlib import sha256
 import ecdsa
 import binascii
 import logging
-from CryptoVinaigrette.Generators import rainbowKeygen
-from collections import Counter
+#from CryptoVinaigrette.Generators import rainbowKeygen
+from collections import Counter, OrderedDict
 from functools import reduce
 import re
+from json import JSONEncoder
 
 # ==================== Main ==================== #
 logger = logging.getLogger('Transaction')
 COINBASE_AMOUNT = 50
+
 
 class UnspentTxOut:
     def __init__(self, txOutId, txOutIndex, address, amount):
@@ -41,21 +43,61 @@ class UnspentTxOut:
         self.address = address
         self.amount = amount
 
+    def __str__(self):
+        return str(OrderedDict([(key, self.__dict__[key]) for key in sorted(self.__dict__)]))
+
+    def deserialize(d):
+        return UnspentTxOut(d['txOutId'], d['txOutIndex'], d['address'], d['amount'])
+
+
 class TxOut:
     def __init__(self, address, amnt):
-        self.address, self.amount = (address,amnt)
+        self.address, self.amount = (address, amnt)
+
+    def __str__(self):
+        return str(OrderedDict([(key, self.__dict__[key]) for key in sorted(self.__dict__)]))
+
+    def deserialize(d):
+        return TxOut(d['address'], d['amount'])
+
 
 class TxIn:
     def __init__(self, txOutId, index, sign):
         self.txOutId, self.txOutIndex, self.signature = (txOutId, index, sign)
 
+    def __str__(self):
+        return str(OrderedDict([(key, self.__dict__[key]) for key in sorted(self.__dict__)]))
+
+    def deserialize(d):
+        return TxIn(d['txOutId'], d['txOutIndex'], d['signature'])
+
+
 class Transaction:
     def __init__(self, txId, txIns, txOuts):
         self.txId, self.txIns, self.txOuts = (txId, txIns, txOuts)
 
+    def __str__(self):
+        txIns = list()
+        for t in self.txIns:
+            txIns.append(str(t))
+        
+        txOuts = list()
+        for t in self.txOuts:
+            txOuts.append(str(t))
+
+        return str(OrderedDict([(key, {'txId': str(self.txId), 'txIns': str(txIns), 'txOuts': str(txOuts)}[key]) for key in sorted({'txId': str(self.txId), 'txIns': str(txIns), 'txOuts': str(txOuts)})]))
+
+    def deserialize(d):
+        TxIns = list()
+        for t in d['txIns']:
+            TxIns.append(TxIn.deserialize(t))
+        TxOuts = list()
+        for t in d['txOuts']:
+            TxOuts.append(TxOut.deserialize(t))
+        return Transaction(d['txId'], TxIns, TxOuts)
+
 
 def getTransactionId(transaction):
-    
     txInContent = ''
     for i in transaction.txIns:
         txInContent += i.txOutId + str(i.txOutIndex)
@@ -64,6 +106,7 @@ def getTransactionId(transaction):
         txOutContent += i.address + str(i.amount)
     txContent = txInContent + txOutContent
     return(sha256(txContent.encode()).hexdigest())
+
 
 def validateTransaction(transaction, aUnspentTxOut):
     if(not(isValidTransactionStructure(transaction))):
@@ -218,10 +261,11 @@ def getCoinbaseTransaction(address, blockIndex):
     return t
     
 
-def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
+def signTxIn(tx, txInIndex, private_key, UnspentTxOuts):
+	global logger
 	txIn = tx.txIns[txInIndex]
 	datatosign = tx.txId
-	referencedUnspentTxOut = findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, UnspentTxOuts);
+	referencedUnspentTxOut = findUnspentTxOut(txIn.txOutId, txIn.txOutIndex, UnspentTxOuts)
 
 	if(referencedUnspentTxOut is None):
 		logger.error("could not find referenced txOut while creating transaction")
@@ -247,11 +291,33 @@ def signTxIn(tx,txInIndex,private_key,UnspentTxOuts):
 	
 	str_sign = signature.hex()
 	#print("signature is :",type(str_sign),"\n and it is:",str_sign)
+	logger.debug('Signature is: ' + str(str_sign))
 	return str_sign
 
 
 def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
-    '''
+    newUnspentTxOuts = list()
+    for transaction in aTransactions:
+        index = 0
+        for txOut in transaction.txOuts:
+            newUnspentTxOuts.append(UnspentTxOut(transaction.txId, index, txOut.address, txOut.amount))
+            index += 1
+    # print(newUnspentTxOuts)
+
+    consumedTxOuts = list()
+    temp = list()
+    for transaction in aTransactions:
+        temp.extend(transaction.txIns)
+    for t in temp:
+        consumedTxOuts.append(UnspentTxOut(t.txOutId, t.txOutIndex, '', 0))
+    # print(consumedTxOuts)
+
+    resultingUnspentTxOuts = newUnspentTxOuts + (list(filter(lambda uTxO: not findUnspentTxOut(uTxO.txOutId, uTxO.txOutIndex, consumedTxOuts), aUnspentTxOuts)))
+    # print(resultingUnspentTxOuts)
+    
+    return resultingUnspentTxOuts
+
+    """'''
     print("\naUnspentTxouts.............")
     for i in aUnspentTxOuts:
         print("id:",i.txOutId,"index:",i.txOutIndex,i.amount)
@@ -310,7 +376,9 @@ def updateUnspentTxOuts(aTransactions, aUnspentTxOuts):
     print("***************")'''
     
     #print("resulting unspent list:",resultingUnspentTxOuts)
+    UnspentTxOuts = resultingUnspentTxOuts
     return(resultingUnspentTxOuts)
+    """
 
 
 def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
@@ -318,7 +386,7 @@ def processTransactions(aTransactions, aUnspentTxOuts, blockIndex):
         logger.error("Invalid Block Transaction")
         return(None)
     
-    return(updateUnspentTxOuts(aTransactions, aUnspentTxOuts))
+    return updateUnspentTxOuts(aTransactions, aUnspentTxOuts)
 
 '''
 const toHexString = (byteArray): string => {
@@ -361,7 +429,7 @@ def isValidTxOutStructure(txOut):
 		logger.error('invalid address type in txOut')
 		return False
 
-	elif(not ((type(txOut.amount) is int) or (type(txOut.amount) is long))):
+	elif(not ((type(txOut.amount) is int) or (type(txOut.amount) is float))):
 		logger.error('invalid tamount type in txOut')
 		return False
 	else:
@@ -411,3 +479,4 @@ def isValidAddress(address):
 		logger.error('public key must start with 04')
 		return False
 	return True
+
