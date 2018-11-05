@@ -21,10 +21,10 @@ var blockState=Vue.component('block-state-comp',{
       $('.btn-paginacao').css("z-index","-1");
     },
    submitCoins: function() {
-      Vue.http.put('/wallet/sendCoins',this.sendCoins)
+      Vue.http.get('/wallet/getBlocks',this.sendCoins)
           .then((response) => {
             console.log("sent",response);
-            this.transactionNumber=response.data['transactionNumber']
+            // this.transactionNumber=response.data['transactionNumber']
           })
           .catch((err) => {
             console.log("error",err);
@@ -46,58 +46,6 @@ var transactionPool=Vue.component('transaction-pool',{
       this.$parent.formOpen3 = false;
       this.$parent.formClose3 = true;
     }
-    // getTransactionDetails: function() {
-    //   this.$http.get('/wallet/getTransactionDetails',this.transactionDetails)
-    //       .then((response) => {
-    //         console.log("received",response.data);
-    //         this.transactionDetailsAddr=response.data['transactionAddr'];
-    //         this.transactionDetailsCoins=response.data['transactionCoins'];
-    //         this.updateTransactions();
-    //         console.log("gotit",this.transactionDetailsAddr);
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       })
-    //  },
-    //  updateTransactions: function(){
-    //     var $transactionDetailsAddr = this.transactionDetailsAddr;
-    //     var $transactionDetailsCoins = this.transactionDetailsCoins;
-    //     var i=1;
-    //     if($transactionDetailsAddr.length>0)
-    //       $(".container-right").empty();
-    //     for(i=0;i<$transactionDetailsAddr.length;i++){ 
-    //       var j=i+1;
-    //       // var $addr=$transactionDetails[i].txOuts[0].address;
-    //       // var $coinCount = $transactionDetails[i].txOuts[0].coinCount;
-    //       var $addr=$transactionDetailsAddr[i];
-    //       var $coinCount=$transactionDetailsCoins[i];
-    //       var $myaddr = vue.$refs.public_address.publicaddress
-    //       var $transaction = "<div class='container'>";
-    //       $transaction+= "<div class='card'>"
-    //       $transaction+= "<div class='front'><h2>Transaction "+j+"</h2></div>"
-    //       $transaction+= "<div class='back'>"
-    //       $transaction+= "<div class='content'>"
-    //       $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
-    //       $transaction+= "<p class='cardContent' title='"+$myaddr+"'>"+$myaddr+"</p>"
-    //       $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
-    //       $transaction+= "<p class='cardContent'>"+$addr+"</p>"
-    //       $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"
-    //       $transaction+= "<p class='cardContent'>"+$coinCount+"</p>"
-    //       // $transaction+= "<h3 class='cardTitle'>Timestamp</h3>"
-    //       // $transaction+= "<p class='cardContent'>1234</p>"
-    //       $transaction+= "</div>"
-    //       $transaction+= "</div>"
-    //       $transaction+= "</div>"
-    //       $transaction+= "</div>"
-    //       var $transaction_el = $($transaction);
-    //       $(".container-right").append($transaction_el);
-    //     }
-    //     $('.card').unbind('click');
-    //     $('.card').click(function(){
-    //       $(this).toggleClass('flipped');
-    //     });
-
-    //  } 
   }
 });
 

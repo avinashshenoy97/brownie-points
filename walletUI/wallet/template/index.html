@@ -349,16 +349,16 @@
           <fieldset id="enterCoin">
             <h2 class="fs-title">Enter Number of Coins</h2>
             <!-- <h3 class="fs-subtitle">Enter the number of coins to be sent</h3> -->
-            <input type="number" name="coinCount" placeholder="Number of Coins" v-model="sendCoins.coinCount"/>
-            <span v-cloak v-if="sendCoins.coinCount<0 || Number(sendCoins.coinCount)!==sendCoins.coinCount" class="text-danger">* Enter positive number of coins</span><br>
-            <span v-cloak v-if="sendCoins.coinCount>checkbalance" class="text-danger">* Not enough balance ( Balance = [[ checkbalance ]] )</span><br>
+            <input type="number" name="amount" placeholder="Number of Coins" v-model="sendCoins.amount"/>
+            <span v-cloak v-if="sendCoins.amount<0 || Number(sendCoins.amount)!==sendCoins.amount" class="text-danger">* Enter positive number of coins</span><br>
+            <span v-cloak v-if="sendCoins.amount>checkbalance" class="text-danger">* Not enough balance ( Balance = [[ checkbalance ]] )</span><br>
             <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="button" name="next" class="next action-button" :disabled="sendCoins.coinCount<0 || Number(sendCoins.coinCount)!==sendCoins.coinCount || sendCoins.coinCount>checkbalance" value="Next" />
+            <input type="button" name="next" class="next action-button" :disabled="sendCoins.amount<0 || Number(sendCoins.amount)!==sendCoins.amount || sendCoins.amount>checkbalance" value="Next" />
           </fieldset>
           <fieldset id="confirmation">
             <h2 class="fs-title">Confirmation</h2>
             <!-- <h3 class="fs-subtitle">Send [[sendCoins.coinCount]] coins to [[sendCoins.address]]?</h3> -->
-            <h3 class="fs-subtitle">Send [[sendCoins.coinCount]] coins to receiver?</h3>
+            <h3 class="fs-subtitle">Send [[sendCoins.amount]] coins to receiver?</h3>
             <div class="success_div hide">
             <div class="check_mark">
               <div class="sa-icon sa-success animate">
@@ -397,7 +397,8 @@
       <div id="transLog">
         <h3 id="logTitle">Wallet Logs</h3>
         <div id=trans">
-          
+          <span id="transspan">50 coins sent</span><br>
+          <span id="transspan">50 coins sent</span><br>
         </div>
       </div>  
       </div>
@@ -420,7 +421,7 @@
         <h2><span class="left-title">Completed Transactions</span><span class="right-title">Pending Transactions</span></h2>        
         </div>
         <div class="container-left">
-        <div class="container">
+<!--         <div class="container">
           <div class="card">
             <div class="front"><h2>Transaction 1</h2></div>
             <div class="back">
@@ -479,7 +480,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         </div>
         <!-- <div class="container-sep"></div> -->
         <div class="container-right">

@@ -77,7 +77,7 @@ var resetForm=function(){
   });
 
   vue.$refs.send_coins.sendCoins.address=null;
-  vue.$refs.send_coins.sendCoins.coinCount=0;
+  vue.$refs.send_coins.sendCoins.amount=0;
   }
 }
 

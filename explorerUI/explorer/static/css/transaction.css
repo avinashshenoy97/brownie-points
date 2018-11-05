@@ -206,14 +206,15 @@ h2, h3 {
 .container-left .container .card .front {
   /*background: #096AA3;*/
   /*background: #228653;*/
-  background: #71bc78;
-
+  /*background: #71bc78;*/
+  background: #cd3333;
 }
 
 .container-left .container .card .back {
   /*background: #03446A;*/
   /*background: #007539;*/
-  background: #71bc78;
+  /*background: #71bc78;*/
+  background: #cd3333;
   -webkit-transform: rotateY( 180deg );
   -moz-transform: rotateY( 180deg );
   -o-transform: rotateY( 180deg );

@@ -1,17 +1,16 @@
 #balance-container{
 	width: 40%;
 	height: 60%;
-  	margin: 5% 30%;
-  	text-align: center;	
+  margin: 5% 30%;
+  text-align: center;	
 }
 #transLog{
-  background: #ffffff;
+  background: #000000;
   border: 0 none;
   border-radius: 3px;
   box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
-  padding: 20px 30px;
   box-sizing: border-box;
-  margin-top:15%;
+  margin-top:10%;
   margin-bottom: 5%;
   width: 100%;
   max-height: 30%;
@@ -22,6 +21,13 @@
 #logTitle{
 	font-family: brownieFont;
 	color:#000000;
+  background-color: #ffffff;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  border: 0 none;
+  border-radius: 3px;
+  box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;  
 }
 
 .balanceCoinsText{
@@ -34,4 +40,14 @@
 .coin_text{
   background-color: #2d7ac6;
   padding: 0px 10px 0px 10px;
+}
+
+#trans{
+  background-color: #000000;
+}
+
+#transspan{
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 1em;
 }
