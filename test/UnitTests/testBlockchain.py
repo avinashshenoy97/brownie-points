@@ -15,7 +15,7 @@ sys.path.insert(0, '../../BrowniePoints')
 import blockchain
 import transactionPool
 
-def test_initialisation():
+def test_initialization():
 
     ''' Tests the functioning of blockchain initialization, getBlockchain and getLatestBlock.
     '''
