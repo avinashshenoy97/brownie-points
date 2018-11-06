@@ -47,13 +47,58 @@ var transactionPool=Vue.component('transaction-pool',{
       this.$parent.formClose3 = true;
     },
   getPoolData:function(){
-      Vue.http.get('/explorer/getPoolData',{})
+      this.$http.get('/explorer/getPoolData',{})
           .then((response) => {
-            
+          this.transactionDetailsAddr=response.data['transactionAddr'];
+          this.transactionDetailsCoins=response.data['transactionCoins'];
+          this.updateTransactionPool();
           })
           .catch((err) => {
             console.log("error",err);
           })
+    },
+    updateTransactionPool:function(){
+        var $transactionDetailsAddr = this.transactionDetailsAddr;
+        var $transactionDetailsCoins = this.transactionDetailsCoins;
+        var i=1;
+        console.log($transactionDetailsAddr,$transactionDetailsCoins)
+        if($transactionDetailsAddr.length>0)
+          {$(".container-cards").empty();
+          console.log("emp");}
+        for(i=0;i<$transactionDetailsAddr.length;i++){ 
+          var j=i+1;
+          console.log("for");
+          // var $addr=$transactionDetails[i].txOuts[0].address;
+          // var $coinCount = $transactionDetails[i].txOuts[0].coinCount;
+          var $addr=$transactionDetailsAddr[i];
+          var $coinCount=$transactionDetailsCoins[i];
+          var $myaddr = $transactionDetailsAddr[i];
+          var $transaction = "<div class='container'>";
+          $transaction+= "<div class='card'>"
+          $transaction+= "<div class='front'><h2>Transaction "+j+"</h2></div>"
+          $transaction+= "<div class='back'>"
+          $transaction+= "<div class='content'>"
+          $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
+          $transaction+= "<p class='cardContent senderAddr' title='"+$myaddr+"'>"+$myaddr+"</p>"
+          $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
+          $transaction+= "<p class='cardContent recAddr'>"+$addr+"</p>"
+          $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"
+          $transaction+= "<p class='cardContent'>"+$coinCount+"</p>"
+          // $transaction+= "<h3 class='cardTitle'>Timestamp</h3>"
+          // $transaction+= "<p class='cardContent'>1234</p>"
+          $transaction+= "</div>"
+          $transaction+= "</div>"
+          $transaction+= "</div>"
+          $transaction+= "</div>"
+          var $transaction_el = $($transaction);
+          $(".container-cards").append($transaction_el);
+        }
+
+        $('.card').unbind('click');
+        $('.card').click(function(){
+          $(this).toggleClass('flipped');
+        });
+
     }
   }
 });
@@ -86,9 +131,8 @@ var vue = new Vue({
       vue.$refs.get_balance.getBalance();
     },
     setValue3: function(arg1){
-      // vue.$refs.transaction_status.getTransactionDetails();
+      vue.$refs.transaction_pool.getPoolData();
       $('.card').click(function(){
-          console.log("here");
           $(this).toggleClass('flipped');
         });
 

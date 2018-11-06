@@ -33,6 +33,7 @@ var transactionStatus=Vue.component('transaction-status',{
     return{
       transactionDetails:{},
       transactionDetailsAddr:[],
+      transactionDetailsAddrSender:[],
       transactionDetailsCoins:[],
       completedTxAddr:[],
       completedTxSenderAddr:[],
@@ -49,6 +50,7 @@ var transactionStatus=Vue.component('transaction-status',{
           .then((response) => {
             console.log("received",response.data);
             this.transactionDetailsAddr=response.data['transactionAddr'];
+            this.transactionDetailsAddrSender=response.data['transactionAddrSender'];
             this.transactionDetailsCoins=response.data['transactionCoins'];
             this.completedTxAddr=response.data['completedTxAddr'];
             this.completedTxSenderAddr=response.data['completedTxSenderAddr'];
@@ -61,6 +63,7 @@ var transactionStatus=Vue.component('transaction-status',{
      },
      updateTransactions: function(){
         var $transactionDetailsAddr = this.transactionDetailsAddr;
+        var $transactionDetailsAddrSender = this.transactionDetailsAddrSender;
         var $transactionDetailsCoins = this.transactionDetailsCoins;
         var i=1;
         if($transactionDetailsAddr.length>0)
@@ -71,7 +74,7 @@ var transactionStatus=Vue.component('transaction-status',{
           // var $coinCount = $transactionDetails[i].txOuts[0].coinCount;
           var $addr=$transactionDetailsAddr[i];
           var $coinCount=$transactionDetailsCoins[i];
-          var $myaddr = vue.$refs.public_address.publicaddress
+          var $myaddr = $transactionDetailsAddrSender[i];
           var $transaction = "<div class='container'>";
           $transaction+= "<div class='card'>"
           $transaction+= "<div class='front'><h2>Transaction "+j+"</h2></div>"

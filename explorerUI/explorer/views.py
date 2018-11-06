@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+import requests
 # Create your views here.
 context={}
 def explorer(request):
@@ -12,6 +12,7 @@ def explorer(request):
 class poolDataView(APIView):
 	def get(self,request):
 		pendingTx = requests.get('http://127.0.0.1:16000/control/getTransactionPool',params=request.data)
+		print(pendingTx.json())
 		if(len(pendingTx.json())==0):
 			transactionAddr=[]
 			transactionCoins=[]
