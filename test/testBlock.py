@@ -1,7 +1,7 @@
 '''
 Unit tests for the Block class
 
-Run this script using - nonsetests -v testBlock.py
+Run this script using - nosetests -v testBlock.py
 '''
 
 import nose
