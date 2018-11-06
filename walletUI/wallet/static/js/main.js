@@ -35,6 +35,7 @@ var transactionStatus=Vue.component('transaction-status',{
       transactionDetailsAddr:[],
       transactionDetailsCoins:[],
       completedTxAddr:[],
+      completedTxSenderAddr:[],
       completedTxAmt:[]
     }
   },
@@ -44,12 +45,13 @@ var transactionStatus=Vue.component('transaction-status',{
       this.$parent.formClose3 = true;
     },
     getTransactionDetails: function() {
-      this.$http.get('/wallet/getTransactionDetails',this.transactionDetails)
+      this.$http.get('/wallet/getTransactionDetails',{})
           .then((response) => {
             console.log("received",response.data);
             this.transactionDetailsAddr=response.data['transactionAddr'];
             this.transactionDetailsCoins=response.data['transactionCoins'];
             this.completedTxAddr=response.data['completedTxAddr'];
+            this.completedTxSenderAddr=response.data['completedTxSenderAddr'];
             this.completedTxAmt=response.data['completedTxAmt']
             this.updateTransactions();
           })
@@ -92,6 +94,7 @@ var transactionStatus=Vue.component('transaction-status',{
         }
 
         var $completedTxAddr = this.completedTxAddr;
+        var $completedTxSenderAddr = this.completedTxSenderAddr;
         var $completedTxAmt = this.completedTxAmt;
         if($completedTxAddr.length>0)
           $(".container-left").empty();
@@ -101,15 +104,16 @@ var transactionStatus=Vue.component('transaction-status',{
           // var $addr=$transactionDetails[i].txOuts[0].address;
           // var $coinCount = $transactionDetails[i].txOuts[0].coinCount;
           var $addr=$completedTxAddr[i];
+          var $senderAddr=$completedTxSenderAddr[i];
           var $coinCount=$completedTxAmt[i];
-          var $myaddr = vue.$refs.public_address.publicaddress
+          // var $myaddr = vue.$refs.public_address.publicaddress
           var $transaction = "<div class='container'>";
           $transaction+= "<div class='card'>"
           $transaction+= "<div class='front'><h2>Transaction "+j+"</h2></div>"
           $transaction+= "<div class='back'>"
           $transaction+= "<div class='content'>"
           $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
-          $transaction+= "<p class='cardContent' title='"+$myaddr+"'>"+$myaddr+"</p>"
+          $transaction+= "<p class='cardContent' title='"+$senderAddr+"'>"+$senderAddr+"</p>"
           $transaction+= "<h3 class='cardTitle'>Receiver Address</h3>"
           $transaction+= "<p class='cardContent'>"+$addr+"</p>"
           $transaction+= "<h3 class='cardTitle'>Number of Coins</h3>"
@@ -170,13 +174,20 @@ var balance=Vue.component('balance',{
       this.$http.get('/wallet/getLogs',{})
           .then((response) => {
             this.walletLogs=response.data['logs'];
-            console.log(this.walletLogs);
             var $wLogs=this.walletLogs;
+            if($wLogs.length>0)
+              $(".logContainer").empty();
             for(i=0;i<$wLogs.length;i++){
-              var $logSpan="<span id='transspan'>"+$wLogs[i]+" coins sent</span><br>"
-              var $logSpanEl = $($logSpan);
-              console.log($logSpanEl,$wLogs[i]);
-              $("#trans").append($logSpanEl);
+              if($wLogs[i][0]=="sent"){
+                var $logSpan="<div id='txSpanDiv'><span id='transspan' class='sentTxSpan'> "+$wLogs[i][1]+" coins sent</span><br><span id='txAddr' title='"+$wLogs[i][2]+"'>"+$wLogs[i][2]+"</span></div><br>"
+                var $logSpanEl = $($logSpan);
+                $('.logContainer').append($logSpanEl);
+              }
+              else if($wLogs[i][0]=="received"){
+                var $logSpan="<div id='txSpanDiv'><span id='transspan' class='recTxSpan'> "+$wLogs[i][1]+" coins received</span><br><span id='txAddr' title='"+$wLogs[i][2]+"'>"+$wLogs[i][2]+"</span></div><br>"
+                var $logSpanEl = $($logSpan);
+                $('.logContainer').append($logSpanEl);
+              }
             }
           })
           .catch((err) => {

@@ -1,6 +1,12 @@
+@font-face {
+  font-family: brownieFontIcon;
+  src: url('../fonts/FontAwesome.otf');
+}
+
+
 #balance-container{
 	width: 40%;
-	height: 60%;
+	height: 100%;
   margin: 5% 30%;
   text-align: center;	
 }
@@ -13,8 +19,8 @@
   margin-top:10%;
   margin-bottom: 5%;
   width: 100%;
-  max-height: 30%;
-  overflow-y: auto;
+  max-height: 40%;
+  overflow-y: hidden;
   /*margin: 5% 30%;*/
 }
 
@@ -46,8 +52,26 @@
   background-color: #000000;
 }
 
+#txSpanDiv{
+  padding-bottom: 3%;  
+}
+
 #transspan{
   background-color: #000000;
   color: #ffffff;
-  font-size: 1em;
+  font-size: 1.5em;
 }
+
+#txAddr{
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 0.75em;
+  width: 30%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+}
+
+.sentTxSpan:before{font-family: brownieFontIcon;content: "\f062 ";}
+.recTxSpan:before{font-family: brownieFontIcon;content: "\f063 ";}

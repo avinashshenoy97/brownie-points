@@ -20,8 +20,8 @@ var blockState=Vue.component('block-state-comp',{
       $('#closeButton').css("opacity","0");
       $('.btn-paginacao').css("z-index","-1");
     },
-   submitCoins: function() {
-      Vue.http.get('/wallet/getBlocks',this.sendCoins)
+   getBlocks: function() {
+      Vue.http.get('/explorer/getBlocks',{})
           .then((response) => {
             console.log("sent",response);
             // this.transactionNumber=response.data['transactionNumber']
@@ -45,6 +45,15 @@ var transactionPool=Vue.component('transaction-pool',{
     cancel3: function(){
       this.$parent.formOpen3 = false;
       this.$parent.formClose3 = true;
+    },
+  getPoolData:function(){
+      Vue.http.get('/explorer/getPoolData',{})
+          .then((response) => {
+            
+          })
+          .catch((err) => {
+            console.log("error",err);
+          })
     }
   }
 });
