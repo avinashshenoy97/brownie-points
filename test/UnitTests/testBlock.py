@@ -9,7 +9,7 @@ import sys
 import json
 from datetime import datetime as dt
 
-sys.path.insert(0, '../BrowniePoints')
+sys.path.insert(0, '../../BrowniePoints')
 
 from block import *
 
