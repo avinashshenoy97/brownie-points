@@ -38,6 +38,7 @@ var transactionPool=Vue.component('transaction-pool',{
     return{
       transactionDetails:{},
       transactionDetailsAddr:[],
+      transactionDetailsAddrSender:[],
       transactionDetailsCoins:[]
     }
   },
@@ -50,6 +51,7 @@ var transactionPool=Vue.component('transaction-pool',{
       this.$http.get('/explorer/getPoolData',{})
           .then((response) => {
           this.transactionDetailsAddr=response.data['transactionAddr'];
+          this.transactionDetailsAddrSender=response.data['transactionAddrSender'];
           this.transactionDetailsCoins=response.data['transactionCoins'];
           this.updateTransactionPool();
           })
@@ -59,23 +61,21 @@ var transactionPool=Vue.component('transaction-pool',{
     },
     updateTransactionPool:function(){
         var $transactionDetailsAddr = this.transactionDetailsAddr;
+        var $transactionDetailsAddrSender = this.transactionDetailsAddrSender;    
         var $transactionDetailsCoins = this.transactionDetailsCoins;
         var i=1;
-        console.log($transactionDetailsAddr,$transactionDetailsCoins)
         if($transactionDetailsAddr.length>0)
-          {$(".container-cards").empty();
-          console.log("emp");}
+          $(".container-cards").empty();
         for(i=0;i<$transactionDetailsAddr.length;i++){ 
           var j=i+1;
-          console.log("for");
           // var $addr=$transactionDetails[i].txOuts[0].address;
           // var $coinCount = $transactionDetails[i].txOuts[0].coinCount;
           var $addr=$transactionDetailsAddr[i];
           var $coinCount=$transactionDetailsCoins[i];
-          var $myaddr = $transactionDetailsAddr[i];
+          var $myaddr = $transactionDetailsAddrSender[i];
           var $transaction = "<div class='container'>";
           $transaction+= "<div class='card'>"
-          $transaction+= "<div class='front'><h2>Transaction "+j+"</h2></div>"
+          $transaction+= "<div class='front'><h2 id='txnNo'>Transaction "+j+"</h2></div>"
           $transaction+= "<div class='back'>"
           $transaction+= "<div class='content'>"
           $transaction+= "<h3 class='cardTitle'>Sender Address</h3>"
@@ -144,6 +144,7 @@ var vue = new Vue({
         else{
         $container.each(function(){
         var txt = $('#blockVal').val();
+        console.log(txt);
         $(this).find('#txnNo:not(:contains("'+txt+'"))').parent().parent().parent().hide();      
       });
       }

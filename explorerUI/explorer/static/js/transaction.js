@@ -44,7 +44,7 @@ var searchAcc = function(event) {
 
     var sortNew = function(event){
   	var $container = $(".container-cards> .container");
-  	var sortedNew=$container.sort(function (a, b) {
+    var sortedNew=$container.sort(function (a, b) {
         return $(a).find("#txnNo").text()<$(b).find("#txnNo").text();
     });
     $(".container-cards").html(sortedNew);
