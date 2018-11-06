@@ -57,16 +57,31 @@ class transactionStatusView(APIView):
 			transactionCoins = [X['amount'] for X in txOut[0] if X['address']==myAddress]
 		completedTx = requests.get('http://127.0.0.1:16000/control/getAllBlocks',params=request.data)
 		print("complete",completedTx.json())
-		if(len(completedTx.json())==1):
-			completedTxAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress ] 
-			completedTxAmt= [addr['amount'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress]
-			completedTxSenderAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress] 
-		else:
-			completedTxAddr=[txs['txOuts'][0]['address'] for blocks in completedTx.json() for txs in blocks['data'] if txs['txOuts'][1]['address']==myAddress]
-			# completedTxAddr = [y['data'][0]['txOuts'][0]['address'] for y in completedTx.json() if y['data'][0]['txOuts'][0]['address']==myAddress]
-			# completedTxAmt = [y['data'][0]['txOuts'][0]['amount'] for y in completedTx.json() if y['data'][0]['txOuts'][0]['address']==myAddress]	
-			completedTxAmt=[txs['txOuts'][0]['amount'] for blocks in completedTx.json() for txs in blocks['data'] if txs['txOuts'][1]['address']==myAddress]
-			completedTxSenderAddr=[txs['txOuts'][1]['address'] for blocks in completedTx.json() for txs in blocks['data'] if txs['txOuts'][1]['address']==myAddress]
+		completedTxAddr=[]
+		completedTxAmt=[]
+		completedTxSenderAddr=[]
+		for blocks in completedTx.json():
+			for txs in blocks['data']:
+				if(len(txs['txOuts'])==1):
+					if txs['txOuts'][0]['address']==myAddress:
+						completedTxAddr.append(txs['txOuts'][0]['address'])
+						completedTxAmt.append(txs['txOuts'][0]['amount'])
+						completedTxSenderAddr.append(txs['txOuts'][0]['address'])
+				else:
+					if txs['txOuts'][1]['address']==myAddress:
+						completedTxAddr.append(txs['txOuts'][0]['address'])
+						completedTxAmt.append(txs['txOuts'][0]['amount'])
+						completedTxSenderAddr.append(txs['txOuts'][1]['address'])
+		# if(len(completedTx.json())==1):
+		# 	completedTxAddr= [addr['address']] 
+		# 	completedTxAmt= [addr['amount'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress]
+		# 	completedTxSenderAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress] 
+		# else:
+			# completedTxAddr=[txs['txOuts'][0]['address'] for blocks in completedTx.json() for txs in blocks['data'] if txs['txOuts'][1]['address']==myAddress]
+			# # completedTxAddr = [y['data'][0]['txOuts'][0]['address'] for y in completedTx.json() if y['data'][0]['txOuts'][0]['address']==myAddress]
+			# # completedTxAmt = [y['data'][0]['txOuts'][0]['amount'] for y in completedTx.json() if y['data'][0]['txOuts'][0]['address']==myAddress]	
+			# completedTxAmt=[txs['txOuts'][0]['amount'] for blocks in completedTx.json() for txs in blocks['data'] if txs['txOuts'][1]['address']==myAddress]
+			# completedTxSenderAddr=[txs['txOuts'][1]['address'] for blocks in completedTx.json() for txs in blocks['data'] if txs['txOuts'][1]['address']==myAddress]
 		data={"transactionAddr":transactionAddr,"transactionCoins":transactionCoins,"completedTxAddr":completedTxAddr,"completedTxAmt":completedTxAmt,"completedTxSenderAddr":completedTxSenderAddr}
 		print(data)
 		return Response(data)
@@ -98,24 +113,20 @@ class logsView(APIView):
 	def get(self,request):
 		completedTx = requests.get('http://127.0.0.1:16000/control/getAllBlocks',params=request.data)
 		logs=[]
-		if(len(completedTx.json())==1):
-			# receivedTxAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress ] 
-			txAmt= [addr['amount'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress]
-			receivedTxSenderAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress] 
-			sentTxAddr=[]
-			sentTxAmt=[]
-			logs.append(["received",txAmt[0],receivedTxSenderAddr[0]])
-		else:
-			# txAmt=[]
-			# receivedTxSenderAddr=[]
-			# sentTxAddr=[]
-			# sentTxAmt=[]
-			for blocks in completedTx.json(): 
-				for txs in blocks['data']: 
-					if txs['txOuts'][0]['address']==myAddress:
-						logs.append(["received",txs['txOuts'][0]['amount']],txs['txOuts'][1]['address'])
-					elif txs['txOuts'][1]['address']==myAddress:
-						logs.append(["sent",txs['txOuts'][0]['amount']],txs['txOuts'][0]['address'])
+		# if(len(completedTx.json())==1):
+		# 	# receivedTxAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress ] 
+		# 	txAmt= [addr['amount'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress]
+		# 	receivedTxSenderAddr= [addr['address'] for blocks in completedTx.json() for txs in blocks['data'] for addr in txs['txOuts'] if addr['address']==myAddress] 
+		# 	logs.append(["received",txAmt[0],receivedTxSenderAddr[0]])
+		# else:
+		for blocks in completedTx.json(): 
+			for txs in blocks['data']:
+				if(len(txs['txOuts'])==1):
+					logs.append(["received",txs['txOuts'][0]['amount'],txs['txOuts'][0]['address']])
+				elif txs['txOuts'][0]['address']==myAddress:
+					logs.append(["received",txs['txOuts'][0]['amount'],txs['txOuts'][1]['address']])
+				elif txs['txOuts'][1]['address']==myAddress:
+					logs.append(["sent",txs['txOuts'][0]['amount'],txs['txOuts'][0]['address']])
 		data={"logs":logs}
 		print(data)
 		return Response(data)
