@@ -1,7 +1,5 @@
 '''
 Unit tests for the Blockchain module.
-
-Run this script using - nosetests -v --nocapture testTransaction.py
 '''
 
 import nose
@@ -10,8 +8,6 @@ import sys
 import json
 import subprocess as sp
 from datetime import datetime as dt
-
-sys.path.insert(0, '../../BrowniePoints')
 
 import blockchain
 import transaction
@@ -28,8 +24,6 @@ def test_initialization():
     
     global testAddress
 
-    sp.Popen(['python3', '../../BrowniePoints/rendezvous-server/rendezvous_server.py'])
-    blockchain.brownieNet = blockchain.b2b('127.0.0.1', 8000)
     transactionPool.brownieNet = blockchain.brownieNet
     blockchain.init()
 
@@ -64,3 +58,6 @@ def test_validateTransaction():
     print(response)
 
     assert response == True
+
+if __name__ == "__main__":
+    nose.main()

@@ -1,6 +1,6 @@
 '''
 Unit tests for the brownie-points wallet backend application.
-'''
+
 from wallet import *
 from transaction import *
 from transactionPool import *
@@ -15,5 +15,5 @@ transactionPool = getTransactionPool()
 
 #if user1 mines block1 and gets 50 coins
 coin_base = getCoinbaseTransaction(user1_pub, 1)
-
+'''
 

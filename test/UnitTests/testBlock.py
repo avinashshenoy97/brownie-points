@@ -1,15 +1,11 @@
 '''
-Unit tests for the Block class
-
-Run this script using - nosetests -v testBlock.py
+Unit tests for the Block class.
 '''
 
 import nose
 import sys
 import json
 from datetime import datetime as dt
-
-sys.path.insert(0, '../../BrowniePoints')
 
 from block import *
 
