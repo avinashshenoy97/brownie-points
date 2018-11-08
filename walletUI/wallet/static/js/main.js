@@ -5,6 +5,7 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
         address:null,
         amount:0,
       },
+    sendCoinsAddr:null,
     checkbalance:0,
     transactionNumber:0
     }
@@ -54,7 +55,7 @@ var transactionStatus=Vue.component('transaction-status',{
             this.transactionDetailsCoins=response.data['transactionCoins'];
             this.completedTxAddr=response.data['completedTxAddr'];
             this.completedTxSenderAddr=response.data['completedTxSenderAddr'];
-            this.completedTxAmt=response.data['completedTxAmt']
+            this.completedTxAmt=response.data['completedTxAmt'];
             this.updateTransactions();
           })
           .catch((err) => {
@@ -211,7 +212,9 @@ var publicAddress=Vue.component('public-address',{
       this.$http.get('/wallet/getPublicAddress',this.publicaddress)
           .then((response) => {
             console.log("received",response.data);
-            this.publicaddress=response.data['publicKey']
+            this.publicaddress=response.data['publicKey'];
+            vue.$refs.send_coins.sendCoinsAddr = this.publicaddress;
+
           })
           .catch((err) => {
             console.log(err);

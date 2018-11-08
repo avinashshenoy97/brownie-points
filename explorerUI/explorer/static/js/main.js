@@ -1,35 +1,70 @@
 var blockState=Vue.component('block-state-comp',{
     data: function(){
     return{
-    sendCoins:{
-        address:null,
-        coinCount:0,
-      },
-    checkbalance:0,
-    stateOpen:false
+      completedTxAddr:[],
+      completedTxSenderAddr:[],
+      completedTxAmt:[],
+      stateOpen:false
     }
   },
   methods:{
     cancelState: function(){
-      this.stateOpen=false;
-      $('.btn-paginacao').css("z-index","0");
-      $('#closeButton').css("opacity","1");
+      // this.stateOpen=false;
     },
     setStateValue: function(){
       this.stateOpen = true;
-      $('#closeButton').css("opacity","0");
-      $('.btn-paginacao').css("z-index","-1");
+
     },
    getBlocks: function() {
       Vue.http.get('/explorer/getBlocks',{})
           .then((response) => {
             console.log("sent",response);
             // this.transactionNumber=response.data['transactionNumber']
+            this.completedTxAddr=response.data['completedTxAddr'];
+            this.completedTxSenderAddr=response.data['completedTxSenderAddr'];
+            this.completedTxAmt=response.data['completedTxAmt'];
+            this.updateBlocks();
           })
           .catch((err) => {
             console.log("error",err);
           })
-     }
+     },
+    updateBlocks: function(){
+      $completedTxAddr = this.completedTxAddr;
+      $completedTxSenderAddr = this.completedTxSenderAddr;
+      $completedTxAmt = this.completedTxAmt;
+      console.log($completedTxAddr);
+      for(i=0;i<$completedTxAddr.length;i++){
+        j=i+1;
+        $blockParentNo=Math.ceil(j/4)-1;
+        $blockNo = j%4 + 1;
+        $blockDataNo = $blockNo + 4;
+        $blockData="<div class='stateModal' >";
+        $blockData+="<div id='closeStateButton'><span>&times</span></div>";
+        $blockData+="<div id='blockModal'>";
+        $blockData+="<span id='blockContent'><h3>Sender Address : </h3><span>"+$completedTxSenderAddr[i]+"</span></span>";
+        $blockData+="<span id='blockContent'><h3>Receiver Address : </h3><span>"+$completedTxAddr[i]+"</span></span>";        
+        $blockData+="<span id='blockContent'><h3>Number Of Coins : </h3><span>"+$completedTxAmt[i]+"</span></span></div></div>";
+        
+        $blockData_el=$($blockData);
+        $('#blocks').children().eq($blockParentNo).append($blockData_el);
+        $('#blocks').children().eq($blockParentNo).children().eq($blockNo).css('background-color','#71bc78');
+        
+        $('#closeStateButton').click(function(){
+          console.log($(this));
+          $(this).parent().removeClass('open');
+          $('.btn-paginacao').css("z-index","0");
+          $('#closeButton').css("opacity","1");
+
+        });
+
+        $('#blocks').children().eq($blockParentNo).children().eq($blockNo).click(function(){
+          $('#blocks').children().eq($blockParentNo).children().eq($blockDataNo).addClass('open');
+          $('#closeButton').css("opacity","0");
+          $('.btn-paginacao').css("z-index","-1");
+        });
+      }
+    }
   }
 });
 
@@ -124,12 +159,12 @@ var vue = new Vue({
       this.formClose1 = arg2;
       // createBlock();
       // console.log(this.step,this.progressValue)
+      vue.$refs.block_state.getBlocks();
     },
-    setValue2: function(arg1,arg2){
-      this.formOpen2 = arg1;
-      this.formClose2 = arg2;
-      vue.$refs.get_balance.getBalance();
-    },
+    // setValue2: function(arg1,arg2){
+    //   this.formOpen2 = arg1;
+    //   this.formClose2 = arg2;
+    // },
     setValue3: function(arg1){
       vue.$refs.transaction_pool.getPoolData();
       $('.card').click(function(){
@@ -182,13 +217,3 @@ var vue = new Vue({
     }
   }
 });
-
-    // window.onclick = function(event) {
-    // var forminner = document.getElementById("homeModal");
-    // var sendCoinsOuter = document.getElementById("blockStateOuter");
-    // if(sendCoinsOuter.classList.contains('open')){    
-    // if (event.target == sendCoinsOuter) {
-    //     vue.$refs.block_state.cancel1();
-    //     }
-    //   }
-    // };

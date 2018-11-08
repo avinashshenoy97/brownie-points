@@ -28,3 +28,22 @@ class poolDataView(APIView):
 		data={"transactionAddr":transactionAddr,"transactionCoins":transactionCoins,"transactionAddrSender":transactionAddrSender}
 		print(data)
 		return Response(data)
+
+class getBlocksView(APIView):
+	def get(self,request):
+		completedTx = requests.get('http://127.0.0.1:16000/control/getAllBlocks',params=request.data)
+		completedTxAddr=[]
+		completedTxAmt=[]
+		completedTxSenderAddr=[]
+		for blocks in completedTx.json():
+			for txs in blocks['data']:
+				if(len(txs['txOuts'])==1):
+					completedTxAddr.append(txs['txOuts'][0]['address'])
+					completedTxAmt.append(txs['txOuts'][0]['amount'])
+					completedTxSenderAddr.append(txs['txOuts'][0]['address'])
+				else:
+					completedTxAddr.append(txs['txOuts'][0]['address'])
+					completedTxAmt.append(txs['txOuts'][0]['amount'])
+					completedTxSenderAddr.append(txs['txOuts'][1]['address'])
+		data={"completedTxAddr":completedTxAddr,"completedTxAmt":completedTxAmt,"completedTxSenderAddr":completedTxSenderAddr}
+		return Response(data)

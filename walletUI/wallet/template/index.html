@@ -343,8 +343,9 @@
             <h2 class="fs-title">Enter Receiver's Address</h2>
             <!-- <h3 class="fs-subtitle">Enter the address of the receiver</h3> -->
             <input type="text" name="address" placeholder="Receiver's Address" v-model="sendCoins.address" />
-            <span v-cloak v-if="sendCoins.address!=null && sendCoins.address.length<5" class="text-danger">* Enter valid address</span><br>
-            <input type="button" name="next" class="next action-button" value="Next" />
+            <span v-cloak v-if="sendCoins.address!=null && sendCoins.address.length<5" class="text-danger">* Enter valid address</span>
+            <span v-cloak v-if="sendCoins.address==sendCoinsAddr" class="text-danger">* Cannot Enter to Your Address</span><br>
+            <input type="button" name="next" class="next action-button" value="Next" :disabled="sendCoins.address==sendCoinsAddr"/>
           </fieldset>
           <fieldset id="enterCoin">
             <h2 class="fs-title">Enter Number of Coins</h2>
