@@ -180,7 +180,7 @@ var vue = new Vue({
         $container.each(function(){
         var txt = $('#blockVal').val();
         console.log(txt);
-        $(this).find('#txnNo:not(:contains("'+txt+'"))').parent().parent().parent().hide();      
+        $(this).find('.coinCount:not(:contains("'+txt+'"))').parent().parent().parent().parent().hide();      
       });
       }
     });
