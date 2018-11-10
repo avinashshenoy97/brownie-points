@@ -204,7 +204,7 @@
 }
 
 
-.stateModal.open {
+#blocks .open {
 /*  opacity: 1;
   position: fixed;
   height: 100%;

@@ -33,24 +33,23 @@ var blockState=Vue.component('block-state-comp',{
       $completedTxAddr = this.completedTxAddr;
       $completedTxSenderAddr = this.completedTxSenderAddr;
       $completedTxAmt = this.completedTxAmt;
-      console.log($completedTxAddr);
+      $('#blocks').children().children('.stateModal').remove();
       for(i=0;i<$completedTxAddr.length;i++){
         j=i+1;
         $blockParentNo=Math.ceil(j/4)-1;
         $blockNo = j%4 + 1;
         $blockDataNo = $blockNo + 4;
         $blockData="<div class='stateModal' >";
-        $blockData+="<div id='closeStateButton'><span>&times</span></div>";
+        $blockData+="<div id='closeStateButton' class='closeStateButtonClass'><span>&times</span></div>";
         $blockData+="<div id='blockModal'>";
         $blockData+="<span id='blockContent'><h3>Sender Address : </h3><span>"+$completedTxSenderAddr[i]+"</span></span>";
         $blockData+="<span id='blockContent'><h3>Receiver Address : </h3><span>"+$completedTxAddr[i]+"</span></span>";        
         $blockData+="<span id='blockContent'><h3>Number Of Coins : </h3><span>"+$completedTxAmt[i]+"</span></span></div></div>";
-        
         $blockData_el=$($blockData);
         $('#blocks').children().eq($blockParentNo).append($blockData_el);
         $('#blocks').children().eq($blockParentNo).children().eq($blockNo).css('background-color','#71bc78');
-        
-        $('#closeStateButton').click(function(){
+        console.log("updated",$('#blocks').children().children('.stateModal'));
+        $('.closeStateButtonClass').click(function(){
           console.log($(this));
           $(this).parent().removeClass('open');
           $('.btn-paginacao').css("z-index","0");
@@ -59,7 +58,7 @@ var blockState=Vue.component('block-state-comp',{
         });
 
         $('#blocks').children().eq($blockParentNo).children().eq($blockNo).click(function(){
-          $('#blocks').children().eq($blockParentNo).children().eq($blockDataNo).addClass('open');
+          $('#blocks').children().eq($(this).parent().index()).children(".stateModal").eq($(this).index()-2).addClass('open');
           $('#closeButton').css("opacity","0");
           $('.btn-paginacao').css("z-index","-1");
         });
@@ -160,6 +159,7 @@ var vue = new Vue({
       // createBlock();
       // console.log(this.step,this.progressValue)
       vue.$refs.block_state.getBlocks();
+      console.log("opened");
     },
     // setValue2: function(arg1,arg2){
     //   this.formOpen2 = arg1;
