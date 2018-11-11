@@ -1,0 +1,79 @@
+@font-face {
+  font-family: brownieFontIcon;
+  src: url('../fonts/FontAwesome.otf');
+}
+
+.menuModal.open {
+/*  opacity: 1;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+*/  
+    position: fixed; /* Stay in place */
+    z-index: 5; /* Sit on top */
+    padding-top: 5%; /* Location of the box */
+    padding-left: 5%;
+    left: 0;
+    top: 0;
+    opacity: 1;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,1); /* Black w/ opacity */
+  animation: blowUpModal 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+.menuModal.close {
+  opacity: 0;
+  animation: blowUpModalTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+
+@keyframes blowUpModal {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes blowUpModalTwo {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+/*
+.menu-con .button-copy {
+  text-align: center;
+  line-height: 144px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #f7f7f7;
+}*/
+
+.menuModal {
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  opacity: 0;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+#vision_icon{font-size:2em;}
+#terms_icon{font-size:2em;}
+#support_icon{font-size:2em;}
+#contact_icon{font-size:1.75em;}
+#team_icon{font-size:2em;}
+
+#vision_icon:after {font-size:1em;font-family: brownieFontIcon; content: "\f0eb";}
+#terms_icon:after {font-size:1em;font-family: brownieFontIcon; content: "\f044";}
+#support_icon:after{font-size:1em;font-family: brownieFontIcon; content: "\f059";}
+#contact_icon:after{font-size:1em;font-family: brownieFontIcon; content: "\f0e0";}
+#team_icon:after {font-size:0.75em;font-family: brownieFontIcon; content: "\f0c0";}
+

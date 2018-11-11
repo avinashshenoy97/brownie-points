@@ -1,0 +1,26 @@
+#termsMenu{
+  height: 80%;
+  width: 70%;
+  position: relative;
+  /*display: block;*/
+  background-color: #ffffff;
+  /*left: 20%*/
+  /*top:20%;*/
+  z-index: 6;
+  text-align:center;
+  /*border-radius: 15%;*/
+  margin-top: 5%;
+  margin-left: 15%;
+  padding:5vh;
+  overflow:hidden;
+    -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translate3d(0,0,0);
+  /*animation-delay: 7s;*/
+  /*animation: moveup 7s forwards;*/
+}
+
+
+#termsContent {
+  text-align: justify;
+}

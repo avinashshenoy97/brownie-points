@@ -1,0 +1,96 @@
+#visionMenu{
+  height: 70%;
+  width: 70%;
+  position: relative;
+  /*display: block;*/
+  background-color: white;
+  /*left: 20%*/
+  /*top:20%;*/
+  z-index: 6;
+  text-align:center;
+  /*border-radius: 15%;*/
+  margin-top: 5%;
+  margin-left: 15%;
+  padding-top:5vh;
+  padding-left: 5vw;
+  overflow:hidden;
+    -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translate3d(0,0,0);
+  /*animation-delay: 7s;*/
+  /*animation: moveup 7s forwards;*/
+}
+
+
+#visionContent {
+  display:inline-block;
+  overflow:hidden;
+  white-space:nowrap;
+
+}
+
+#visionContent span{
+  position: relative;
+  left:-2.5vw;
+}
+
+#visionData{
+  text-align: justify;
+  font-size: 0.9em;
+  animation: showupagain 5s forwards;
+}
+
+#visionContent:first-of-type {    
+  animation: showup 3s forwards;
+}
+
+#visionContent:last-of-type {
+  width:0px;
+  animation: reveal 10s forwards;
+}
+
+#visionContent:last-of-type span {
+  margin-left:-37%;
+  animation: slidein 10s forwards;
+}
+
+@keyframes showup {
+    0% {opacity:0;}
+    20% {opacity:0;}
+    80% {opacity:1;}
+    100% {opacity:1;}
+}
+
+@keyframes showupagain {
+    0% {opacity:0;}
+    20% {opacity:0;}
+    40% {opacity:0;}
+    60% {opacity:0;}
+    80% {opacity:1;}
+    90% {opacity:1;}
+    100% {opacity:1;}
+}
+
+@keyframes moveup {
+    0% {padding-top:25vh;}
+    20% {padding-top:20vh;}
+    50% {padding-top:15vh;}
+    80% {padding-top:10vh;}
+    100% {padding-top:5vh;}
+}
+
+@keyframes slidein {
+    0% { margin-left:-60%; }
+    20% { margin-left:-60%; }
+    35% { margin-left:-60%; }
+    50% { margin-left:0px; }
+    100% { margin-left:0px; }
+}
+
+@keyframes reveal {
+    0% {opacity:0;width:0px;}
+    20% {opacity:1;width:0px;}
+    30% {width:37%;}
+    80% {opacity:1;}
+    100% {opacity:1;width:37%;}
+}

@@ -1,0 +1,508 @@
+{% load static %}
+<!DOCTYPE html>
+<html data-wf-page="5b6f9f53681f89788ab55fa9" data-wf-site="5b6f9f53681f8929a8b55fa8">
+<head>
+  <meta charset="utf-8">
+  <title>Brownie Points</title>
+  <meta content="Brownie Points" property="og:title">
+  <!-- <meta content="{% static 'images/logo.png' %}" property="og:image"> -->
+  <!-- <meta content="width=device-width, initial-scale=1" name="viewport"> -->
+  <meta content="Webflow" name="generator">
+  <link href="{% static 'css/menubar.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/webflow.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/circle.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/sendCoins.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/menuoptions.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/vision.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/team.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/terms.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/support.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/contact.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/transaction.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/state.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/balance.css' %}" rel="stylesheet" type="text/css">
+  <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
+
+  <link href="{% static 'images/logo.ico' %}" rel="shortcut icon" type="image/x-icon">
+</head>
+<body>
+  <div data-w-id="46f30dce-815f-e131-7241-03b83f4cfd30" style="display:flex" class="loading-section">
+    <h2 data-w-id="0141a556-f32e-81bf-262c-b3b59e940a42" style="opacity:0;-webkit-transform:translateX(0) translateY(50%) translateZ(0) scaleX(1) scaleY(1) scaleZ(1) rotateX(0) rotateY(0) rotateZ(0) skewX(0) skewY(0);-moz-transform:translateX(0) translateY(50%) translateZ(0) scaleX(1) scaleY(1) scaleZ(1) rotateX(0) rotateY(0) rotateZ(0) skewX(0) skewY(0);-ms-transform:translateX(0) translateY(50%) translateZ(0) scaleX(1) scaleY(1) scaleZ(1) rotateX(0) rotateY(0) rotateZ(0) skewX(0) skewY(0);transform:translateX(0) translateY(50%) translateZ(0) scaleX(1) scaleY(1) scaleZ(1) rotateX(0) rotateY(0) rotateZ(0) skewX(0) skewY(0);" class="heading-3">Welcome to the<br><span class="text-span-3">Blockchain Explorer</span><span class="text-span-4">.</span></h2>
+    <div class="curved-top"></div>
+    <div class="curved-item">
+      <div class="left-side-curve"></div>
+    </div>
+    <div class="curved-item right">
+      <div class="right-side-curve"></div>
+    </div>
+  </div>
+
+  <canvas id="stars" width="300" height="300"></canvas>
+
+  <!-- <div id="nav"><span id="nav-head">Brownie-Points</span> -->
+
+    <div class="navbar"><div class="brownie-logo"><img src="{% static 'images/logo1.png' %}"/></div></div>
+    <div id="menu-container">
+    <div class="menu-icon" onclick="this.classList.toggle('hover');Drop(0)">
+      <div class="menu-bar menu-bar1"></div>
+      <div class="menu-bar menu-bar2"></div>
+      <div class="menu-bar menu-bar3"></div>
+    </div>
+    <div class="menu">
+      <div class="menu-con" @click="menuOpen1 = true" style="background:linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);"><p id="vision_icon">VISION </p></div>
+      <div class="menu-con" @click="menuOpen2 = true" style="background:teal;"><p id="team_icon">TEAM </p></div>  
+      <div class="menu-con" @click="menuOpen3 = true" style="background:#2d7ac6;"><p id="support_icon">SUPPORT </p></div>
+      <div class="menu-con" @click="menuOpen4 = true" style="background:linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%)"><p id="terms_icon">TERMS </p></div> 
+      <div class="menu-con" @click="menuOpen5 = true" style="background:teal"><p id="contact_icon">CONTACT US </p></div>
+    </div>
+    <div class="menuModal" :class="{'open': (menuOpen1 || menuOpen2 || menuOpen3 || menuOpen4 || menuOpen5),'close':!(menuOpen1 || menuOpen2 || menuOpen3 || menuOpen4 || menuOpen5)}" v-show="(menuOpen1 || menuOpen2 || menuOpen3 || menuOpen4 || menuOpen5)">
+      <div id="closeButton" @click="cancelMenu()"><span>&times</span></div>      
+      
+      <div id="visionMenu" v-show="menuOpen1">
+        <div id="visionContent">A social currency</div> 
+          <div id="visionContent"> 
+          <span>turned into a crypto-currency!</span>
+        </div>
+      </div>
+
+      <div id="contactMenu" v-show="menuOpen5">
+        <div class="contact_us">
+        <div class="contact_us_fon">
+        <div class="contact_us_left">
+          
+          <div class="contact_us_big_text">
+               <span class="contact_us_big_text">contact <span class="red_text">us</span></span>
+          </div>
+          
+          <div class="contact_us_small_text adress"> B-S01 Basement, B-Block, PES University</div>
+          <div class="contact_us_small_text phone_number"> +123 456 789 00</div>
+          <div class="contact_us_small_text mail"> contactbrownie@gmail.com</div>    
+        </div>
+        
+        
+        <div class="contact_us_right">
+          <div class="feedback">
+            <div class="feed icon icon_feedback"></div> 
+          </div>
+        </div>
+        </div>
+      </div>  
+      </div>
+
+      <div id="termsMenu" v-show="menuOpen4">
+          <div id="termsContent">
+            Copyright &copy; 2018 Brownie Points<br/>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br/><br/>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANT ABILITY,FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+          </div>
+      </div>
+
+      <div id="supportMenu" v-show="menuOpen3">
+        <div class="supportwrapper">
+          <span id="supportText">Need Help?</span>
+          <svg width="128px" height="128px" id="support" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <a href="https://github.com/avinashshenoy97/brownie-points">
+            <defs>
+              <mask id="head">
+                <rect x="0" y="0" width="32" height="32" fill="white"/>
+                  <path d="M13.0799878,23.0788653 C9.51998779,22.6788653 5.79998779,21.2988653 5.79998779,15.1788653 C5.79998779,13.4388653 6.41998779,11.9988653 7.43998779,10.8788653 C7.27998779,10.4788653 6.71998779,8.83886529 7.59998779,6.63886529 C7.59998779,6.63886529 8.93998779,6.21886529 11.9999878,8.27886529 C13.2799878,7.91886529 14.6399878,7.73886529 15.9999878,7.73886529 C17.3599878,7.73886529 18.7199878,7.91886529 19.9999878,8.27886529 C23.0599878,6.19886529 24.3999878,6.63886529 24.3999878,6.63886529 C25.2799878,8.83886529 24.7199878,10.4788653 24.5599878,10.8788653 C25.5799878,11.9988653 26.1999878,13.4188653 26.1999878,15.1788653 C26.1999878,21.3188653 22.4599878,22.6788653 18.8999878,23.0788653 C18.1400123,23.3374399 13.7613513,23.1246319 13.0799878,23.0788653 Z"
+                   fill="black" transform='rotate(0)'>  
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 16 21"
+                    to="15 16 21"
+                    begin="support.mouseover" 
+                    end="support.mouseout"
+                    dur="1.6s"
+                    values="0 16 21;15 16 21;0 15.5 21;-15 16 21;0 16 21"                          
+                    keySplines="
+                      0 0 0.5 1;
+                      0.5 0 1 1;
+                      0 0 0.5 1;
+                      0.5 0 1 1"
+                    keyTimes="0;0.25;0.5;0.75;1"
+                    calcMode="spline"
+                    repeatCount="indefinite"
+                  />
+                </path>      
+              </mask>
+              <mask id="arm">
+                <rect x="0" y="0" width="32" height="32" fill="white"/>
+                <path d="M6.64,25.56 C6.46,25.1 5.68,23.68 5,23.3 C4.44,23 3.64,22.26 4.98,22.24 C6.24,22.22 7.14,23.4 7.44,23.88 C8.88,26.3 6.96,26.46 6.64,25.56 Z"           
+                  fill="black" transform="rotate(0)">                
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0 7.5 25.5"
+                    to="14 7.5 25.5"
+                    begin="support.mouseover"
+                    end="support.mouseout"
+                    dur="0.4s"
+                    values="0 10 25.5;-14 7.5 25.5;0 7.5 25.5;"
+                    keyTimes="0;0.5;1"
+                    calcMode="linear"
+                    repeatCount="indefinite"
+                  />        
+                </path>      
+              </mask>    
+            </defs>
+            <g id="loader" mask="url(#head)">
+                  <path d="M0,16 C0,23.08 4.58,29.06 10.94,31.18 C11.74,31.32 12.04,30.84 12.04,30.42 C12.04,30.04 12.02,28.78 12.02,27.44 C8.02970203,27.6507377 6.96,26.46 6.64,25.56 C6.46,25.1 7.14469622,24.843264 7.48451204,24.5191774 C9.49086651,26.4257531 11.18,25.62 12.1,25.2 C12.24,24.16 12.66,23.46 13.12,23.06 C13.58,22.66 18.4268489,22.6804856 18.94,23.06 C19.52,23.56 20.02,24.52 20.02,26.02 C20.02,28.16 20,29.88 20,30.42 C20,30.84 20.3,31.34 21.1,31.18 C27.42,29.06 32,23.06 32,16 C32,7.16 24.84,0 16,0 C7.16,0 0,7.16 0,16 Z" 
+                    id="body" fill="#959DA5" mask="url(#arm)"></path>    
+            </g>
+          </a>
+          </svg>
+          </div>
+      </div>
+
+      <div id="teamMenu" v-show="menuOpen2">
+          <div class="at-section">
+    <div class="at-section__title">The Team</div>
+  </div>
+  <div class="at-grid" data-column="3">
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Aditi Srinivas</div>
+        <!-- <div class="at-user__title">CEO &amp; Co-Founder</div> -->
+        <div class="at-user__title">Crypto Vinaigrette</div>
+        <ul class="at-social">
+          
+          <li class="at-social__item"><a href="https://github.com/aditisrinivas97">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/shenoy.jpeg' %}"/></div>
+        <div class="at-user__name">Avinash Shenoy</div>
+        <div class="at-user__title">Minimal Working Blockchain</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/avinashshenoy97">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/ramani.jpeg' %}"/></div>
+        <div class="at-user__name">Aditya Ramani</div>
+        <div class="at-user__title">Proof of Work</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/adityaramani">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Abhishek Dwivedi</div>
+        <div class="at-user__title">Transaction</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/abhishek510">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Aishwarya Manjunath</div>
+        <div class="at-user__title">Wallet</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/Aishwarya-Manjunath">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/akshay.jpeg' %}"/></div>
+        <div class="at-user__name">Akshaykanth D L</div>
+        <div class="at-user__title">Transaction &amp; Integration</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/Akshaykanth">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/profile.png' %}"/></div>
+        <div class="at-user__name">Alekhya K</div>
+        <div class="at-user__title">P2P</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/alekhyaE">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/anusha.jpeg' %}"/></div>
+        <div class="at-user__name">Anusha Kamath</div>
+        <div class="at-user__title">Transaction Pool</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/anushakamath97">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/anwika.jpeg' %}"/></div>
+        <div class="at-user__name">Anwika Bhandary</div>
+        <div class="at-user__title">UI Developer</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/anwika97">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+    </div>
+      <div class="at-column">
+      <div class="at-user">
+        <div class="at-user__avatar"><img src="{% static 'images/anvith.jpeg' %}"/></div>
+        <div class="at-user__name">Anvith Shetty</div>
+        <div class="at-user__title">UI Developer</div>
+        <ul class="at-social">
+          <li class="at-social__item"><a href="https://github.com/AnvithShetty10">
+              <svg viewBox="0 0 16 16" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+              </svg></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="at-column">
+    </div> 
+  </div>
+      </div>
+    </div>
+    </div>
+  <div data-w-id="06341bb2-6451-4474-d23e-e8442456ae7c" class="hero-section" id="app">
+
+    <div class="add-product" id="blockStateOuter" :class="{'open': formOpen1,'close':formClose1}">
+    <div class="outer1 button-copy" v-show="!formOpen1" @click="setValue1(true,false)">
+      <div class="mask">
+        <div class="ring">
+          <span id="ring-text">Blockchain<br/>State</span>
+        </div>
+      </div>
+    </div>
+      <block-state-comp ref="block_state" inline-template @close-click="cancel1()">
+      <div id="homeModal">
+        <div id="closeButton" @click="$emit('close-click',{})"><span>&times</span></div>
+            <div class="box-paginacao">
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao1">
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao1" checked>
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao2">
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao3">
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao4">
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao5">
+      <input type="radio" class="pageinput" name="input-paginacao" id="paginacao5">
+      <div class="box-vitrines">
+        <ul id="blocks">
+          <div class="vitrine1 vitrine">
+            <div class="line line1">-</div>
+            <h2>Page 1</h2>
+          <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+           </div> 
+          <div class="vitrine2 vitrine">
+            <div class="line line2">-</div>
+            <h2>Page 2</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+          </div>
+          <div class="vitrine3 vitrine">
+            <div class="line line3">-</div>
+            <h2>Page 3</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+          </div>
+          <div class="vitrine4 vitrine">
+            <div class="line line4">-</div>
+            <h2>Page 4</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+          </div>
+          <div class="vitrine5 vitrine">
+            <div class="line line5">-</div>
+            <h2>Page 5</h2>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+            <li>Transaction</li>
+          </div>
+        </ul>                  
+        <div class="btn-paginacao">
+          <ul>
+            <li><label for="paginacao1"><<</label></li>
+            <li><label for="paginacao1">1</label></li>
+            <li><label for="paginacao2">2</label></li>
+            <li><label for="paginacao3">3</label></li>
+            <li><label for="paginacao4">4</label></li>
+            <li><label for="paginacao5">5</label></li>
+            <li><label for="paginacao5">>></label></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+      </div>
+      </block-state-comp>
+  </div>
+    <div class="add-product" id="transactionStatus" :class="{'open': formOpen3}">
+    <div class="outer3 button-copy" id="transactionStatusRing" v-show="!formOpen3" @click="setValue3(true)">
+      <div class="mask">
+        <div class="ring">
+          <span id="ring-text">Transaction<br/>Pool</span>
+        </div>
+      </div>
+    </div>
+    <transaction-pool ref="transaction_pool" inline-template @close-click="cancel3">
+    <div id="homeModal">
+      <div id="closeButton" @click="$emit('close-click',transactionDetails)"><span>&times</span></div>  
+      <div class="wrapper-cards">
+        <div class="container-left">
+          <div class="wrapper-title">
+          <div class="sort">
+            <button onclick="sortAcc(event)" id="sortAccordion">Sort </button>
+            <div class="sortPanel">
+              <p onclick="sortOld(event)" id="oldSort">Oldest</p>
+              <p onclick="sortNew(event)" id="newSort">Newest</p>
+            </div>
+          </div>
+          <div class="search">
+            <button onclick="searchAcc(event)" id="searchAccordion">Search </button>
+            <div class="searchPanel">
+            <span>* Enter number of coins</span>
+              <input type="number" id="blockVal" name="searchBlock">
+            </div>
+          </div>
+          <div class="filter">
+            <button onclick="filterAcc(event)" id="filterAccordion">Filter </button>
+            <div class="filterPanel">
+            <span>* Enter address</span>
+              <input type="text" id="blockAddr" name="searchBlockByAddr">
+            </div>
+          </div>
+        </div>
+        <div class="container-cards">
+        <div class="container">
+          <div class="card">
+            <div class="front"><h2 id="txnNo">Transaction 2</h2></div>
+            <div class="back">
+              <div class="content">
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">abc</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">xyz</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent coinCount">8</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="card">
+            <div class="front"><h2 id="txnNo">Transaction 3</h2></div>
+            <div class="back">
+              <div class="content">
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">def</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">aaa</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent coinCount">10</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="card">
+            <div class="front"><h2 id="txnNo">Transaction 1</h2></div>
+            <div class="back">
+              <div class="content">
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">xyz</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">mno</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent coinCount">5</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="card">
+            <div class="front"><h2 id="txnNo">Transaction 4</h2></div>
+            <div class="back">
+              <div class="content">
+                <h3 class="cardTitle">Sender Address</h3>
+                <p class="cardContent senderAddr">abc</p>
+                <h3 class="cardTitle">Receiver Address</h3>
+                <p class="cardContent recAddr">def</p>
+                <h3 class="cardTitle">Number of Coins</h3>
+                <p class="cardContent coinCount">15</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+<!--         <div class="container-right">
+          <h3 style="color: #000000;padding-top: 5%;">No Transactions to show</h3>
+        </div> -->
+      </div>
+    </div>
+    </transaction-pool>
+  </div>
+  </div>
+
+
+  
+  <script src="{% static 'js/jquery.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/webflow.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/menubar.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/vue.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/vue-resource.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/menuoptions.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/contact.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/address.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/transaction.js' %}" type="text/javascript"></script>
+  <!-- <script src="{% static 'js/state.js' %}" type="text/javascript"></script> -->
+  <script src="{% static 'js/main.js' %}" type="text/javascript"></script> 
+  <script src="{% static 'js/triangles.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/background.js' %}" type="text/javascript"></script>
+</body>
+</html>

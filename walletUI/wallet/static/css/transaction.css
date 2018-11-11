@@ -1,0 +1,238 @@
+.pageTitle {
+  margin: 0.5em 0 0.5em 0;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #096AA3;
+}
+
+h2, h3 {
+  font-weight: bold;
+}
+
+.cardText {
+  margin-bottom: 0.5em;
+}
+
+.animation {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+/*.wrapper {
+  width: 80%;
+  text-align: center;
+  padding: 2%;
+  margin: 20px auto;
+  background: #fff;
+}
+*/
+.wrapper-cards {
+  /*padding: 2%;*/
+  margin: 20px auto;
+  /*background: #fff;*/
+  width: 90%;
+  height: 40%;
+  margin-left:5%;
+  padding: 0 0 5% 0;
+  /*overflow-y: hidden;*/
+  display: inline-block;
+}
+
+.container-left{
+  width: 49%;
+  height: 40%;
+  float:left;
+  position: relative;
+  padding: 0 0 5% 0;  
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 3px;
+  /*margin-left: 0;*/
+  /*margin: 0 0 0 -15%;*/
+  /*overflow-y: auto;*/
+}
+
+.wrapper-title{
+  font-family: brownieFont;
+}
+.left-title{
+  color: #ffffff;
+}
+
+.right-title{
+  color: #ffffff;
+  float:right;
+}
+
+.container-right{
+  width: 49%;
+  height: 40%;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 0 0 5% 0;  
+  /*top:-45%;*/
+  /*padding: 0;*/
+  /*display: inline-block;*/
+  /*margin-right: 0;*/
+  float: right;
+  position: relative;
+  border-radius: 3px;
+  /*overflow-y: auto;*/
+}
+
+/*.container-sep {
+  content: "";
+  background-color: #000;
+  position: relative;
+  width: 0.1%;
+  height: 100px;
+  top: 10px;
+  left: 49.5%;
+  display: block;
+}*/
+
+.container {
+  position: relative;
+  width: 48%;
+  height: 35%;
+  margin: 0 0 0 0;
+  background: rgba(255,255,255,0);
+  display: inline-block;
+  padding-top: 18%;
+  /*padding: 0 0 5% 0;*/
+  /* Set the depth of the elements */
+ /* -webkit-perspective: 800px;
+  -moz-perspective: 800px;
+  -o-perspective: 800px;
+  perspective: 800px;*/
+}
+
+.container:first-child {
+  margin-left: 0;
+}
+
+.card {
+  width: 89%;
+  height: 85%;
+  position: absolute;
+  margin-top: -30%;
+  cursor: pointer;
+  /* Set the transition effects */
+  -webkit-transition: -webkit-transform 0.4s;
+  -moz-transition: -moz-transform 0.4s;
+  -o-transition: -o-transform 0.4s;
+  transition: transform 0.4s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+
+}
+
+.card.flipped {
+  -webkit-transform: rotateY( 180deg );
+  -moz-transform: rotateY( 180deg );
+  -o-transform: rotateY( 180deg );
+  transform: rotateY( 180deg );
+}
+
+.card .front,
+.card .back {
+  display: block;
+  height: 100%;
+  width: 100%;
+  line-height: 260px;
+  color: white;
+  text-align: center;
+  font-size: 4em;
+  position: absolute;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  
+  box-shadow: 3px 5px 20px 2px rgba(0, 0, 0, 0.25);
+}
+
+.cardContent{
+  color:#eaebed;
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+}
+.card .back {
+/*  width: 94%;
+  padding-left: 3%;
+  padding-right: 3%;*/
+  font-size: 1em;
+  text-align: left;
+  line-height: 1.2em;
+}
+
+.formItem:first-child {
+  margin-top: 20px;
+}
+
+.card .back label {
+  display: inline-block;
+  width: 70px;
+  text-align: left;
+}
+
+.container-left .container .card .front {
+  /*background: #096AA3;*/
+  /*background: #228653;*/
+  background: #71bc78;
+
+}
+
+.container-left .container .card .back {
+  /*background: #03446A;*/
+  /*background: #007539;*/
+  background: #71bc78;
+  -webkit-transform: rotateY( 180deg );
+  -moz-transform: rotateY( 180deg );
+  -o-transform: rotateY( 180deg );
+  transform: rotateY( 180deg );
+}
+
+.container-right .container .card .front {
+  /*background: #096AA3;*/
+  background: #cd3333;
+  /*background: #228653;*/
+}
+
+.container-right .container .card .back {
+  /*background: #03446A;*/
+  background: #cd3333;
+  /*background: #007539;*/
+  -webkit-transform: rotateY( 180deg );
+  -moz-transform: rotateY( 180deg );
+  -o-transform: rotateY( 180deg );
+  transform: rotateY( 180deg );
+}
+
+/*.container:first-child .card .front {
+  background: #228653;
+}*/
+
+/*.container:first-child .card .back {
+  background: #007539;
+}*/
+
+.cardTitle {
+  font-size: 0.75em;
+  line-height: 1em;
+  margin: 0;
+}
+
+.content {
+  padding: 4%;
+  font-weight: 100;
+  text-align: left;
+}

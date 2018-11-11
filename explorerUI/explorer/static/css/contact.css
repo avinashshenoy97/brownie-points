@@ -1,0 +1,134 @@
+@font-face {
+  font-family: brownieFontIcon;
+  src: url('../fonts/FontAwesome.otf');
+}
+
+
+.contact_us{
+  position: relative;
+  /*background-color: #252626;*/
+  padding: 0% 0 0px 0;
+  overflow: hidden;
+  /*min-width: 300px;*/
+  width: 90%; 
+  height: 50%;
+  /*background-image: url(http://lorempixel.com/output/sports-q-g-300-300-5.jpg);*/
+  background-color: #ffffff;
+  background-size: cover;
+  background-attachment:fixed;
+  background-position:right top;
+}
+.contact_us_fon{
+  background-color: #ffffff;
+  padding: 10% 0 10% 0;
+  width: 100%;
+  height: 100%;
+  /*top: 5%;*/
+  opacity: 0.8;
+}
+.contact_us_left{ 
+  display: inline-block;
+  margin: 0px 0px 0px 10%;
+  width: 40%;
+}
+.contact_us_big_text{
+  display: block;
+}
+.contact_us_big_text{
+  color: #000000;
+  font-size: 60px;
+  padding: 0px 5px 3% 5px;
+  text-transform: uppercase;
+  font-family: brownieFont;
+}
+.red_text{
+  background-color: #2d7ac6;
+  padding: 0px 10px 0px 10px;
+}
+.contact_us_small_text{
+  color: #000000;
+  font-size: 15px;
+  margin: 30px 10px 10px 10px;
+  word-spacing: 5px;
+  font-family: brownieFont;
+}
+
+.mail:before {font-family: brownieFontIcon;content: "\f0e0";}
+.phone_number:before {font-family: brownieFontIcon;content: "\f095";}
+.adress:before {font-family: brownieFontIcon;content: "\f041";}
+
+
+.contact_us_right{
+  display: inline-block;
+  margin: 0px 8% 0px 0;
+  width: 40%;
+  height: 60%;
+  padding-left: 18%;
+  padding-top: 5%;
+  position: absolute;
+  border-left: 1px solid #808080;
+}
+.contact_us_icons{
+  margin: 0px 0px 0px 20px;
+}
+.icon{
+  background-color: white;
+  display: inline-block;
+  margin: 0px 0px 0px 10px;
+  width: 50%;
+  height: 10%;
+  font-size: 4em;
+  text-align: center;
+  line-height: 1.2;
+  /*color:  #252626;*/
+  color:  #000000;
+  -webkit-transition:  0.9s;
+}
+.icon_feedback:before {font-family: brownieFontIcon; content: "\f0e0";}
+.icon_twitter:before {font-family: brownieFontIcon; content: "\f099";}
+.icon_google_plus:before {font-family: brownieFontIcon; content: "\f0d5";}
+.icon_linkedin:before {font-family: brownieFontIcon; content: "\f0e1";}
+
+.red_text_2{
+  padding: 0px 0 10px 0px;
+  color: red;
+}
+
+.icon:hover { 
+ background-color: #2d7ac6;
+ color:  white;
+} 
+
+A {
+  text-decoration: none;
+   color: red;
+} 
+A:hover { 
+  text-decoration: underline;
+  color: red;
+} 
+@media screen and (min-width:300px) and (max-width:899px) {
+  /*contact_us///////////////////////////////////////////////////*/
+.contact_us{
+  min-width: 300px; 
+}
+.contact_us_fon{
+  padding: 30px 0 0px 0;
+}
+.contact_us_left{ 
+  display: block;
+  width: 100%;
+  margin: 10px 0px 0px 60px;
+}
+.contact_us_big_text{
+  color: white;
+  font-size: 50px;
+} 
+.contact_us_right{
+  display: block;
+  margin: 10px 0px 0px 40px;
+  border: none;
+  width: 100%; 
+  
+}
+

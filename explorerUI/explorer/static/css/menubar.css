@@ -1,0 +1,125 @@
+#menu-container{
+	height: 100%;
+	width:100%;
+	position: absolute;
+	margin-top: -10%;
+	z-index: 0;
+}
+
+.brownie-logo{
+	height: 8%;
+	width: 8%;
+	position: fixed;
+	left:1%;
+	top:-1%;
+	opacity: 1;
+}
+
+/*.navbar{
+	width: 100%;
+	height: 13%;
+	top:0;
+	display: block;
+	position: absolute;
+	background-color: black;
+	opacity: 0.7;
+}
+*/
+.menu-icon {
+	width: 50px;
+	height: 50px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	margin: 10px 15px;
+	transform: scale(0.8);
+	padding: 0;
+	cursor: pointer;
+	z-index: 3;
+}
+.menu-bar {
+	width: 50px;
+	height: 5px;
+	background: rgb(190, 190, 190);
+	position: absolute;
+	transition: all 0.3s;
+}
+.menu-bar1 {
+	margin-top: 9px;
+}
+.menu-bar2 {
+	margin-top: 23px;
+}
+.menu-bar3 {
+	margin-top: 37px;
+}
+.menu-icon.hover .menu-bar1 {
+	-webkit-transform: rotate(45deg) scaleX(0.7);
+	margin-top: 22px;
+}
+.menu-icon.hover .menu-bar2 {
+	opacity: 0;
+}
+.menu-icon.hover .menu-bar3 {
+	-webkit-transform: rotate(-45deg) scaleX(0.7);
+	margin-top: 22px;
+}
+
+.menu {
+	width: 100%;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	margin-top: -3%;
+	border-left: 0.5em solid #25274D;
+	border-right: 0.5em solid #25274D;  
+}
+.menu-con {
+	-webkit-flex-grow: 1;
+	flex-basis: 0;
+	flex-grow: 1;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-justify-content: space-around;
+	position: relative;
+	top: -100%;
+	border: 0.5em solid #000000;
+	transition: all 0.5s;
+}
+.menu-con p:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	opacity: 1;
+	background: rgba(0, 0, 0, 0);
+	-webkit-transition: all 0.5s;
+	transition: all 0.5s;
+}
+.menu-con:hover p:before {
+	background: rgba(0, 0, 0, 0.2);
+}
+.menu-con p {
+	height: 20px;
+	-webkit-align-self: center;
+	color: white;
+	font-size: 25px;
+	z-index: 2;
+	cursor: pointer;
+}
+@media screen and (max-width: 600px) {
+	.menu-con {
+		min-width: 50%;
+	}
+}
+@media screen and (max-width: 350px) {
+	.menu-con {
+		min-width: 100%;
+	}
+}

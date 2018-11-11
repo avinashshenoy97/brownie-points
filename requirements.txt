@@ -5,3 +5,5 @@ psutil==5.4.6
 ecdsa==0.13
 python-dateutil==2.7.0
 dill==0.2.7.1
+djangorestframework==3.8.2
+django==2.0.5
