@@ -344,7 +344,7 @@
             <!-- <h3 class="fs-subtitle">Enter the address of the receiver</h3> -->
             <input type="text" name="address" placeholder="Receiver's Address" v-model="sendCoins.address" />
             <span v-cloak v-if="sendCoins.address!=null && sendCoins.address.length<5" class="text-danger">* Enter valid address</span>
-            <span v-cloak v-if="sendCoins.address==sendCoinsAddr" class="text-danger">* Cannot Enter to Your Address</span><br>
+            <span v-cloak v-if="sendCoins.address==sendCoinsAddr" class="text-danger">* Cannot send to Your Address</span><br>
             <input type="button" name="next" class="next action-button" value="Next" :disabled="sendCoins.address==sendCoinsAddr"/>
           </fieldset>
           <fieldset id="enterCoin">
@@ -370,9 +370,15 @@
               </div>
             </div>
             <span id="success_state">Transaction [[transactionNumber]] sent for verification</span>
+            </div>
+            <div class="fail_div hide">
+            <div class="cross_mark">
+              <img src="{% static 'images/fail.png' %}"/>
+            </div>
+            <span id="fail_state">Transaction failed!</span>
             </div>  
             <input type="button" name="previous" class="previous action-button" value="Previous" />
-            <input type="button" name="submit" class="submit_coins action-button" value="Send" />
+            <input type="button" name="submit" @click="submitCoins()" class="submit_coins action-button" value="Send" />
           </fieldset>
         </form>  
       </div>

@@ -21,7 +21,7 @@ class sendCoinsView(APIView):
 	def put(self,request):
 		print("put",request.data)
 		r=requests.post('http://127.0.0.1:16000/control/sendTransaction',json=request.data)
-		data={"transactionNumber":1}
+		data={"transactionNumber":1,"statusCode":r.status_code}
 		return Response(data)
 
 class transactionStatusView(APIView):

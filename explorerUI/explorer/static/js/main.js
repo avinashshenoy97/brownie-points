@@ -37,7 +37,12 @@ var blockState=Vue.component('block-state-comp',{
       for(i=0;i<$completedTxAddr.length;i++){
         j=i+1;
         $blockParentNo=Math.ceil(j/4)-1;
-        $blockNo = j%4 + 1;
+        if(j%4==0){
+          $blockNo=5;
+        }
+        else{
+          $blockNo = j%4 + 1;
+        }
         $blockDataNo = $blockNo + 4;
         $blockData="<div class='stateModal' >";
         $blockData+="<div id='closeStateButton' class='closeStateButtonClass'><span>&times</span></div>";
@@ -46,20 +51,25 @@ var blockState=Vue.component('block-state-comp',{
         $blockData+="<span id='blockContent'><h3>Receiver Address : </h3><span>"+$completedTxAddr[i]+"</span></span>";        
         $blockData+="<span id='blockContent'><h3>Number Of Coins : </h3><span>"+$completedTxAmt[i]+"</span></span></div></div>";
         $blockData_el=$($blockData);
+        console.log($('#blocks').children().eq($blockParentNo),j,$blockParentNo);
+        console.log($blockData_el);
         $('#blocks').children().eq($blockParentNo).append($blockData_el);
         $('#blocks').children().eq($blockParentNo).children().eq($blockNo).css('background-color','#71bc78');
-        console.log("updated",$('#blocks').children().children('.stateModal'));
         $('.closeStateButtonClass').click(function(){
           console.log($(this));
           $(this).parent().removeClass('open');
           $('.btn-paginacao').css("z-index","0");
-          $('#closeButton').css("opacity","1");
+          $('.closeButton').css("opacity","1");
 
         });
 
         $('#blocks').children().eq($blockParentNo).children().eq($blockNo).click(function(){
+          // console.log($('#blocks').children().eq($(this).parent().index()).children(".stateModal").eq($(this).index()-2));
+          var per=$(this).parent().index()*20+"%";
+          console.log($(this).parent().index(),per);          
+          $('#blocks').children().eq($(this).parent().index()).children(".stateModal").eq($(this).index()-2).css("top",per);
           $('#blocks').children().eq($(this).parent().index()).children(".stateModal").eq($(this).index()-2).addClass('open');
-          $('#closeButton').css("opacity","0");
+          $('.closeButton').css("opacity","0");
           $('.btn-paginacao').css("z-index","-1");
         });
       }

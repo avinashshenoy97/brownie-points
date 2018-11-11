@@ -19,8 +19,15 @@ var sendCoinsComp=Vue.component('send-coins-comp',{
    submitCoins: function() {
       Vue.http.put('/wallet/sendCoins',this.sendCoins)
           .then((response) => {
-            console.log("sent",response);
-            this.transactionNumber=response.data['transactionNumber']
+            if(response.data["statusCode"]==500){
+              // return response.data["statusCode"];
+              submitSendCoins(response.data["statusCode"]);
+            }
+            else{
+            this.transactionNumber=response.data['transactionNumber'];
+              submitSendCoins(response.data["statusCode"]);
+              // return response.data["statusCode"];
+            }
           })
           .catch((err) => {
             console.log("error",err);

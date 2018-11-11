@@ -122,6 +122,17 @@
   color: white;
 }
 
+.closeButton{
+  float: right;
+  top:5%;
+  right:5%;
+  font-size: 2em;
+  /*color: #2d7ac6;*/
+  color: #999999;
+  cursor: pointer;
+  position: absolute;
+}
+
 #closeButton{
   float: right;
   top:5%;
@@ -258,6 +269,7 @@
 .sa-icon.sa-success .sa-line.sa-long {
   -ms-transform: rotate(-45deg) \9;
 }
+
 
 .animateSuccessTip {
   -webkit-animation: animateSuccessTip 0.75s;

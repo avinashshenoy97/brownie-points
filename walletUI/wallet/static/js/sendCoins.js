@@ -152,23 +152,32 @@ $(".previous").click(function(){
   });
 });
 
-$(".submit_coins").click(function(){
+// $(".submit_coins").click(function(){
+  submitSendCoins=function(r_status){
+  // r_status=vue.$refs.send_coins.submitCoins();
+  console.log(r_status);
+  if(r_status==500){
+  $(".fail_div").removeClass("hide");  
+  $(".success_div").prev().addClass("hide");
+  $(".fail_div").next().addClass("hide");
+  $(".fail_div").next().next().addClass("hide");
+  }
+  else{
   $(".success_div").removeClass("hide");
   $(".success_div").prev().addClass("hide");
-  $(".success_div").next().addClass("hide");
   $(".success_div").next().next().addClass("hide");
+  $(".success_div").next().next().next().addClass("hide");
   $(".sa-success").addClass("hide");
   vue.$refs.send_coins.transactionNumber+=1;
   setTimeout(function() {
     $(".sa-success").removeClass("hide");
   }, 100);
-
-  vue.$refs.send_coins.submitCoins();
   vue.$refs.transaction_status.getTransactionDetails();
+  }
   setTimeout(function() {
   
   vue.$refs.send_coins.cancel1();
   }, 3000);
 
   setTimeout(resetForm,3500);
-})
+}
