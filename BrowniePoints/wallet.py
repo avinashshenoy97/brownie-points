@@ -88,7 +88,7 @@ def findTxOutsforAmount(amount, myUnspentTxOuts):
 			leftOverAmount = currentAmount - amount
 			return includedUnspentTxOuts,leftOverAmount
 
-	raise Exception("not enough coins to send transaction")
+	raise Exception("Not enough coins to send transaction, found " + str(currentAmount) + " coins but need " + str(amount))
 
 
 def createTxOuts(receiver_address, myaddress, amount, leftover_amount):

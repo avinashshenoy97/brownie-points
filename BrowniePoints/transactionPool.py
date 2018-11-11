@@ -30,6 +30,7 @@ def broadcastFullTransactionPool():
 
 
 def addToTransactionPool(tx, UnspentTxOut):
+	global transactionPool
 	if(validateTransaction(tx, UnspentTxOut) == False):
 		raise Exception("Trying to add invalid tx to pool")
 
