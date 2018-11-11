@@ -98,7 +98,10 @@ def generateNextBlock():
 		The newly generated block.
 	'''
 	coinbaseTx = transaction.getCoinbaseTransaction(wallet.getPublicFromWallet(), getLatestBlock().index + 1)
-	return generateRawNextBlock([coinbaseTx] + transactionPool.getTransactionPool())
+	if len(transactionPool.getTransactionPool()) > 0:
+		return generateRawNextBlock([coinbaseTx] + transactionPool.getTransactionPool())
+	else:
+		raise ValueError('TransactionPool is empty!')
 
 
 def findBlock(index, previousHash, timestamp, data, difficulty):
