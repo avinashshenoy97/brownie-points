@@ -184,7 +184,7 @@
         <div class="at-user__avatar"><img src="{% static 'images/aditi.jpeg' %}"/></div>
         <div class="at-user__name">Aditi Srinivas</div>
         <!-- <div class="at-user__title">CEO &amp; Co-Founder</div> -->
-        <div class="at-user__title">Crypto Vinaigrette</div>
+        <div class="at-user__title">P2P &amp; Integration</div>
         <ul class="at-social">
           
           <li class="at-social__item"><a href="https://github.com/aditisrinivas97">
@@ -344,7 +344,7 @@
             <!-- <h3 class="fs-subtitle">Enter the address of the receiver</h3> -->
             <input type="text" name="address" placeholder="Receiver's Address" v-model="sendCoins.address" />
             <span v-cloak v-if="sendCoins.address!=null && sendCoins.address.length<5" class="text-danger">* Enter valid address</span>
-            <span v-cloak v-if="sendCoins.address==sendCoinsAddr" class="text-danger">* Cannot send to Your Address</span><br>
+            <span v-cloak v-if="sendCoins.address==sendCoinsAddr" class="text-danger">* Cannot send to your own address</span><br>
             <input type="button" name="next" class="next action-button" value="Next" :disabled="sendCoins.address==sendCoinsAddr"/>
           </fieldset>
           <fieldset id="enterCoin">
