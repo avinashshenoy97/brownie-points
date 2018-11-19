@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/avinashshenoy97/test/blob/master/extras/browniepoints_logo_black.png" alt="BrowniePoints Logo">
+<p align="center"><img src="https://github.com/avinashshenoy97/brownie-points/blob/master/extras/browniepoints_logo_black.png" alt="BrowniePoints Logo">
 
 <h5 align="center"> A social currency turned into a crypto currency! </h5>
 
