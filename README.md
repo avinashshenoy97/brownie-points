@@ -35,6 +35,7 @@ python3 BrowniePoints -w <IP_OF_FIRST_NODE> 8000
 
 Every node exposes a REST API for accessing information about the blockchain. This API listens on port `16000` by default. This can be changed with the `-p` flag.
 
+All peers on the network listen on port `50500` for broadcasted messages.
 
 ## Usage
 
